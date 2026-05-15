@@ -5,147 +5,192 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>好想玩原神</title>
-  <link rel="icon" href="./网站图标.png" type="image/png" />
+  <link rel="icon" href="./favicon.png?v=3" type="image/png" />
+  <link rel="shortcut icon" href="./favicon.png?v=3" type="image/png" />
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: "Microsoft YaHei", Arial, sans-serif;
-      background: linear-gradient(135deg, #f5f7fb 0%, #eef2ff 100%);
+      background:
+        radial-gradient(circle at top left, rgba(219, 234, 254, 0.9), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(224, 231, 255, 0.9), transparent 34%),
+        linear-gradient(135deg, #f7f9ff 0%, #eef2ff 100%);
       color: #222;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
+    .decor {
+      position: fixed;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+      filter: grayscale(100%);
+      opacity: 0.34;
+    }
+
+    .decor-left {
+      width: 420px;
+      left: 5vw;
+      bottom: 6vh;
+      transform: rotate(-4deg);
+    }
+
+    .decor-right {
+      width: 460px;
+      right: 4vw;
+      bottom: 8vh;
+      transform: rotate(3deg);
+    }
+
     .container {
-      max-width: 980px;
-      margin: 70px auto;
-      padding: 0 24px 120px;
       position: relative;
       z-index: 2;
+      max-width: 1080px;
+      margin: 64px auto;
+      padding: 0 28px 120px;
+    }
+
+    .hero {
+      margin-bottom: 38px;
+      padding: 34px 36px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 28px;
+      box-shadow: 0 18px 48px rgba(30, 41, 59, 0.10);
+      backdrop-filter: blur(12px);
     }
 
     h1 {
-      font-size: 38px;
-      margin-bottom: 12px;
+      margin: 0 0 14px;
+      font-size: 42px;
       letter-spacing: 1px;
+      color: #111827;
     }
 
     .desc {
-      color: #666;
-      margin-bottom: 36px;
+      margin: 0;
+      color: #5f6777;
       font-size: 16px;
-      line-height: 1.8;
+      line-height: 1.9;
     }
 
     .section-title {
-      font-size: 22px;
-      margin: 38px 0 18px;
-      color: #333;
+      margin: 42px 0 18px;
+      font-size: 24px;
+      color: #1f2937;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
     }
 
     .card {
       display: block;
-      padding: 24px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 18px;
+      min-height: 180px;
+      padding: 26px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 22px;
       text-decoration: none;
       color: #222;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transition: 0.22s ease;
-      border: 1px solid rgba(255,255,255,0.8);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 28px rgba(30, 41, 59, 0.10);
+      transition: 0.24s ease;
+      backdrop-filter: blur(10px);
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.13);
-    }
-
-    .card h2 {
-      margin: 0 0 10px;
-      font-size: 21px;
-    }
-
-    .card p {
-      margin: 0;
-      color: #666;
-      line-height: 1.7;
-      font-size: 14px;
+      transform: translateY(-6px);
+      box-shadow: 0 18px 42px rgba(30, 41, 59, 0.16);
     }
 
     .tag {
       display: inline-block;
-      margin-bottom: 14px;
-      padding: 5px 10px;
+      margin-bottom: 16px;
+      padding: 6px 12px;
       border-radius: 999px;
       background: #eef2ff;
       color: #3651d4;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    .decor {
-      position: fixed;
-      bottom: 0;
-      width: 300px;
-      opacity: 0.25;
-      z-index: 1;
-      pointer-events: none;
-      user-select: none;
-      filter: grayscale(100%);
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 21px;
+      color: #111827;
     }
 
-    .decor-left {
-      left: 0;
-      transform: translate(-20px, 20px);
+    .card p {
+      margin: 0;
+      color: #667085;
+      line-height: 1.75;
+      font-size: 14px;
     }
 
-    .decor-right {
-      right: 0;
-      transform: translate(20px, 20px);
+    .footer-note {
+      margin-top: 46px;
+      color: #7b8190;
+      font-size: 14px;
+      text-align: center;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
+      .decor-left {
+        width: 300px;
+        left: -60px;
+        bottom: 80px;
+        opacity: 0.18;
+      }
+
+      .decor-right {
+        width: 330px;
+        right: -80px;
+        bottom: 40px;
+        opacity: 0.18;
+      }
+
       .container {
-        margin: 42px auto;
-        padding-bottom: 80px;
+        margin: 36px auto;
+        padding: 0 18px 80px;
+      }
+
+      .hero {
+        padding: 28px 24px;
       }
 
       h1 {
-        font-size: 30px;
-      }
-
-      .decor {
-        width: 190px;
-        opacity: 0.10;
+        font-size: 32px;
       }
     }
   </style>
 </head>
 
 <body>
-  <img class="decor decor-left" src="./decor_left.jpg" alt="左下角装饰图">
-  <img class="decor decor-right" src="./decor_right.jpg" alt="右下角装饰图">
+  <img class="decor decor-left" src="./decor_left.jpg" alt="左侧装饰图" />
+  <img class="decor decor-right" src="./decor_right.jpg" alt="右侧装饰图" />
 
-  <div class="container">
-    <h1>好想玩原神</h1>
-    <p class="desc">
-      这里整理了一些嵌入式、控制算法、信号处理和知识可视化页面。点击卡片即可进入对应的在线仿真或知识整理页面。
-    </p>
+  <main class="container">
+    <section class="hero">
+      <h1>好想玩原神</h1>
+      <p class="desc">
+        这里整理了一些嵌入式、控制算法、信号处理和知识可视化页面。点击卡片即可进入对应的在线仿真或知识整理页面。
+      </p>
+    </section>
 
     <h2 class="section-title">控制算法</h2>
     <div class="grid">
       <a class="card" href="./pid_simulator_standalone.html">
         <span class="tag">PID Control</span>
         <h2>PID 在线仿真器</h2>
-        <p>通过调节 Kp、Ki、Kd，观察系统响应、超调、稳态误差和收敛速度的变化。</p>
+        <p>通过调节 Kp、Ki、Kd，观察系统响应、超调量、稳态误差和收敛速度的变化。</p>
       </a>
 
       <a class="card" href="./kalman_filter_simulator_standalone.html">
@@ -184,6 +229,8 @@
         <p>整理 rivers_timer 和 rivers_queue 的运行流程、接口设计、使用方式和软件架构思路。</p>
       </a>
     </div>
-  </div>
+
+    <p class="footer-note">Powered by GitHub Pages · Rivers HTML</p>
+  </main>
 </body>
 </html>

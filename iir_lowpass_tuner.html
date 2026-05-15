@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IIR 低通滤波器参数调节器</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --blue:#2563eb;
+      --green:#059669;
+      --amber:#d97706;
+      --red:#dc2626;
+      --purple:#7c3aed;
+      --shadow:0 2px 14px rgba(15,23,42,.07);
+    }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 4%, rgba(37,99,235,.10), transparent 24%),
+        radial-gradient(circle at 88% 6%, rgba(5,150,105,.10), transparent 24%),
+        linear-gradient(135deg,#ffffff 0%,#f8fafc 48%,#e2e8f0 100%);
+    }
+    .page{ max-width:1360px; margin:0 auto; padding:28px; }
+    .top{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:24px;
+      align-items:end;
+      margin-bottom:22px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#475569;
+      font-size:14px;
+      box-shadow:0 1px 4px rgba(15,23,42,.05);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:42px;
+      line-height:1.12;
+      letter-spacing:-1px;
+    }
+    .desc{
+      max-width:920px;
+      color:#475569;
+      line-height:1.8;
+      font-size:16px;
+      margin:0;
+    }
+    .formulaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .pill{
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      color:#1d4ed8;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .pill.green{
+      border-color:#bbf7d0; background:#ecfdf5; color:#047857;
+    }
+    .pill.amber{
+      border-color:#fed7aa; background:#fff7ed; color:#b45309;
+    }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      max-width:460px;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:15px;
+      padding:10px 15px;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-dark{ background:#0f172a; color:#fff; }
+    .btn-dark:hover{ background:#334155; transform:translateY(-1px); }
+    .btn-light{ background:#fff; color:#334155; border:1px solid #cbd5e1; }
+    .btn-light:hover{ background:#f8fafc; transform:translateY(-1px); }
+
+    .layout{
+      display:grid;
+      grid-template-columns:380px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+    }
+    .panel{ padding:20px; }
+    .typeBox{
+      background:linear-gradient(135deg,#eff6ff,#ecfdf5);
+      border-radius:20px;
+      padding:16px;
+      margin-bottom:18px;
+      border:1px solid #dbeafe;
+    }
+    .label-muted{ color:#64748b; font-size:14px; }
+    .typeValue{ font-size:30px; font-weight:950; margin-top:3px; letter-spacing:-.4px; }
+    .formula{
+      margin-top:12px;
+      background:rgba(255,255,255,.84);
+      border:1px solid rgba(226,232,240,.85);
+      border-radius:15px;
+      padding:11px 12px;
+      font-weight:900;
+      color:#334155;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .sliderGroup{ margin:19px 0; }
+    .sliderHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .sliderTitle{ font-size:14px; font-weight:900; color:#1e293b; }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+      margin-top:3px;
+    }
+    .num{
+      min-width:86px;
+      text-align:right;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      font-weight:900;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:12px;
+      padding:6px 9px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:#0f172a;
+    }
+    select{
+      width:100%;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      color:#0f172a;
+      font-weight:800;
+      outline:none;
+    }
+    .toggleBox{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:12px 13px;
+      margin-top:15px;
+    }
+    .toggleBox label{
+      font-size:14px;
+      font-weight:900;
+      color:#1e293b;
+    }
+    input[type="checkbox"]{
+      width:19px; height:19px; accent-color:#2563eb;
+    }
+    .sectionLine{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:20px;
+    }
+    .sectionTitle{
+      font-size:14px;
+      font-weight:950;
+      color:#334155;
+      margin-bottom:10px;
+    }
+    .chartCard{ padding:22px; }
+    .chartTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    h2{
+      margin:0 0 6px;
+      font-size:22px;
+      font-weight:950;
+    }
+    .small{
+      color:#64748b;
+      font-size:14px;
+      margin:0;
+      line-height:1.6;
+    }
+    .param{
+      white-space:nowrap;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:16px;
+      padding:10px 13px;
+      font-weight:900;
+    }
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      margin:13px 0 6px;
+      color:#475569;
+      font-size:13px;
+      font-weight:800;
+    }
+    .leg{ display:inline-flex; align-items:center; gap:7px; }
+    .swatch{
+      width:22px;
+      height:0;
+      border-top:4px solid #000;
+      border-radius:999px;
+    }
+    .swatch.dashed{ border-top-style:dashed; }
+    .chartWrap{
+      width:100%;
+      height:650px;
+    }
+    svg{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#fff;
+      border-radius:18px;
+    }
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin:18px 0;
+    }
+    .metric{ padding:16px; }
+    .mLabel{ color:#64748b; font-size:12px; }
+    .mValue{
+      margin-top:6px;
+      font-size:21px;
+      font-weight:950;
+      font-family:Consolas,Monaco,monospace;
+    }
+    .mNote{
+      margin-top:5px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .notes{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+      padding:18px;
+    }
+    .note{
+      border-radius:18px;
+      padding:16px;
+      border:1px solid transparent;
+    }
+    .note h3{ margin:0; font-size:18px; font-weight:950; }
+    .note p{
+      margin:8px 0 0;
+      color:#334155;
+      font-size:14px;
+      line-height:1.72;
+    }
+    .blue{ background:#eff6ff; border-color:#dbeafe; }
+    .blue h3{ color:#1d4ed8; }
+    .green{ background:#ecfdf5; border-color:#bbf7d0; }
+    .green h3{ color:#047857; }
+    .amber{ background:#fffbeb; border-color:#fde68a; }
+    .amber h3{ color:#b45309; }
+    .purple{ background:#f5f3ff; border-color:#ddd6fe; }
+    .purple h3{ color:#6d28d9; }
+    .red{ background:#fef2f2; border-color:#fecaca; }
+    .red h3{ color:#b91c1c; }
+
+    .theory{
+      margin-top:18px;
+      padding:18px;
+    }
+    .theoryTitle{
+      margin:0 0 12px;
+      font-size:22px;
+      font-weight:950;
+    }
+    .theoryGrid{
+      display:grid;
+      grid-template-columns:1.15fr 1fr;
+      gap:16px;
+      margin-bottom:16px;
+    }
+    .theoryBlock{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+    .theoryBlock h3{
+      margin:0 0 8px;
+      font-size:17px;
+      font-weight:950;
+    }
+    .theoryBlock p, .theoryBlock li{
+      color:#334155;
+      font-size:14px;
+      line-height:1.75;
+    }
+    .theoryBlock ul{ margin:8px 0 0 18px; padding:0; }
+    .mono{
+      font-family:Consolas,Monaco,monospace;
+      background:#f1f5f9;
+      border-radius:10px;
+      padding:2px 6px;
+      font-size:13px;
+      font-weight:900;
+    }
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    .step{
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:14px;
+    }
+    .step .idx{
+      width:28px; height:28px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:13px;
+      font-weight:950;
+      background:#eff6ff;
+      color:#1d4ed8;
+      margin-bottom:8px;
+    }
+    .step h4{
+      margin:0 0 6px;
+      font-size:15px;
+      font-weight:950;
+    }
+    .step p{
+      margin:0;
+      color:#475569;
+      font-size:13px;
+      line-height:1.65;
+    }
+
+    @media (max-width:1100px){
+      .top{ grid-template-columns:1fr; align-items:stretch; }
+      .buttons{ justify-content:flex-start; max-width:none; }
+      .layout{ grid-template-columns:1fr; }
+      .metrics{ grid-template-columns:repeat(2,1fr); }
+      .notes{ grid-template-columns:1fr; }
+      .theoryGrid{ grid-template-columns:1fr; }
+      .steps{ grid-template-columns:1fr 1fr; }
+      h1{ font-size:32px; }
+      .page{ padding:18px; }
+      .chartTop{ flex-direction:column; align-items:flex-start; }
+      .param{ white-space:normal; }
+      .chartWrap{ height:620px; }
+    }
+    @media (max-width:700px){
+      .steps{ grid-template-columns:1fr; }
+      .metrics{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge">IIR 低通滤波器参数调节器</div>
+        <h1>拖动 α、fc、Fs 和信号类型，观察“平滑 ↔ 延迟”的取舍</h1>
+        <p class="desc">
+          一阶 IIR 低通是最常见、最实用的数字滤波器之一。它的核心思想非常朴素：
+          当前输出既参考当前输入，也保留一部分历史输出。
+          所以它天然适合做 ADC 平滑、传感器去噪、慢变量估计，但代价是会引入响应滞后和相位延迟。
+        </p>
+        <div class="formulaRow">
+          <span class="pill">y[n] = αx[n] + (1-α)y[n-1]</span>
+          <span class="pill green">α 大 → 跟随快，但更抖</span>
+          <span class="pill amber">α 小 → 更平滑，但更慢</span>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('fast')">快速跟随</button>
+        <button class="btn-dark" onclick="loadPreset('smooth')">强平滑</button>
+        <button class="btn-dark" onclick="loadPreset('step')">阶跃响应</button>
+        <button class="btn-dark" onclick="loadPreset('noise')">噪声抑制</button>
+        <button class="btn-dark" onclick="loadPreset('sine')">正弦滞后</button>
+        <button class="btn-light" onclick="rerollNoise()">重抽噪声</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox">
+          <div class="label-muted">当前滤波器</div>
+          <div class="typeValue">一阶 IIR 低通</div>
+          <div class="formula">
+            直接系数模式： y[n] = αx[n] + (1-α)y[n-1]<br>
+            截止频率模式： α = dt / (RC + dt), &nbsp; RC = 1 / (2πfc)
+          </div>
+        </div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">参数模式</div>
+              <div class="hint">可直接拖 α，也可以通过截止频率 fc 自动换算 α。</div>
+            </div>
+            <div id="modeNum" class="num">直接 α</div>
+          </div>
+          <select id="modeSelect">
+            <option value="alpha" selected>直接设置 α</option>
+            <option value="fc">通过截止频率 fc 计算 α</option>
+          </select>
+        </div>
+
+        <div id="sliders"></div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">输入信号类型</div>
+              <div class="hint">不同信号更容易观察到不同现象：阶跃看响应速度，正弦看相位滞后，噪声看平滑效果。</div>
+            </div>
+            <div id="signalTypeNum" class="num">正弦</div>
+          </div>
+          <select id="signalTypeSelect">
+            <option value="sine" selected>正弦</option>
+            <option value="step">阶跃</option>
+            <option value="square">方波</option>
+            <option value="ramp">斜坡</option>
+            <option value="sensor">传感器噪声</option>
+          </select>
+        </div>
+
+        <div class="toggleBox">
+          <div>
+            <label for="showInput">显示原始输入 x[n]</label>
+            <div class="hint">灰色线：原始输入（带噪声）</div>
+          </div>
+          <input id="showInput" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showOutput">显示滤波输出 y[n]</label>
+            <div class="hint">蓝色线：IIR 滤波后的输出</div>
+          </div>
+          <input id="showOutput" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showError">显示误差曲线 e[n]</label>
+            <div class="hint">下方副图：e[n] = y[n] - true[n]</div>
+          </div>
+          <input id="showError" type="checkbox" checked>
+        </div>
+
+        <div class="sectionLine">
+          <div class="sectionTitle">你应该重点观察什么？</div>
+          <div class="hint">
+            1）看阶跃：α 小时明显“慢半拍”；<br>
+            2）看正弦：滤波会带来相位滞后；<br>
+            3）看噪声：α 小时更稳更平滑；<br>
+            4）看误差：平滑不是免费午餐，它通常意味着更大的跟随滞后。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop">
+            <div>
+              <h2>输入 / 理想 / IIR 输出波形</h2>
+              <p class="small">
+                主图里：黑色虚线是真实理想信号 <span class="mono">true[n]</span>，灰色是带噪原始输入 <span class="mono">x[n]</span>，
+                蓝色是一阶 IIR 输出 <span class="mono">y[n]</span>。下方副图显示误差 <span class="mono">e[n] = y[n] - true[n]</span>。
+              </p>
+            </div>
+            <div id="paramText" class="param">α=0.150 / fc=2.58Hz / Fs=100Hz / dt=10.0ms</div>
+          </div>
+
+          <div class="legend">
+            <span class="leg"><span class="swatch dashed" style="border-color:#111827"></span>理想真实信号 true[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#94a3b8"></span>原始输入 x[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#2563eb"></span>IIR 输出 y[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#dc2626"></span>误差 e[n]</span>
+          </div>
+
+          <div class="chartWrap">
+            <svg id="chart" viewBox="0 0 920 650"></svg>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="card metric">
+            <div class="mLabel">当前 α</div>
+            <div id="alphaValue" class="mValue">0.150</div>
+            <div class="mNote">越大越敏捷，越小越平滑。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">等效截止频率 fc</div>
+            <div id="fcValue" class="mValue">2.58 Hz</div>
+            <div class="mNote">由 α 与 Fs 反推得到的近似一阶低通截止频率。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">输出 RMS 误差</div>
+            <div id="rmsValue" class="mValue">0.000</div>
+            <div class="mNote">越小不一定越好，还要结合响应速度一起看。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">峰值滞后 / 过渡慢感</div>
+            <div id="delayValue" class="mValue">0.0 ms</div>
+            <div class="mNote">对正弦做近似峰值时延估计；其他信号显示典型延迟感。</div>
+          </div>
+        </div>
+
+        <div class="card notes">
+          <div class="note blue">
+            <h3>α 越大</h3>
+            <p>更相信当前输入，所以响应更快、更贴近输入，但噪声抑制能力会下降，输出更抖。</p>
+          </div>
+          <div class="note green">
+            <h3>α 越小</h3>
+            <p>更相信历史输出，所以滤波更平滑，适合慢变量估计；代价是明显的响应延迟和相位滞后。</p>
+          </div>
+          <div class="note amber">
+            <h3>IIR 的优势</h3>
+            <p>公式简单、计算量小、只需保留上一次输出，非常适合 MCU、ADC 平滑和工业传感器数据处理。</p>
+          </div>
+          <div class="note purple">
+            <h3>IIR 的代价</h3>
+            <p>不是“既平滑又无延迟”。任何低通本质上都在用更慢的响应换更稳定的输出。</p>
+          </div>
+          <div class="note red">
+            <h3>工程直觉</h3>
+            <p>先定采样频率，再根据“你允许多慢”决定 α 或 fc。别只看噪声小不小，还要看动态能不能接受。</p>
+          </div>
+        </div>
+
+        <div class="card theory">
+          <h2 class="theoryTitle">IIR 原理补充：为什么它能平滑？为什么一定会变慢？</h2>
+
+          <div class="theoryGrid">
+            <div class="theoryBlock">
+              <h3>1. 这条递推公式到底在干什么？</h3>
+              <p>
+                一阶 IIR 低通的核心公式是：
+                <span class="mono">y[n] = αx[n] + (1-α)y[n-1]</span>。
+                这句话翻成人话就是：
+                <b>当前输出 = 一部分当前输入 + 一部分上一次输出</b>。
+                因此输出不会像输入那样乱跳，而是会被“历史”拉住。
+              </p>
+              <ul>
+                <li><b>α 大</b>：当前输入占比高，输出更愿意立刻跟着变。</li>
+                <li><b>α 小</b>：历史输出占比高，输出更稳，但更慢。</li>
+                <li>这就是平滑的来源，也是延迟的来源。</li>
+              </ul>
+            </div>
+
+            <div class="theoryBlock">
+              <h3>2. 为什么 IIR 很适合 MCU？</h3>
+              <p>
+                因为它非常省资源。和滑动平均相比，一阶 IIR 不需要保存一长串历史数据，
+                只要保存一个上一时刻输出 <span class="mono">y[n-1]</span> 就行。
+                这意味着：
+              </p>
+              <ul>
+                <li>RAM 占用极小；</li>
+                <li>每个采样点只做少量乘加；</li>
+                <li>很适合 ADC 平滑、压力/温度等慢变量估计；</li>
+                <li>适合中断里或周期任务里稳定运行。</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="theoryGrid">
+            <div class="theoryBlock">
+              <h3>3. α 和截止频率 fc 的关系</h3>
+              <p>
+                如果你不想直接凭感觉调 α，也可以先确定“我想保留多快的变化”，也就是确定一个截止频率 <span class="mono">fc</span>，
+                再利用近似关系：
+              </p>
+              <p class="mono">RC = 1 / (2πfc) &nbsp;&nbsp;&nbsp; α = dt / (RC + dt)</p>
+              <p>
+                其中 <span class="mono">dt = 1 / Fs</span>。所以：
+              </p>
+              <ul>
+                <li><b>Fs 越高</b>，同样的 fc 会对应更小的 dt；</li>
+                <li><b>fc 越低</b>，滤波越强，输出越平滑，但也更慢；</li>
+                <li>这是一种更接近工程设计语言的调参方式。</li>
+              </ul>
+            </div>
+
+            <div class="theoryBlock">
+              <h3>4. 为什么正弦会出现相位滞后？</h3>
+              <p>
+                低通并不是只“压噪声”，它还会改变信号的时间关系。对正弦输入来说，IIR 输出通常会：
+              </p>
+              <ul>
+                <li>幅值变小一些；</li>
+                <li>波峰和波谷比真实信号晚一点到来；</li>
+                <li>频率越高，这种滞后通常越明显。</li>
+              </ul>
+              <p>
+                所以在需要看相位、边沿、快速动态的场景下，不能只追求平滑，还必须评估延迟是否可接受。
+              </p>
+            </div>
+          </div>
+
+          <div class="theoryBlock">
+            <h3>5. 一个最实用的学习视角：把 IIR 当成“可调惯性”</h3>
+            <p>
+              你可以把一阶 IIR 想成一个有惯性的输出系统：
+              输入突然变了，输出不会瞬间跳过去，而是“慢慢追过去”。
+              因此看 IIR 最直观的方式，不是死记公式，而是从下面四步理解：
+            </p>
+            <div class="steps">
+              <div class="step">
+                <div class="idx">1</div>
+                <h4>先看输入</h4>
+                <p>输入是阶跃、正弦、方波还是噪声？不同输入暴露出来的问题不同。</p>
+              </div>
+              <div class="step">
+                <div class="idx">2</div>
+                <h4>再看 α / fc</h4>
+                <p>它决定“你更相信当前输入，还是更相信历史输出”。</p>
+              </div>
+              <div class="step">
+                <div class="idx">3</div>
+                <h4>看输出效果</h4>
+                <p>观察平滑程度、峰值变化、跟随快慢、相位滞后。</p>
+              </div>
+              <div class="step">
+                <div class="idx">4</div>
+                <h4>看工程取舍</h4>
+                <p>噪声小了多少？响应慢了多少？这两个问题永远要一起看。</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const defaults = {
+  mode: "alpha",
+  alpha: 0.15,
+  fc: 2.58,
+  signalType: "sine",
+  freq: 2,
+  noise: 0.4,
+  fs: 100,
+  simTime: 8,
+  amp: 1.0,
+  showInput: true,
+  showOutput: true,
+  showError: true
+};
+
+const state = { ...defaults };
+let noiseSeed = 246813579;
+
+const sliderConfig = {
+  alpha: { label: "α 滤波系数", value: 0.15, min: 0.01, max: 1.00, step: 0.01, unit: "", hint: "α 越大越快，α 越小越平滑。" },
+  fc:    { label: "截止频率 fc", value: 2.58, min: 0.1, max: 20, step: 0.1, unit: "Hz", hint: "在 fc 模式下，通过截止频率自动计算 α。" },
+  freq:  { label: "信号频率", value: 2, min: 0.1, max: 20, step: 0.1, unit: "Hz", hint: "对正弦 / 方波 / 斜坡等输入，决定变化快慢。" },
+  noise: { label: "噪声强度", value: 0.4, min: 0, max: 2, step: 0.05, unit: "", hint: "噪声越大，越能观察出滤波器的平滑作用。" },
+  fs:    { label: "采样频率 Fs", value: 100, min: 20, max: 1000, step: 5, unit: "Hz", hint: "Fs 决定采样周期 dt，也影响 α 与 fc 的换算。" },
+  simTime:{ label: "仿真时长", value: 8, min: 2, max: 20, step: 0.5, unit: "s", hint: "仿真时间越长，越方便观察稳态和滞后。" },
+  amp:   { label: "信号幅值", value: 1.0, min: 0.2, max: 2.5, step: 0.05, unit: "", hint: "仅影响输入幅度，不改变滤波器本质。" }
+};
+
+const presets = {
+  fast:   { mode:"alpha", alpha:0.65, signalType:"sensor", freq:2, noise:0.45, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true },
+  smooth: { mode:"alpha", alpha:0.06, signalType:"sensor", freq:2, noise:0.7, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true },
+  step:   { mode:"alpha", alpha:0.10, signalType:"step", freq:1.2, noise:0.18, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true },
+  noise:  { mode:"alpha", alpha:0.08, signalType:"sensor", freq:2, noise:1.1, fs:100, simTime:10, amp:1.0, showInput:true, showOutput:true, showError:true },
+  sine:   { mode:"alpha", alpha:0.14, signalType:"sine", freq:3.5, noise:0.15, fs:120, simTime:6, amp:1.0, showInput:true, showOutput:true, showError:true }
+};
+
+function formatNumber(v, digits=2){ return Number(v).toFixed(digits); }
+
+function createSlider(key){
+  const c = sliderConfig[key];
+  const digits = c.step < 0.1 ? 2 : 1;
+  const wrap = document.createElement("div");
+  wrap.className = "sliderGroup";
+  wrap.id = key + "Group";
+  wrap.innerHTML = `
+    <div class="sliderHeader">
+      <div>
+        <div class="sliderTitle">${c.label}</div>
+        <div class="hint">${c.hint}</div>
+      </div>
+      <div id="${key}Num" class="num">${formatNumber(state[key], digits)}${c.unit}</div>
+    </div>
+    <input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">
+  `;
+  document.getElementById("sliders").appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e=>{
+    state[key] = Number(e.target.value);
+    document.getElementById(key + "Num").textContent = `${formatNumber(state[key], digits)}${c.unit}`;
+    if(key === "fc" && state.mode === "fc"){
+      state.alpha = alphaFromFc(state.fc, state.fs);
+      syncSliderOnly("alpha");
+    }
+    if(key === "fs"){
+      if(state.mode === "fc"){
+        state.alpha = alphaFromFc(state.fc, state.fs);
+        syncSliderOnly("alpha");
+      }else{
+        state.fc = fcFromAlpha(state.alpha, state.fs);
+        syncSliderOnly("fc");
+      }
+    }
+    if(key === "alpha" && state.mode === "alpha"){
+      state.fc = fcFromAlpha(state.alpha, state.fs);
+      syncSliderOnly("fc");
+    }
+    scheduleUpdate();
+  });
+}
+
+function initControls(){
+  Object.keys(sliderConfig).forEach(createSlider);
+
+  document.getElementById("modeSelect").addEventListener("change", e=>{
+    state.mode = e.target.value;
+    document.getElementById("modeNum").textContent = state.mode === "alpha" ? "直接 α" : "fc 模式";
+    applyModeVisibility();
+    if(state.mode === "fc"){
+      state.alpha = alphaFromFc(state.fc, state.fs);
+      syncSliderOnly("alpha");
+    }else{
+      state.fc = fcFromAlpha(state.alpha, state.fs);
+      syncSliderOnly("fc");
+    }
+    update();
+  });
+
+  document.getElementById("signalTypeSelect").addEventListener("change", e=>{
+    state.signalType = e.target.value;
+    document.getElementById("signalTypeNum").textContent = signalTypeLabel(state.signalType);
+    update();
+  });
+
+  document.getElementById("showInput").addEventListener("change", e=>{
+    state.showInput = e.target.checked; update();
+  });
+  document.getElementById("showOutput").addEventListener("change", e=>{
+    state.showOutput = e.target.checked; update();
+  });
+  document.getElementById("showError").addEventListener("change", e=>{
+    state.showError = e.target.checked; update();
+  });
+}
+
+function applyModeVisibility(){
+  document.getElementById("alphaGroup").style.display = state.mode === "alpha" ? "block" : "none";
+  document.getElementById("fcGroup").style.display = state.mode === "fc" ? "block" : "none";
+}
+
+function syncSliderOnly(key){
+  const c = sliderConfig[key];
+  const digits = c.step < 0.1 ? 2 : 1;
+  const input = document.getElementById(key);
+  const num = document.getElementById(key + "Num");
+  if(input) input.value = state[key];
+  if(num) num.textContent = `${formatNumber(state[key], digits)}${c.unit}`;
+}
+
+function syncControls(){
+  Object.keys(sliderConfig).forEach(syncSliderOnly);
+  document.getElementById("modeSelect").value = state.mode;
+  document.getElementById("modeNum").textContent = state.mode === "alpha" ? "直接 α" : "fc 模式";
+  document.getElementById("signalTypeSelect").value = state.signalType;
+  document.getElementById("signalTypeNum").textContent = signalTypeLabel(state.signalType);
+  document.getElementById("showInput").checked = state.showInput;
+  document.getElementById("showOutput").checked = state.showOutput;
+  document.getElementById("showError").checked = state.showError;
+  applyModeVisibility();
+}
+
+function signalTypeLabel(v){
+  return ({sine:"正弦", step:"阶跃", square:"方波", ramp:"斜坡", sensor:"传感器噪声"})[v] || v;
+}
+
+function resetAll(){
+  Object.assign(state, defaults);
+  noiseSeed = 246813579;
+  syncControls();
+  update();
+}
+
+function loadPreset(name){
+  Object.assign(state, defaults, presets[name]);
+  if(state.mode === "fc"){
+    state.alpha = alphaFromFc(state.fc, state.fs);
+  }else{
+    state.fc = fcFromAlpha(state.alpha, state.fs);
+  }
+  syncControls();
+  update();
+}
+
+function rerollNoise(){
+  noiseSeed = Math.floor(Math.random()*2147483646) + 1;
+  update();
+}
+
+/* 随机数与信号生成 */
+function lcg(seed){
+  let s = seed % 2147483647;
+  if(s <= 0) s += 2147483646;
+  return function(){
+    s = s * 16807 % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+function gaussianGenerator(seed){
+  const rand = lcg(seed);
+  let spare = null;
+  return function(){
+    if(spare !== null){
+      const v = spare; spare = null; return v;
+    }
+    const u = Math.max(rand(), 1e-12);
+    const v = Math.max(rand(), 1e-12);
+    const mag = Math.sqrt(-2 * Math.log(u));
+    spare = mag * Math.sin(2 * Math.PI * v);
+    return mag * Math.cos(2 * Math.PI * v);
+  };
+}
+
+function alphaFromFc(fc, fs){
+  const dt = 1 / fs;
+  const rc = 1 / (2 * Math.PI * fc);
+  return clamp(dt / (rc + dt), 0.000001, 1);
+}
+function fcFromAlpha(alpha, fs){
+  const dt = 1 / fs;
+  if(alpha >= 1) return fs / 2;
+  if(alpha <= 0) return 0;
+  const rc = dt * (1 - alpha) / alpha;
+  return 1 / (2 * Math.PI * rc);
+}
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+function generateSignal(){
+  const { signalType, freq, noise, fs, simTime, amp } = state;
+  const n = Math.max(2, Math.floor(fs * simTime));
+  const dt = 1 / fs;
+  const randn = gaussianGenerator(noiseSeed);
+
+  const t = new Array(n);
+  const trueSig = new Array(n);
+  const input = new Array(n);
+  const output = new Array(n);
+  const error = new Array(n);
+
+  let alpha = state.mode === "fc" ? alphaFromFc(state.fc, fs) : state.alpha;
+  alpha = clamp(alpha, 0.000001, 1);
+
+  let yPrev = 0;
+  let sensorBias = 0;
+  let lowFreqDrift = randn() * 0.15;
+
+  for(let i=0;i<n;i++){
+    const time = i * dt;
+    t[i] = time;
+
+    let s = 0;
+    if(signalType === "sine"){
+      s = amp * Math.sin(2 * Math.PI * freq * time);
+    }else if(signalType === "step"){
+      s = time > simTime * 0.18 ? amp : 0;
+    }else if(signalType === "square"){
+      s = Math.sin(2 * Math.PI * freq * time) >= 0 ? amp : -amp;
+    }else if(signalType === "ramp"){
+      const period = Math.max(0.8, 1 / Math.max(freq, 0.1));
+      const phase = (time % period) / period;
+      s = -amp + 2 * amp * phase;
+    }else if(signalType === "sensor"){
+      const slow = 0.55 * amp * Math.sin(2 * Math.PI * 0.35 * time);
+      const mid  = 0.25 * amp * Math.sin(2 * Math.PI * Math.max(1, freq) * time);
+      sensorBias += 0.003 * randn();
+      sensorBias = clamp(sensorBias, -0.6*amp, 0.6*amp);
+      lowFreqDrift += 0.002 * randn();
+      lowFreqDrift = clamp(lowFreqDrift, -0.5*amp, 0.5*amp);
+      s = slow + mid + 0.4 * sensorBias + 0.25 * lowFreqDrift;
+    }
+
+    trueSig[i] = s;
+
+    const white = noise * randn();
+    const hf = 0.18 * noise * Math.sin(2 * Math.PI * (fs * 0.18) * time);
+    const x = s + white + hf;
+    input[i] = x;
+
+    const y = alpha * x + (1 - alpha) * yPrev;
+    output[i] = y;
+    error[i] = y - s;
+    yPrev = y;
+  }
+
+  return { t, trueSig, input, output, error, alpha, n, dt };
+}
+
+/* 指标计算 */
+function rms(arr){
+  let s = 0;
+  for(const v of arr) s += v*v;
+  return Math.sqrt(s / arr.length);
+}
+function estimateDelayMs(data){
+  const { signalType, fs, trueSig, output, dt } = data;
+  if(signalType === "sine"){
+    const start = Math.floor(trueSig.length * 0.2);
+    let i1 = start, i2 = start;
+    for(let i=start;i<trueSig.length;i++) if(trueSig[i] > trueSig[i1]) i1 = i;
+    for(let i=start;i<output.length;i++) if(output[i] > output[i2]) i2 = i;
+    return Math.max(0, (i2 - i1) * dt * 1000);
+  }
+  // 对非正弦，用 50% 响应点或平均“慢感”做粗估
+  let target = 0;
+  if(signalType === "step"){
+    target = trueSig[trueSig.length - 1] * 0.5;
+    const s1 = trueSig.findIndex(v => v >= target);
+    const s2 = output.findIndex(v => v >= target);
+    if(s1 >= 0 && s2 >= 0) return Math.max(0, (s2 - s1) * dt * 1000);
+  }
+  return dt * 1000 * (1 / Math.max(data.alpha, 1e-4)) * 0.15;
+}
+
+/* SVG 绘图 */
+function svgEl(name, attrs = {}, text = ""){
+  const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
+  if(text) el.textContent = text;
+  return el;
+}
+function line(svg, x1, y1, x2, y2, color, width=1, dash=""){
+  const attrs = { x1, y1, x2, y2, stroke:color, "stroke-width":width };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  svg.appendChild(svgEl("line", attrs));
+}
+function text(svg, x, y, value, opts = {}){
+  svg.appendChild(svgEl("text", {
+    x, y,
+    "font-size": opts.size || 12,
+    "font-weight": opts.weight || 500,
+    fill: opts.color || "#64748b",
+    "text-anchor": opts.anchor || "start"
+  }, value));
+}
+function polyline(points, color, width=2, dash=""){
+  const attrs = {
+    points: points.join(" "),
+    fill: "none",
+    stroke: color,
+    "stroke-width": width,
+    "stroke-linecap":"round",
+    "stroke-linejoin":"round"
+  };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  return svgEl("polyline", attrs);
+}
+function drawGrid(svg, plot, xTicks, yTicks, xScale, yScale, yFmt, xFmt){
+  for(let i=0;i<=yTicks;i++){
+    const v = plot.yMin + (plot.yMax - plot.yMin) * i / yTicks;
+    const y = yScale(v);
+    line(svg, plot.x, y, plot.x + plot.w, y, "#e2e8f0", 1, "4 4");
+    text(svg, plot.x - 10, y + 4, yFmt(v), { anchor:"end" });
+  }
+  for(let i=0;i<=xTicks;i++){
+    const v = plot.xMin + (plot.xMax - plot.xMin) * i / xTicks;
+    const x = xScale(v);
+    line(svg, x, plot.y, x, plot.y + plot.h, "#f1f5f9");
+    text(svg, x, plot.y + plot.h + 22, xFmt(v), { anchor:"middle" });
+  }
+  line(svg, plot.x, plot.y + plot.h, plot.x + plot.w, plot.y + plot.h, "#0f172a", 1.4);
+  line(svg, plot.x, plot.y, plot.x, plot.y + plot.h, "#0f172a", 1.4);
+}
+function drawChart(data){
+  const svg = document.getElementById("chart");
+  svg.innerHTML = "";
+  const width = 920, height = 650;
+  const topPlot = { x:58, y:34, w:832, h:350 };
+  const botPlot = { x:58, y:458, w:832, h:146 };
+
+  svg.appendChild(svgEl("rect", { x:0, y:0, width, height, fill:"white" }));
+  text(svg, topPlot.x, 22, "主图：输入 / 理想 / IIR 输出", { size:15, color:"#0f172a", weight:900 });
+  text(svg, botPlot.x, 446, "副图：误差 e[n] = y[n] - true[n]", { size:15, color:"#0f172a", weight:900 });
+
+  const allMain = [].concat(data.trueSig);
+  if(state.showInput) allMain.push(...data.input);
+  if(state.showOutput) allMain.push(...data.output);
+
+  let yMin = Math.min(...allMain, -0.1);
+  let yMax = Math.max(...allMain, 0.1);
+  const m = Math.max(0.2, (yMax - yMin) * 0.15);
+  yMin -= m; yMax += m;
+
+  topPlot.xMin = 0; topPlot.xMax = state.simTime; topPlot.yMin = yMin; topPlot.yMax = yMax;
+  const xMain = t => topPlot.x + (t - topPlot.xMin) / (topPlot.xMax - topPlot.xMin) * topPlot.w;
+  const yMain = v => topPlot.y + (1 - (v - topPlot.yMin) / (topPlot.yMax - topPlot.yMin)) * topPlot.h;
+  drawGrid(svg, topPlot, 6, 5, xMain, yMain, v => v.toFixed(1), v => v.toFixed(1) + "s");
+
+  const step = Math.max(1, Math.floor(data.n / 700));
+  const makePts = arr => {
+    const pts = [];
+    for(let i=0;i<data.n;i+=step){
+      pts.push(`${xMain(data.t[i]).toFixed(1)},${yMain(arr[i]).toFixed(1)}`);
+    }
+    return pts;
+  };
+
+  svg.appendChild(polyline(makePts(data.trueSig), "#111827", 2.0, "8 5"));
+  if(state.showInput) svg.appendChild(polyline(makePts(data.input), "#94a3b8", 1.9));
+  if(state.showOutput) svg.appendChild(polyline(makePts(data.output), "#2563eb", 3.0));
+
+  text(svg, topPlot.x + topPlot.w - 8, topPlot.y + 18, "true[n]", { color:"#111827", weight:900, anchor:"end", size:14 });
+  text(svg, topPlot.x - 36, topPlot.y - 6, "幅值", { color:"#0f172a", weight:900, size:12 });
+  text(svg, topPlot.x + topPlot.w + 6, topPlot.y + topPlot.h + 4, "t", { color:"#0f172a", weight:900, size:13 });
+
+  // error subplot
+  const errArr = state.showError ? data.error : [0, 0];
+  let eMin = Math.min(...errArr, -0.01);
+  let eMax = Math.max(...errArr,  0.01);
+  const em = Math.max(0.05, (eMax - eMin) * 0.18);
+  eMin -= em; eMax += em;
+
+  botPlot.xMin = 0; botPlot.xMax = state.simTime; botPlot.yMin = eMin; botPlot.yMax = eMax;
+  const xErr = t => botPlot.x + (t - botPlot.xMin) / (botPlot.xMax - botPlot.xMin) * botPlot.w;
+  const yErr = v => botPlot.y + (1 - (v - botPlot.yMin) / (botPlot.yMax - botPlot.yMin)) * botPlot.h;
+  drawGrid(svg, botPlot, 6, 4, xErr, yErr, v => v.toFixed(2), v => v.toFixed(1) + "s");
+
+  line(svg, botPlot.x, yErr(0), botPlot.x + botPlot.w, yErr(0), "#0f172a", 1.2, "6 5");
+  if(state.showError){
+    const pts = [];
+    for(let i=0;i<data.n;i+=step){
+      pts.push(`${xErr(data.t[i]).toFixed(1)},${yErr(data.error[i]).toFixed(1)}`);
+    }
+    svg.appendChild(polyline(pts, "#dc2626", 2.2));
+  }
+
+  text(svg, botPlot.x - 36, botPlot.y - 6, "误差", { color:"#0f172a", weight:900, size:12 });
+  text(svg, botPlot.x + botPlot.w + 6, botPlot.y + botPlot.h + 4, "t", { color:"#0f172a", weight:900, size:13 });
+}
+
+/* 更新 */
+let pending = false;
+function scheduleUpdate(){
+  if(pending) return;
+  pending = true;
+  requestAnimationFrame(()=>{
+    pending = false;
+    update();
+  });
+}
+
+function update(){
+  if(state.mode === "fc"){
+    state.alpha = alphaFromFc(state.fc, state.fs);
+  }else{
+    state.fc = fcFromAlpha(state.alpha, state.fs);
+  }
+
+  const data = generateSignal();
+  drawChart(data);
+
+  const dtMs = data.dt * 1000;
+  const rmsErr = rms(data.error);
+  const delayMs = estimateDelayMs(data);
+
+  document.getElementById("paramText").textContent =
+    `α=${data.alpha.toFixed(3)} / fc=${state.fc.toFixed(2)}Hz / Fs=${state.fs.toFixed(0)}Hz / dt=${dtMs.toFixed(1)}ms`;
+  document.getElementById("alphaValue").textContent = data.alpha.toFixed(3);
+  document.getElementById("fcValue").textContent = `${state.fc.toFixed(2)} Hz`;
+  document.getElementById("rmsValue").textContent = rmsErr.toFixed(3);
+  document.getElementById("delayValue").textContent = `${delayMs.toFixed(1)} ms`;
+}
+
+/* 启动 */
+initControls();
+syncControls();
+update();
+</script>
+</body>
+</html>

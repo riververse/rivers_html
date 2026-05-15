@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>巴特沃斯 / 切比雪夫滤波器对比仿真</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --blue:#2563eb;
+      --green:#059669;
+      --amber:#d97706;
+      --red:#dc2626;
+      --purple:#7c3aed;
+      --shadow:0 2px 14px rgba(15,23,42,.07);
+    }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 4%, rgba(37,99,235,.10), transparent 25%),
+        radial-gradient(circle at 88% 7%, rgba(5,150,105,.10), transparent 24%),
+        linear-gradient(135deg,#ffffff 0%,#f8fafc 48%,#e2e8f0 100%);
+    }
+    .page{ max-width:1380px; margin:0 auto; padding:28px; }
+    .top{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:24px;
+      align-items:end;
+      margin-bottom:22px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#475569;
+      font-size:14px;
+      box-shadow:0 1px 4px rgba(15,23,42,.05);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:42px;
+      line-height:1.12;
+      letter-spacing:-1px;
+    }
+    .desc{
+      max-width:950px;
+      color:#475569;
+      line-height:1.8;
+      font-size:16px;
+      margin:0;
+    }
+    .formulaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .pill{
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      color:#1d4ed8;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .pill.green{ border-color:#bbf7d0; background:#ecfdf5; color:#047857; }
+    .pill.amber{ border-color:#fed7aa; background:#fff7ed; color:#b45309; }
+    .pill.purple{ border-color:#ddd6fe; background:#f5f3ff; color:#6d28d9; }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      max-width:500px;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:15px;
+      padding:10px 15px;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-dark{ background:#0f172a; color:white; }
+    .btn-dark:hover{ background:#334155; transform:translateY(-1px); }
+    .btn-light{ background:white; color:#334155; border:1px solid #cbd5e1; }
+    .btn-light:hover{ background:#f8fafc; transform:translateY(-1px); }
+
+    .principle{
+      padding:18px;
+      margin-bottom:22px;
+    }
+    .principle h2{
+      margin:0 0 12px;
+      font-size:24px;
+      font-weight:950;
+      letter-spacing:-.3px;
+    }
+    .principleGrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    .principleCard{
+      border-radius:20px;
+      padding:16px;
+      border:1px solid transparent;
+    }
+    .principleCard h3{
+      margin:0 0 9px;
+      font-size:18px;
+      font-weight:950;
+    }
+    .principleCard p, .principleCard li{
+      color:#334155;
+      font-size:14px;
+      line-height:1.72;
+    }
+    .principleCard ul{ margin:8px 0 0 18px; padding:0; }
+    .blue{ background:#eff6ff; border-color:#dbeafe; }
+    .blue h3{ color:#1d4ed8; }
+    .green{ background:#ecfdf5; border-color:#bbf7d0; }
+    .green h3{ color:#047857; }
+    .amber{ background:#fffbeb; border-color:#fde68a; }
+    .amber h3{ color:#b45309; }
+    .purple{ background:#f5f3ff; border-color:#ddd6fe; }
+    .purple h3{ color:#6d28d9; }
+    .red{ background:#fef2f2; border-color:#fecaca; }
+    .red h3{ color:#b91c1c; }
+
+    .layout{
+      display:grid;
+      grid-template-columns:390px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+    }
+    .panel{ padding:20px; }
+    .typeBox{
+      background:linear-gradient(135deg,#eff6ff,#ecfdf5);
+      border-radius:20px;
+      padding:16px;
+      margin-bottom:18px;
+      border:1px solid #dbeafe;
+    }
+    .label-muted{ color:#64748b; font-size:14px; }
+    .typeValue{ font-size:30px; font-weight:950; margin-top:3px; letter-spacing:-.4px; }
+    .formula{
+      margin-top:12px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(226,232,240,.85);
+      border-radius:15px;
+      padding:11px 12px;
+      font-weight:900;
+      color:#334155;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      line-height:1.62;
+    }
+    .warning{
+      margin-top:12px;
+      border:1px solid #fde68a;
+      background:#fffbeb;
+      color:#92400e;
+      border-radius:16px;
+      padding:12px;
+      font-size:13px;
+      line-height:1.65;
+      font-weight:700;
+    }
+    .sliderGroup{ margin:18px 0; }
+    .sliderHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .sliderTitle{ font-size:14px; font-weight:900; color:#1e293b; }
+    .hint{ font-size:12px; color:var(--muted); line-height:1.5; margin-top:3px; }
+    .num{
+      min-width:86px;
+      text-align:right;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      font-weight:900;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:12px;
+      padding:6px 9px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:#0f172a;
+    }
+    select{
+      width:100%;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      color:#0f172a;
+      font-weight:800;
+      outline:none;
+    }
+    .toggleBox{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:12px 13px;
+      margin-top:14px;
+    }
+    .toggleBox label{
+      font-size:14px;
+      font-weight:900;
+      color:#1e293b;
+    }
+    input[type="checkbox"]{ width:19px; height:19px; accent-color:#2563eb; }
+    .sectionLine{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:20px;
+    }
+    .sectionTitle{
+      font-size:14px;
+      font-weight:950;
+      color:#334155;
+      margin-bottom:10px;
+    }
+
+    .chartCard{ padding:22px; }
+    .chartTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    h2{ margin:0 0 6px; font-size:22px; font-weight:950; }
+    .small{ color:#64748b; font-size:14px; margin:0; line-height:1.6; }
+    .param{
+      white-space:nowrap;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:16px;
+      padding:10px 13px;
+      font-weight:900;
+    }
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      margin:13px 0 6px;
+      color:#475569;
+      font-size:13px;
+      font-weight:800;
+    }
+    .leg{ display:inline-flex; align-items:center; gap:7px; }
+    .swatch{
+      width:22px;
+      height:0;
+      border-top:4px solid #000;
+      border-radius:999px;
+    }
+    .swatch.dashed{ border-top-style:dashed; }
+    .chartWrap{ width:100%; height:680px; }
+    svg{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#fff;
+      border-radius:18px;
+    }
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin:18px 0;
+    }
+    .metric{ padding:16px; }
+    .mLabel{ color:#64748b; font-size:12px; }
+    .mValue{
+      margin-top:6px;
+      font-size:21px;
+      font-weight:950;
+      font-family:Consolas,Monaco,monospace;
+    }
+    .mNote{ margin-top:5px; color:#64748b; font-size:12px; line-height:1.5; }
+
+    .notes{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      padding:18px;
+    }
+    .note{
+      border-radius:18px;
+      padding:16px;
+      border:1px solid transparent;
+    }
+    .note h3{ margin:0; font-size:18px; font-weight:950; }
+    .note p{ margin:8px 0 0; color:#334155; font-size:14px; line-height:1.72; }
+
+    .deep{
+      margin-top:18px;
+      padding:18px;
+    }
+    .deep h2{
+      margin:0 0 12px;
+      font-size:24px;
+      font-weight:950;
+    }
+    .deepGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-bottom:16px;
+    }
+    .deepBlock{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+    .deepBlock h3{
+      margin:0 0 8px;
+      font-size:17px;
+      font-weight:950;
+    }
+    .deepBlock p, .deepBlock li{
+      color:#334155;
+      font-size:14px;
+      line-height:1.75;
+    }
+    .deepBlock ul{ margin:8px 0 0 18px; padding:0; }
+    .mono{
+      font-family:Consolas,Monaco,monospace;
+      background:#f1f5f9;
+      border-radius:10px;
+      padding:2px 6px;
+      font-size:13px;
+      font-weight:900;
+    }
+    .compareTable{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      background:white;
+      margin-top:10px;
+    }
+    .compareTable th, .compareTable td{
+      padding:13px 14px;
+      border-bottom:1px solid #e2e8f0;
+      text-align:left;
+      vertical-align:top;
+      font-size:14px;
+      line-height:1.65;
+    }
+    .compareTable th{
+      background:#f8fafc;
+      color:#0f172a;
+      font-weight:950;
+    }
+    .compareTable tr:last-child td{ border-bottom:none; }
+
+    @media (max-width:1120px){
+      .top{ grid-template-columns:1fr; align-items:stretch; }
+      .buttons{ justify-content:flex-start; max-width:none; }
+      .principleGrid{ grid-template-columns:1fr; }
+      .layout{ grid-template-columns:1fr; }
+      .metrics{ grid-template-columns:repeat(2,1fr); }
+      .notes{ grid-template-columns:1fr; }
+      .deepGrid{ grid-template-columns:1fr; }
+      h1{ font-size:32px; }
+      .page{ padding:18px; }
+      .chartTop{ flex-direction:column; align-items:flex-start; }
+      .param{ white-space:normal; }
+      .chartWrap{ height:650px; }
+    }
+    @media (max-width:720px){
+      .metrics{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge">巴特沃斯 / 切比雪夫滤波器对比仿真</div>
+        <h1>先理解两种滤波器的设计思想，再看波形与频响对比</h1>
+        <p class="desc">
+          巴特沃斯和切比雪夫都是经典 IIR 低通滤波器。它们解决的是同一个问题：保留低频有效信号、抑制高频噪声和干扰。
+          但它们的取舍不同：巴特沃斯追求通带平坦；切比雪夫允许通带波纹，以换取更陡的过渡带。
+        </p>
+        <div class="formulaRow">
+          <span class="pill">Butterworth：通带最大平坦</span>
+          <span class="pill green">Chebyshev I：通带有波纹，过渡更陡</span>
+          <span class="pill amber">阶数越高，下降越快</span>
+          <span class="pill purple">没有绝对最好，只有取舍</span>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('butterSmooth')">巴特沃斯平滑</button>
+        <button class="btn-dark" onclick="loadPreset('chebySteep')">切比雪夫陡峭</button>
+        <button class="btn-dark" onclick="loadPreset('hfNoise')">高频干扰抑制</button>
+        <button class="btn-dark" onclick="loadPreset('step')">阶跃响应对比</button>
+        <button class="btn-dark" onclick="loadPreset('ripple')">通带波纹演示</button>
+        <button class="btn-light" onclick="rerollNoise()">重抽噪声</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+
+    <div class="card principle">
+      <h2>一、先把原理讲清楚</h2>
+      <div class="principleGrid">
+        <div class="principleCard blue">
+          <h3>1. 低通滤波器在干什么？</h3>
+          <p>
+            低通滤波器不是简单“把曲线变平滑”，它本质是在频域上做选择：
+            让低频信号通过，压制高频成分。
+          </p>
+          <ul>
+            <li>低频：通常对应真实变化、慢变量、有效趋势。</li>
+            <li>高频：常见于噪声、毛刺、机械振动、电磁干扰。</li>
+            <li>截止频率 fc：大致决定“从哪里开始明显衰减”。</li>
+          </ul>
+        </div>
+        <div class="principleCard green">
+          <h3>2. 巴特沃斯：通带平坦优先</h3>
+          <p>
+            巴特沃斯的目标是：通带内尽量平坦，不要让有效低频信号幅值忽大忽小。
+            所以它适合“不希望通带幅值起伏”的场景。
+          </p>
+          <ul>
+            <li>优点：通带平滑、幅值表现稳。</li>
+            <li>缺点：同阶数下过渡带没有切比雪夫那么陡。</li>
+            <li>直觉：温和、稳妥、不过分激进。</li>
+          </ul>
+        </div>
+        <div class="principleCard amber">
+          <h3>3. 切比雪夫 I 型：更陡优先</h3>
+          <p>
+            切比雪夫 I 型允许通带里出现一定波纹 ripple，换来更快的衰减速度。
+            也就是：牺牲一点通带平坦性，换更强的频率选择性。
+          </p>
+          <ul>
+            <li>优点：过渡带更陡，更快压制高频干扰。</li>
+            <li>缺点：通带有波纹，有效信号幅值会有起伏。</li>
+            <li>直觉：更激进，但代价更明显。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox">
+          <div class="label-muted">当前仿真定位</div>
+          <div class="typeValue">教学可视化对比</div>
+          <div class="formula">
+            Butterworth: |H| = 1 / √(1 + (f/fc)^(2N))<br>
+            Chebyshev I: |H| = 1 / √(1 + ε²·T_N(f/fc)²)
+          </div>
+          <div class="warning">
+            说明：本页面为了直观学习，频率响应使用经典幅频公式；
+            时域输出采用“频域幅度塑形 + 反变换”的教学仿真方式，不作为正式工程滤波器系数设计工具。
+          </div>
+        </div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">显示模式</div>
+              <div class="hint">可只看某一种，也可以同时对比。</div>
+            </div>
+            <div id="modeNum" class="num">同时对比</div>
+          </div>
+          <select id="modeSelect">
+            <option value="both" selected>同时对比</option>
+            <option value="butter">只看巴特沃斯</option>
+            <option value="cheby">只看切比雪夫 I 型</option>
+          </select>
+        </div>
+
+        <div id="sliders"></div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">输入信号类型</div>
+              <div class="hint">混合正弦看频率选择；阶跃/方波看响应形态；传感器模拟信号更接近工程直觉。</div>
+            </div>
+            <div id="signalTypeNum" class="num">混合正弦</div>
+          </div>
+          <select id="signalTypeSelect">
+            <option value="mix" selected>混合正弦</option>
+            <option value="step">阶跃 + 噪声</option>
+            <option value="square">方波 + 噪声</option>
+            <option value="sensor">传感器模拟信号</option>
+          </select>
+        </div>
+
+        <div class="toggleBox">
+          <div>
+            <label for="showTime">显示时域响应</label>
+            <div class="hint">上图：原始输入、真实低频、滤波输出。</div>
+          </div>
+          <input id="showTime" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showFreq">显示频率响应</label>
+            <div class="hint">下图：巴特沃斯 / 切比雪夫幅频响应。</div>
+          </div>
+          <input id="showFreq" type="checkbox" checked>
+        </div>
+
+        <div class="sectionLine">
+          <div class="sectionTitle">建议观察顺序</div>
+          <div class="hint">
+            1）先看下方频响图：谁更平坦？谁更陡？<br>
+            2）拖动 order：阶数越高，过渡带越陡。<br>
+            3）拖动 ripple：切比雪夫通带波纹变大，下降更快。<br>
+            4）再看上方时域图：高频干扰被压掉多少，波形有没有被过度改变。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop">
+            <div>
+              <h2>时域响应 + 幅频响应</h2>
+              <p class="small">
+                上图观察滤波前后的时间波形；下图观察低通滤波器对不同频率的衰减能力。
+                重点不是追求绝对精确的工程系数，而是建立“平坦、波纹、过渡带、阶数、截止频率”的直观认识。
+              </p>
+            </div>
+            <div id="paramText" class="param">order=2 / fc=20Hz / Fs=500Hz / ripple=1.0dB</div>
+          </div>
+
+          <div class="legend">
+            <span class="leg"><span class="swatch" style="border-color:#94a3b8"></span>原始输入</span>
+            <span class="leg"><span class="swatch dashed" style="border-color:#111827"></span>低频真实信号</span>
+            <span class="leg"><span class="swatch" style="border-color:#2563eb"></span>巴特沃斯</span>
+            <span class="leg"><span class="swatch" style="border-color:#059669"></span>切比雪夫 I 型</span>
+            <span class="leg"><span class="swatch dashed" style="border-color:#dc2626"></span>截止频率 fc</span>
+          </div>
+
+          <div class="chartWrap">
+            <svg id="chart" viewBox="0 0 920 680"></svg>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="card metric">
+            <div class="mLabel">截止频率 fc</div>
+            <div id="fcValue" class="mValue">20 Hz</div>
+            <div class="mNote">越低越平滑，但有效细节更容易被削弱。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">滤波器阶数</div>
+            <div id="orderValue" class="mValue">2</div>
+            <div class="mNote">阶数越高，过渡带越陡，实现复杂度越高。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">切比雪夫 ripple</div>
+            <div id="rippleValue" class="mValue">1.0 dB</div>
+            <div class="mNote">波纹越大，通常过渡越陡，但通带越不平坦。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">高频干扰频率</div>
+            <div id="hfValue" class="mValue">80 Hz</div>
+            <div class="mNote">看它在频响图上被压制了多少。</div>
+          </div>
+        </div>
+
+        <div class="card notes">
+          <div class="note blue">
+            <h3>巴特沃斯看什么？</h3>
+            <p>看通带是不是平坦。它更适合希望有效频段幅值尽量不被起伏影响的场景。</p>
+          </div>
+          <div class="note green">
+            <h3>切比雪夫看什么？</h3>
+            <p>看过渡带是不是更陡。它适合想更快压制高频，但能接受通带波纹的场景。</p>
+          </div>
+          <div class="note amber">
+            <h3>工程取舍</h3>
+            <p>fc、order、ripple 不是越大越好。滤波器越“狠”，越可能带来幅值变化、相位影响和动态失真。</p>
+          </div>
+        </div>
+
+        <div class="card deep">
+          <h2>二、对比总结：什么时候选谁？</h2>
+          <div class="deepGrid">
+            <div class="deepBlock">
+              <h3>巴特沃斯的核心：最大平坦幅频响应</h3>
+              <p>
+                巴特沃斯低通在通带内没有波纹，幅频响应从低频开始平滑下降。
+                它的优势不是“下降最快”，而是“通带最稳”。如果你的传感器有效信号主要在低频，
+                又不希望这个有效频带里的幅值被滤波器搞得忽高忽低，巴特沃斯通常更稳妥。
+              </p>
+              <ul>
+                <li>适合：温度、压力、慢速位移、普通 ADC 平滑。</li>
+                <li>关键词：平坦、稳定、保守、容易理解。</li>
+                <li>代价：同阶数下，高频抑制不如切比雪夫激进。</li>
+              </ul>
+            </div>
+            <div class="deepBlock">
+              <h3>切比雪夫 I 型的核心：用波纹换陡峭</h3>
+              <p>
+                切比雪夫 I 型允许通带内存在设定大小的 ripple。
+                这看起来像缺点，但它换来了更陡的过渡带。
+                如果你希望在截止频率附近更快把高频干扰压下去，切比雪夫会更有效。
+              </p>
+              <ul>
+                <li>适合：高频干扰靠近有效频段，需要更强选择性的场景。</li>
+                <li>关键词：陡峭、激进、波纹、选择性更强。</li>
+                <li>代价：通带幅值不再完全平坦。</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="deepBlock">
+            <h3>三、核心区别表</h3>
+            <table class="compareTable">
+              <tr>
+                <th>比较项</th>
+                <th>巴特沃斯 Butterworth</th>
+                <th>切比雪夫 I 型 Chebyshev I</th>
+              </tr>
+              <tr>
+                <td>设计目标</td>
+                <td>通带最大平坦，幅值变化尽量自然。</td>
+                <td>允许通带波纹，换取更陡过渡带。</td>
+              </tr>
+              <tr>
+                <td>通带表现</td>
+                <td>没有波纹，比较平滑。</td>
+                <td>存在 ripple，幅值会在通带内起伏。</td>
+              </tr>
+              <tr>
+                <td>过渡带</td>
+                <td>相对缓，需要更高阶数才能更陡。</td>
+                <td>同阶数下通常更陡。</td>
+              </tr>
+              <tr>
+                <td>工程直觉</td>
+                <td>更稳妥，适合一般传感器平滑。</td>
+                <td>更激进，适合需要更快压制高频干扰的场景。</td>
+              </tr>
+              <tr>
+                <td>调参重点</td>
+                <td><span class="mono">order</span> 和 <span class="mono">fc</span></td>
+                <td><span class="mono">order</span>、<span class="mono">fc</span> 和 <span class="mono">ripple</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="deepGrid">
+            <div class="deepBlock">
+              <h3>四、怎么看频响图？</h3>
+              <p>
+                横轴是频率，纵轴是增益 dB。0 dB 附近表示基本不衰减，负得越多表示压制越强。
+                截止频率 fc 附近是从“通过”到“抑制”的过渡区域。
+              </p>
+              <ul>
+                <li>通带：低频有效区域。</li>
+                <li>过渡带：从通过到压制的区域。</li>
+                <li>阻带：高频被明显压制的区域。</li>
+              </ul>
+            </div>
+            <div class="deepBlock">
+              <h3>五、放到工业传感器里怎么理解？</h3>
+              <p>
+                如果你做压力、温度、光电强度这类慢变量，巴特沃斯通常够用；
+                如果某个高频干扰离有效频段很近，普通低通压不下去，可以考虑更陡的滤波器。
+                但滤波器越复杂，越要关注延迟、相位、阶跃响应和 MCU 运算成本。
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+const defaults = {
+  mode:"both",
+  order:2,
+  fc:20,
+  fs:500,
+  ripple:1.0,
+  signalType:"mix",
+  lowFreq:5,
+  highFreq:80,
+  highAmp:0.8,
+  noise:0.2,
+  simTime:3.0,
+  showTime:true,
+  showFreq:true
+};
+const state = { ...defaults };
+let noiseSeed = 975318642;
+
+const sliderConfig = {
+  order:{ label:"滤波器阶数 order", value:2, min:1, max:6, step:1, unit:"", hint:"阶数越高，过渡带越陡，但实现复杂度和动态影响也越大。" },
+  fc:{ label:"截止频率 fc", value:20, min:1, max:100, step:1, unit:"Hz", hint:"fc 越低，抑制越强，信号细节越容易被削弱。" },
+  fs:{ label:"采样频率 Fs", value:500, min:100, max:2000, step:10, unit:"Hz", hint:"采样频率要高于信号频率；本仿真频响显示到 Fs/2。" },
+  ripple:{ label:"切比雪夫通带波纹 ripple", value:1.0, min:0.1, max:3.0, step:0.1, unit:"dB", hint:"ripple 越大，通带起伏越明显，过渡通常更陡。" },
+  lowFreq:{ label:"低频有效信号频率", value:5, min:1, max:20, step:0.5, unit:"Hz", hint:"代表你希望保留的真实信号成分。" },
+  highFreq:{ label:"高频干扰频率", value:80, min:20, max:200, step:1, unit:"Hz", hint:"代表你希望滤掉的干扰成分。" },
+  highAmp:{ label:"高频干扰幅值", value:0.8, min:0, max:2, step:0.05, unit:"", hint:"干扰越强，滤波前后差异越明显。" },
+  noise:{ label:"随机噪声强度", value:0.2, min:0, max:1, step:0.05, unit:"", hint:"白噪声会抬高时域毛刺和频域底噪。" },
+  simTime:{ label:"仿真时长", value:3.0, min:1.0, max:8.0, step:0.5, unit:"s", hint:"仿真时长越长，能看到更多周期。" }
+};
+
+const presets = {
+  butterSmooth:{ mode:"butter", order:2, fc:18, fs:500, ripple:1, signalType:"sensor", lowFreq:4, highFreq:90, highAmp:0.55, noise:0.15, simTime:4, showTime:true, showFreq:true },
+  chebySteep:{ mode:"cheby", order:3, fc:22, fs:500, ripple:1.5, signalType:"mix", lowFreq:6, highFreq:70, highAmp:0.9, noise:0.12, simTime:3, showTime:true, showFreq:true },
+  hfNoise:{ mode:"both", order:3, fc:25, fs:500, ripple:1.0, signalType:"mix", lowFreq:5, highFreq:120, highAmp:1.3, noise:0.35, simTime:3, showTime:true, showFreq:true },
+  step:{ mode:"both", order:2, fc:18, fs:500, ripple:1.2, signalType:"step", lowFreq:5, highFreq:90, highAmp:0.4, noise:0.1, simTime:4, showTime:true, showFreq:true },
+  ripple:{ mode:"both", order:4, fc:35, fs:500, ripple:2.5, signalType:"mix", lowFreq:12, highFreq:60, highAmp:0.8, noise:0.05, simTime:2.5, showTime:true, showFreq:true }
+};
+
+function formatNumber(v, digits=1){ return Number(v).toFixed(digits); }
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+function createSlider(key){
+  const c = sliderConfig[key];
+  const digits = c.step < 1 ? 1 : 0;
+  const wrap = document.createElement("div");
+  wrap.className = "sliderGroup";
+  wrap.innerHTML = `
+    <div class="sliderHeader">
+      <div>
+        <div class="sliderTitle">${c.label}</div>
+        <div class="hint">${c.hint}</div>
+      </div>
+      <div id="${key}Num" class="num">${formatNumber(state[key], digits)}${c.unit}</div>
+    </div>
+    <input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">
+  `;
+  document.getElementById("sliders").appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e=>{
+    state[key] = Number(e.target.value);
+    document.getElementById(key + "Num").textContent = `${formatNumber(state[key], digits)}${c.unit}`;
+    scheduleUpdate();
+  });
+}
+function initControls(){
+  Object.keys(sliderConfig).forEach(createSlider);
+  document.getElementById("modeSelect").addEventListener("change", e=>{
+    state.mode = e.target.value;
+    document.getElementById("modeNum").textContent = modeLabel(state.mode);
+    update();
+  });
+  document.getElementById("signalTypeSelect").addEventListener("change", e=>{
+    state.signalType = e.target.value;
+    document.getElementById("signalTypeNum").textContent = signalTypeLabel(state.signalType);
+    update();
+  });
+  document.getElementById("showTime").addEventListener("change", e=>{
+    state.showTime = e.target.checked; update();
+  });
+  document.getElementById("showFreq").addEventListener("change", e=>{
+    state.showFreq = e.target.checked; update();
+  });
+}
+function syncControls(){
+  Object.keys(sliderConfig).forEach(key=>{
+    const c = sliderConfig[key];
+    const digits = c.step < 1 ? 1 : 0;
+    document.getElementById(key).value = state[key];
+    document.getElementById(key + "Num").textContent = `${formatNumber(state[key], digits)}${c.unit}`;
+  });
+  document.getElementById("modeSelect").value = state.mode;
+  document.getElementById("modeNum").textContent = modeLabel(state.mode);
+  document.getElementById("signalTypeSelect").value = state.signalType;
+  document.getElementById("signalTypeNum").textContent = signalTypeLabel(state.signalType);
+  document.getElementById("showTime").checked = state.showTime;
+  document.getElementById("showFreq").checked = state.showFreq;
+}
+function modeLabel(v){ return ({both:"同时对比", butter:"巴特沃斯", cheby:"切比雪夫"})[v] || v; }
+function signalTypeLabel(v){ return ({mix:"混合正弦", step:"阶跃", square:"方波", sensor:"传感器模拟"})[v] || v; }
+function resetAll(){
+  Object.assign(state, defaults);
+  noiseSeed = 975318642;
+  syncControls();
+  update();
+}
+function loadPreset(name){
+  Object.assign(state, defaults, presets[name]);
+  syncControls();
+  update();
+}
+function rerollNoise(){
+  noiseSeed = Math.floor(Math.random()*2147483646) + 1;
+  update();
+}
+
+/* 随机数与信号 */
+function lcg(seed){
+  let s = seed % 2147483647;
+  if(s <= 0) s += 2147483646;
+  return function(){
+    s = s * 16807 % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+function gaussianGenerator(seed){
+  const rand = lcg(seed);
+  let spare = null;
+  return function(){
+    if(spare !== null){ const v = spare; spare = null; return v; }
+    const u = Math.max(rand(), 1e-12);
+    const v = Math.max(rand(), 1e-12);
+    const mag = Math.sqrt(-2 * Math.log(u));
+    spare = mag * Math.sin(2*Math.PI*v);
+    return mag * Math.cos(2*Math.PI*v);
+  };
+}
+function generateSignal(){
+  const fs = state.fs;
+  const n = nextPow2(Math.max(128, Math.floor(state.fs * state.simTime)));
+  const dt = 1 / fs;
+  const randn = gaussianGenerator(noiseSeed);
+  const t = new Array(n);
+  const truth = new Array(n);
+  const input = new Array(n);
+
+  let drift = 0;
+  for(let i=0;i<n;i++){
+    const time = i * dt;
+    t[i] = time;
+
+    let low = 0;
+    let raw = 0;
+
+    if(state.signalType === "mix"){
+      low = Math.sin(2*Math.PI*state.lowFreq*time);
+      const high = state.highAmp * Math.sin(2*Math.PI*state.highFreq*time);
+      raw = low + high + state.noise * randn();
+    }else if(state.signalType === "step"){
+      low = time > state.simTime * 0.22 ? 1 : 0;
+      const high = state.highAmp * 0.30 * Math.sin(2*Math.PI*state.highFreq*time);
+      raw = low + high + state.noise * randn();
+    }else if(state.signalType === "square"){
+      low = Math.sin(2*Math.PI*state.lowFreq*time) >= 0 ? 1 : -1;
+      const high = state.highAmp * Math.sin(2*Math.PI*state.highFreq*time);
+      raw = low + high + state.noise * randn();
+    }else{
+      drift += 0.002 * randn();
+      drift = clamp(drift, -0.5, 0.5);
+      low = 0.65*Math.sin(2*Math.PI*state.lowFreq*time) + 0.25*Math.sin(2*Math.PI*0.55*time) + 0.25*drift;
+      const high = state.highAmp * Math.sin(2*Math.PI*state.highFreq*time);
+      raw = low + high + state.noise * randn();
+    }
+    truth[i] = low;
+    input[i] = raw;
+  }
+  return { fs, n, dt, t, truth, input };
+}
+function nextPow2(n){
+  let p = 1;
+  while(p < n) p <<= 1;
+  return Math.min(p, 4096);
+}
+
+/* 频率响应 */
+function chebyT(n, x){
+  if(Math.abs(x) <= 1) return Math.cos(n * Math.acos(x));
+  return Math.cosh(n * acosh(x));
+}
+function acosh(x){ return Math.log(x + Math.sqrt(x*x - 1)); }
+function butterMag(f){
+  const x = Math.max(0, f / Math.max(state.fc, 1e-9));
+  return 1 / Math.sqrt(1 + Math.pow(x, 2 * state.order));
+}
+function chebyMag(f){
+  const x = Math.max(0, f / Math.max(state.fc, 1e-9));
+  const eps = Math.sqrt(Math.pow(10, state.ripple / 10) - 1);
+  const tn = chebyT(state.order, x);
+  return 1 / Math.sqrt(1 + eps * eps * tn * tn);
+}
+function db(m){ return 20 * Math.log10(Math.max(m, 1e-6)); }
+
+/* FFT / IFFT */
+function fft(re, im, inverse=false){
+  const n = re.length;
+  let j = 0;
+  for(let i=1;i<n;i++){
+    let bit = n >> 1;
+    for(; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if(i < j){
+      [re[i], re[j]] = [re[j], re[i]];
+      [im[i], im[j]] = [im[j], im[i]];
+    }
+  }
+  for(let len=2; len<=n; len <<= 1){
+    const ang = (inverse ? 2 : -2) * Math.PI / len;
+    const wlenRe = Math.cos(ang);
+    const wlenIm = Math.sin(ang);
+    for(let i=0;i<n;i+=len){
+      let wRe = 1, wIm = 0;
+      for(let j=0;j<len/2;j++){
+        const uRe = re[i+j], uIm = im[i+j];
+        const vRe = re[i+j+len/2]*wRe - im[i+j+len/2]*wIm;
+        const vIm = re[i+j+len/2]*wIm + im[i+j+len/2]*wRe;
+        re[i+j] = uRe + vRe;
+        im[i+j] = uIm + vIm;
+        re[i+j+len/2] = uRe - vRe;
+        im[i+j+len/2] = uIm - vIm;
+        const nextRe = wRe*wlenRe - wIm*wlenIm;
+        const nextIm = wRe*wlenIm + wIm*wlenRe;
+        wRe = nextRe; wIm = nextIm;
+      }
+    }
+  }
+  if(inverse){
+    for(let i=0;i<n;i++){ re[i] /= n; im[i] /= n; }
+  }
+}
+function filterByMagnitude(input, type, fs){
+  const n = input.length;
+  const re = input.slice();
+  const im = new Array(n).fill(0);
+  fft(re, im, false);
+
+  for(let k=0;k<n;k++){
+    const freq = k <= n/2 ? k*fs/n : (n-k)*fs/n;
+    const mag = type === "butter" ? butterMag(freq) : chebyMag(freq);
+    re[k] *= mag;
+    im[k] *= mag;
+  }
+  fft(re, im, true);
+  return re;
+}
+function buildResponses(){
+  const data = generateSignal();
+  const butter = filterByMagnitude(data.input, "butter", data.fs);
+  const cheby = filterByMagnitude(data.input, "cheby", data.fs);
+  return { ...data, butter, cheby };
+}
+
+/* SVG */
+function svgEl(name, attrs={}, text=""){
+  const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+  if(text) el.textContent = text;
+  return el;
+}
+function line(svg, x1, y1, x2, y2, color, width=1, dash=""){
+  const attrs = { x1, y1, x2, y2, stroke:color, "stroke-width":width };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  svg.appendChild(svgEl("line", attrs));
+}
+function text(svg, x, y, value, opts={}){
+  svg.appendChild(svgEl("text", {
+    x, y,
+    "font-size": opts.size || 12,
+    "font-weight": opts.weight || 500,
+    fill: opts.color || "#64748b",
+    "text-anchor": opts.anchor || "start"
+  }, value));
+}
+function polyline(points, color, width=2, dash=""){
+  const attrs = {
+    points:points.join(" "),
+    fill:"none",
+    stroke:color,
+    "stroke-width":width,
+    "stroke-linecap":"round",
+    "stroke-linejoin":"round"
+  };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  return svgEl("polyline", attrs);
+}
+function drawGrid(svg, plot, xTicks, yTicks, xScale, yScale, yFmt, xFmt){
+  for(let i=0;i<=yTicks;i++){
+    const v = plot.yMin + (plot.yMax - plot.yMin) * i / yTicks;
+    const y = yScale(v);
+    line(svg, plot.x, y, plot.x+plot.w, y, "#e2e8f0", 1, "4 4");
+    text(svg, plot.x - 10, y + 4, yFmt(v), { anchor:"end" });
+  }
+  for(let i=0;i<=xTicks;i++){
+    const v = plot.xMin + (plot.xMax - plot.xMin) * i / xTicks;
+    const x = xScale(v);
+    line(svg, x, plot.y, x, plot.y+plot.h, "#f1f5f9");
+    text(svg, x, plot.y+plot.h+22, xFmt(v), { anchor:"middle" });
+  }
+  line(svg, plot.x, plot.y+plot.h, plot.x+plot.w, plot.y+plot.h, "#0f172a", 1.4);
+  line(svg, plot.x, plot.y, plot.x, plot.y+plot.h, "#0f172a", 1.4);
+}
+function drawChart(data){
+  const svg = document.getElementById("chart");
+  svg.innerHTML = "";
+  const width = 920, height = 680;
+  svg.appendChild(svgEl("rect", { x:0, y:0, width, height, fill:"white" }));
+
+  const topPlot = { x:58, y:34, w:832, h:335 };
+  const botPlot = { x:58, y:452, w:832, h:172 };
+
+  if(state.showTime) drawTime(svg, data, topPlot);
+  else drawPlaceholder(svg, topPlot, "时域响应已隐藏");
+
+  if(state.showFreq) drawFreq(svg, botPlot);
+  else drawPlaceholder(svg, botPlot, "频率响应已隐藏");
+}
+function drawPlaceholder(svg, plot, title){
+  line(svg, plot.x, plot.y+plot.h, plot.x+plot.w, plot.y+plot.h, "#e2e8f0");
+  line(svg, plot.x, plot.y, plot.x, plot.y+plot.h, "#e2e8f0");
+  text(svg, plot.x + plot.w/2, plot.y + plot.h/2, title, { anchor:"middle", color:"#94a3b8", size:18, weight:900 });
+}
+function drawTime(svg, data, plot){
+  text(svg, plot.x, 22, "上图：时域响应", { size:15, color:"#0f172a", weight:900 });
+
+  const series = [data.input, data.truth];
+  if(state.mode === "both" || state.mode === "butter") series.push(data.butter);
+  if(state.mode === "both" || state.mode === "cheby") series.push(data.cheby);
+  let yMin = Math.min(...series.flat(), -0.1);
+  let yMax = Math.max(...series.flat(), 0.1);
+  const margin = Math.max(0.2, (yMax - yMin)*0.15);
+  yMin -= margin; yMax += margin;
+
+  plot.xMin = 0; plot.xMax = state.simTime; plot.yMin = yMin; plot.yMax = yMax;
+  const xScale = t => plot.x + (t - plot.xMin)/(plot.xMax-plot.xMin)*plot.w;
+  const yScale = v => plot.y + (1 - (v - plot.yMin)/(plot.yMax-plot.yMin))*plot.h;
+  drawGrid(svg, plot, 6, 5, xScale, yScale, v=>v.toFixed(1), v=>v.toFixed(1)+"s");
+
+  const step = Math.max(1, Math.floor(data.n / 720));
+  const pts = arr => {
+    const p = [];
+    for(let i=0;i<data.n;i+=step){
+      if(data.t[i] <= state.simTime) p.push(`${xScale(data.t[i]).toFixed(1)},${yScale(arr[i]).toFixed(1)}`);
+    }
+    return p;
+  };
+
+  svg.appendChild(polyline(pts(data.input), "#94a3b8", 1.8));
+  svg.appendChild(polyline(pts(data.truth), "#111827", 2.0, "8 5"));
+  if(state.mode === "both" || state.mode === "butter") svg.appendChild(polyline(pts(data.butter), "#2563eb", 2.8));
+  if(state.mode === "both" || state.mode === "cheby") svg.appendChild(polyline(pts(data.cheby), "#059669", 2.8));
+
+  text(svg, plot.x - 36, plot.y - 6, "幅值", { color:"#0f172a", weight:900, size:12 });
+  text(svg, plot.x + plot.w + 6, plot.y + plot.h + 4, "t", { color:"#0f172a", weight:900, size:13 });
+}
+function drawFreq(svg, plot){
+  text(svg, plot.x, 438, "下图：幅频响应", { size:15, color:"#0f172a", weight:900 });
+
+  const nyq = state.fs / 2;
+  plot.xMin = 0; plot.xMax = nyq; plot.yMin = -80; plot.yMax = 5;
+  const xScale = f => plot.x + (f - plot.xMin)/(plot.xMax-plot.xMin)*plot.w;
+  const yScale = g => plot.y + (1 - (g - plot.yMin)/(plot.yMax-plot.yMin))*plot.h;
+  drawGrid(svg, plot, 6, 5, xScale, yScale, v=>v.toFixed(0)+"dB", v=>v.toFixed(0)+"Hz");
+
+  const nPts = 500;
+  const butterPts = [];
+  const chebyPts = [];
+  for(let i=0;i<=nPts;i++){
+    const f = nyq * i / nPts;
+    butterPts.push(`${xScale(f).toFixed(1)},${yScale(db(butterMag(f))).toFixed(1)}`);
+    chebyPts.push(`${xScale(f).toFixed(1)},${yScale(db(chebyMag(f))).toFixed(1)}`);
+  }
+  if(state.mode === "both" || state.mode === "butter") svg.appendChild(polyline(butterPts, "#2563eb", 2.8));
+  if(state.mode === "both" || state.mode === "cheby") svg.appendChild(polyline(chebyPts, "#059669", 2.8));
+
+  const fcX = xScale(state.fc);
+  line(svg, fcX, plot.y, fcX, plot.y+plot.h, "#dc2626", 1.8, "6 5");
+  text(svg, fcX+7, plot.y+15, "fc", { color:"#dc2626", weight:900, size:13 });
+
+  const lfX = xScale(state.lowFreq);
+  const hfX = xScale(Math.min(state.highFreq, nyq));
+  line(svg, lfX, plot.y, lfX, plot.y+plot.h, "#111827", 1.2, "4 5");
+  text(svg, lfX+7, plot.y+34, "低频有效", { color:"#111827", weight:800, size:12 });
+  line(svg, hfX, plot.y, hfX, plot.y+plot.h, "#7c3aed", 1.2, "4 5");
+  text(svg, hfX+7, plot.y+52, "高频干扰", { color:"#7c3aed", weight:800, size:12 });
+
+  text(svg, plot.x - 42, plot.y - 6, "增益", { color:"#0f172a", weight:900, size:12 });
+  text(svg, plot.x + plot.w + 6, plot.y + plot.h + 4, "f", { color:"#0f172a", weight:900, size:13 });
+}
+
+/* 更新 */
+let pending = false;
+function scheduleUpdate(){
+  if(pending) return;
+  pending = true;
+  requestAnimationFrame(()=>{
+    pending = false;
+    update();
+  });
+}
+function update(){
+  // 防止无意义设置：fc 不应超过 Nyquist 的 0.9
+  const maxFc = state.fs / 2 * 0.9;
+  state.fc = Math.min(state.fc, maxFc);
+  const data = buildResponses();
+  drawChart(data);
+  updateMetrics();
+}
+function updateMetrics(){
+  document.getElementById("paramText").textContent =
+    `order=${state.order} / fc=${state.fc.toFixed(0)}Hz / Fs=${state.fs.toFixed(0)}Hz / ripple=${state.ripple.toFixed(1)}dB`;
+  document.getElementById("fcValue").textContent = `${state.fc.toFixed(0)} Hz`;
+  document.getElementById("orderValue").textContent = `${state.order}`;
+  document.getElementById("rippleValue").textContent = `${state.ripple.toFixed(1)} dB`;
+  document.getElementById("hfValue").textContent = `${state.highFreq.toFixed(0)} Hz`;
+}
+
+/* 启动 */
+initControls();
+syncControls();
+update();
+</script>
+</body>
+</html>

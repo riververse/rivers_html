@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FFT 时域 / 频域可视化工具</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --blue: #2563eb;
+      --green: #059669;
+      --amber: #d97706;
+      --red: #dc2626;
+      --purple: #7c3aed;
+      --shadow: 0 2px 14px rgba(15, 23, 42, .07);
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 5%, rgba(37, 99, 235, .10), transparent 26%),
+        radial-gradient(circle at 88% 8%, rgba(5, 150, 105, .10), transparent 24%),
+        linear-gradient(135deg, #ffffff 0%, #f8fafc 48%, #e2e8f0 100%);
+    }
+    .page { max-width: 1360px; margin: 0 auto; padding: 28px; }
+    .top { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 22px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.9); color: #475569; font-size: 14px; box-shadow: 0 1px 4px rgba(15,23,42,.05); }
+    h1 { margin: 14px 0 10px; font-size: 42px; line-height: 1.12; letter-spacing: -1.1px; }
+    .desc { max-width: 900px; color: #475569; line-height: 1.8; font-size: 16px; margin: 0; }
+    .formulaRow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .pill { border: 1px solid #dbeafe; background: #eff6ff; color: #1d4ed8; border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 800; }
+    .pill.green { border-color: #bbf7d0; background: #ecfdf5; color: #047857; }
+    .pill.amber { border-color: #fed7aa; background: #fff7ed; color: #b45309; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; max-width: 420px; }
+    button { border: none; cursor: pointer; border-radius: 15px; padding: 10px 15px; font-weight: 800; font-size: 14px; transition: .15s ease; white-space: nowrap; }
+    .btn-dark { background: #0f172a; color: white; }
+    .btn-dark:hover { background: #334155; transform: translateY(-1px); }
+    .btn-light { background: white; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-light:hover { background: #f8fafc; transform: translateY(-1px); }
+    .layout { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); }
+    .panel { padding: 20px; }
+    .typeBox { background: linear-gradient(135deg, #eff6ff, #ecfdf5); border-radius: 20px; padding: 16px; margin-bottom: 18px; border: 1px solid #dbeafe; }
+    .label-muted { color: #64748b; font-size: 14px; }
+    .typeValue { font-size: 30px; font-weight: 950; margin-top: 3px; letter-spacing: -.5px; }
+    .formula { margin-top: 12px; background: rgba(255,255,255,.82); border: 1px solid rgba(226,232,240,.85); border-radius: 15px; padding: 11px 12px; font-weight: 900; color: #334155; font-family: Consolas, Monaco, monospace; font-size: 13px; line-height: 1.55; }
+    .sliderGroup { margin: 19px 0; }
+    .sliderHeader { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 8px; }
+    .sliderTitle { font-size: 14px; font-weight: 900; color: #1e293b; }
+    .hint { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 3px; }
+    .num { min-width: 82px; text-align: right; font-family: Consolas, Monaco, monospace; font-size: 13px; font-weight: 900; color: #334155; background: #f1f5f9; border-radius: 12px; padding: 6px 9px; }
+    input[type="range"] { width: 100%; accent-color: #0f172a; }
+    select { width: 100%; border: 1px solid #cbd5e1; border-radius: 14px; padding: 10px 12px; background: white; color: #0f172a; font-weight: 800; outline: none; }
+    .toggleBox { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 12px 13px; margin-top: 15px; }
+    .toggleBox label { font-size: 14px; font-weight: 900; color: #1e293b; }
+    input[type="checkbox"] { width: 19px; height: 19px; accent-color: #2563eb; }
+    .chartCard { padding: 22px; }
+    .chartTop { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+    h2 { margin: 0 0 6px; font-size: 22px; font-weight: 950; }
+    .small { color: #64748b; font-size: 14px; margin: 0; line-height: 1.6; }
+    .param { white-space: nowrap; font-family: Consolas, Monaco, monospace; font-size: 13px; color: #334155; background: #f1f5f9; border-radius: 16px; padding: 10px 13px; font-weight: 900; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 13px 0 6px; color: #475569; font-size: 13px; font-weight: 800; }
+    .leg { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 22px; height: 0; border-top: 4px solid #000; border-radius: 999px; }
+    .swatch.dashed { border-top-style: dashed; }
+    .chartWrap { width: 100%; height: 610px; }
+    svg { width: 100%; height: 100%; display: block; background: white; border-radius: 18px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0; }
+    .metric { padding: 16px; }
+    .mLabel { color: #64748b; font-size: 12px; }
+    .mValue { margin-top: 6px; font-size: 21px; font-weight: 950; font-family: Consolas, Monaco, monospace; }
+    .mNote { margin-top: 5px; color: #64748b; font-size: 12px; line-height: 1.5; }
+    .notes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 18px; }
+    .note { border-radius: 18px; padding: 16px; border: 1px solid transparent; }
+    .note h3 { margin: 0; font-size: 18px; font-weight: 950; }
+    .note p { margin: 8px 0 0; color: #334155; font-size: 14px; line-height: 1.72; }
+    .blue { background: #eff6ff; border-color: #dbeafe; } .blue h3 { color: #1d4ed8; }
+    .green { background: #ecfdf5; border-color: #bbf7d0; } .green h3 { color: #047857; }
+    .amber { background: #fffbeb; border-color: #fde68a; } .amber h3 { color: #b45309; }
+    .purple { background: #f5f3ff; border-color: #ddd6fe; } .purple h3 { color: #6d28d9; }
+
+    .theoryBlock { margin-top: 18px; padding: 20px; }
+    .theoryHead { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:16px; }
+    .theoryHead h2 { margin:0 0 6px; font-size:22px; font-weight:950; }
+    .theoryHead p { margin:0; color:#64748b; line-height:1.7; font-size:14px; max-width:860px; }
+    .theoryGrid { display:grid; grid-template-columns: repeat(2, 1fr); gap:14px; }
+    .theoryItem { border:1px solid #e2e8f0; border-radius:20px; padding:16px; background:#fff; }
+    .theoryItem h3 { margin:0 0 8px; font-size:17px; font-weight:950; color:#0f172a; display:flex; align-items:center; gap:8px; }
+    .theoryItem p { margin:8px 0 0; color:#334155; font-size:14px; line-height:1.75; }
+    .theoryItem .eq { margin:10px 0; padding:10px 12px; border-radius:14px; background:#f8fafc; border:1px solid #e2e8f0; font-family:Consolas, Monaco, monospace; color:#0f172a; font-size:13px; line-height:1.7; overflow:auto; }
+    .miniTag { display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; border-radius:999px; color:white; font-size:12px; font-weight:950; background:#2563eb; }
+    .miniTag.green { background:#059669; }
+    .miniTag.amber { background:#d97706; }
+    .miniTag.purple { background:#7c3aed; }
+    .miniTag.red { background:#dc2626; }
+    .flow { display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; margin-top:14px; }
+    .flowStep { background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:12px; text-align:center; }
+    .flowStep strong { display:block; color:#0f172a; font-size:14px; margin-bottom:5px; }
+    .flowStep span { display:block; color:#64748b; font-size:12px; line-height:1.45; }
+    .compareTable { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:16px; border:1px solid #e2e8f0; margin-top:12px; }
+    .compareTable th, .compareTable td { padding:11px 12px; text-align:left; border-bottom:1px solid #e2e8f0; font-size:13px; line-height:1.55; }
+    .compareTable th { background:#f1f5f9; color:#334155; font-weight:950; }
+    .compareTable tr:last-child td { border-bottom:none; }
+    .readGuide { margin-top:14px; display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; }
+    .guideItem { border-radius:18px; padding:14px; background:#f8fafc; border:1px solid #e2e8f0; }
+    .guideItem strong { display:block; font-size:15px; margin-bottom:6px; }
+    .guideItem p { margin:0; color:#475569; font-size:13px; line-height:1.65; }
+
+    @media (max-width: 1020px) {
+      .top { grid-template-columns: 1fr; align-items: stretch; }
+      .buttons { justify-content: flex-start; max-width: none; }
+      .layout { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .notes { grid-template-columns: 1fr; }
+      .theoryGrid, .flow, .readGuide { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      .page { padding: 18px; }
+      .chartTop { flex-direction: column; align-items: flex-start; }
+      .param { white-space: normal; }
+      .chartWrap { height: 560px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge">FFT 时域 / 频域可视化工具</div>
+        <h1>拖动采样与信号参数，观察频谱如何变化</h1>
+        <p class="desc">时域看“信号随时间怎么变”，频域看“信号由哪些频率组成”。FFT 是 DFT 的快速算法，可以把采样序列拆成不同频率成分。重点观察：采样频率 Fs、点数 N、频率分辨率 Δf、奈奎斯特频率、频谱泄漏和窗函数的影响。</p>
+        <div class="formulaRow"><span class="pill">Δf = Fs / N</span><span class="pill green">Nyquist = Fs / 2</span><span class="pill amber">非整周期采样 → 频谱泄漏</span></div>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('clean')">干净双频</button>
+        <button class="btn-dark" onclick="loadPreset('noise')">强噪声</button>
+        <button class="btn-dark" onclick="loadPreset('leak')">频谱泄漏</button>
+        <button class="btn-dark" onclick="loadPreset('alias')">混叠演示</button>
+        <button class="btn-light" onclick="rerollNoise()">重抽噪声</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox"><div class="label-muted">当前观察对象</div><div class="typeValue">时域 ↔ 频域</div><div class="formula">x[n] = DC + A1·sin(2πf1·n/Fs) + A2·sin(2πf2·n/Fs) + noise</div></div>
+        <div id="sliders"></div>
+        <div class="sliderGroup"><div class="sliderHeader"><div><div class="sliderTitle">采样点数 N</div><div class="hint">N 越大，频率分辨率 Δf 越小，频谱越细。</div></div><div id="nNum" class="num">512</div></div><select id="nSelect"><option value="128">128</option><option value="256">256</option><option value="512" selected>512</option><option value="1024">1024</option></select></div>
+        <div class="sliderGroup"><div class="sliderHeader"><div><div class="sliderTitle">窗函数</div><div class="hint">窗函数可以减轻泄漏，但会改变主瓣宽度和幅值。</div></div><div id="windowNum" class="num">Hann</div></div><select id="windowSelect"><option value="rect">矩形窗 Rect</option><option value="hann" selected>汉宁窗 Hann</option><option value="hamming">汉明窗 Hamming</option><option value="blackman">Blackman 窗</option></select></div>
+        <div class="toggleBox"><div><label for="showComponents">显示单独分量</label><div class="hint">显示 signal1、signal2 和噪声序列，方便理解叠加关系。</div></div><input id="showComponents" type="checkbox" checked></div>
+      </div>
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop"><div><h2>时域波形与 FFT 幅度谱</h2><p class="small">上图是采样后的时域序列；下图是 0 ~ Fs/2 的单边幅度谱。拖动频率、采样率、点数和窗函数，看峰值位置、泄漏和混叠如何变化。</p></div><div id="paramText" class="param">Fs=1000Hz / N=512 / Δf=1.953Hz</div></div>
+          <div class="legend"><span class="leg"><span class="swatch" style="border-color:#2563eb"></span>合成信号 x[n]</span><span class="leg"><span class="swatch" style="border-color:#94a3b8"></span>单独分量</span><span class="leg"><span class="swatch" style="border-color:#059669"></span>幅度谱 |X[k]|</span><span class="leg"><span class="swatch dashed" style="border-color:#dc2626"></span>f1 / f2 标记</span></div>
+          <div class="chartWrap"><svg id="chart" viewBox="0 0 920 610"></svg></div>
+        </div>
+        <div class="metrics"><div class="card metric"><div class="mLabel">频率分辨率 Δf</div><div id="dfValue" class="mValue">1.953 Hz</div><div class="mNote">Δf = Fs / N，越小越能分开相邻频率。</div></div><div class="card metric"><div class="mLabel">奈奎斯特频率</div><div id="nyquistValue" class="mValue">500 Hz</div><div class="mNote">理论上只能分析到 Fs/2，超过会混叠。</div></div><div class="card metric"><div class="mLabel">f1 峰值附近</div><div id="f1BinValue" class="mValue">50.78 Hz</div><div class="mNote">实际显示在最近的 FFT bin 附近。</div></div><div class="card metric"><div class="mLabel">f2 峰值附近</div><div id="f2BinValue" class="mValue">119.14 Hz</div><div class="mNote">若 f2 > Fs/2，会折叠到低频位置。</div></div></div>
+        <div class="card notes"><div class="note blue"><h3>Fs 采样频率</h3><p>Fs 决定最高能看见的频率。超过 Fs/2 的成分会发生混叠，频谱上会“伪装”成低频。</p></div><div class="note green"><h3>N 采样点数</h3><p>N 越大，Δf = Fs/N 越小，频谱横轴越细，越容易分辨两个靠得很近的频率。</p></div><div class="note amber"><h3>窗函数</h3><p>矩形窗最直接，但非整周期采样时泄漏明显；Hann/Hamming/Blackman 能压低旁瓣。</p></div><div class="note purple"><h3>工程用途</h3><p>FFT 常用于振动分析、电机转速波动、编码器周期误差、传感器噪声频谱和滤波效果验证。</p></div></div>
+
+        <div class="card theoryBlock">
+          <div class="theoryHead">
+            <div>
+              <h2>FFT 原理补充：从采样点到频谱峰值</h2>
+              <p>
+                下面这部分不改变上面的仿真功能，只是把“为什么会出现这些现象”补完整。
+                你可以一边拖动参数，一边对照这些原理看：峰值为什么落在某个频率、为什么会泄漏、为什么超过 Fs/2 会混叠。
+              </p>
+            </div>
+            <div class="pill green">理论补充 · 只增不减版</div>
+          </div>
+
+          <div class="flow">
+            <div class="flowStep"><strong>1. 采样</strong><span>连续信号变成 x[0]、x[1]、x[2]...</span></div>
+            <div class="flowStep"><strong>2. 加窗</strong><span>对有限长度数据做截取和边缘处理</span></div>
+            <div class="flowStep"><strong>3. FFT</strong><span>计算每个频率 bin 的复数结果</span></div>
+            <div class="flowStep"><strong>4. 取幅值</strong><span>把复数结果转成频率强度</span></div>
+            <div class="flowStep"><strong>5. 读频谱</strong><span>峰值位置对应主要频率成分</span></div>
+          </div>
+
+          <div class="theoryGrid" style="margin-top:14px;">
+            <div class="theoryItem">
+              <h3><span class="miniTag">1</span>DFT / FFT 到底在算什么？</h3>
+              <p>
+                DFT 的本质是：拿一组固定频率的正弦/余弦基波，去和原始采样数据做匹配。
+                哪个频率匹配得强，哪个频率上的幅值就高。FFT 不是新变换，而是 DFT 的快速计算方法。
+              </p>
+              <div class="eq">X[k] = Σ x[n] · e^(-j·2πkn/N)</div>
+              <p>
+                这里的 k 不是任意频率，而是第 k 个频率格点，也叫 FFT bin。每个 bin 对应的实际频率是 k·Fs/N。
+              </p>
+            </div>
+
+            <div class="theoryItem">
+              <h3><span class="miniTag green">2</span>频率分辨率 Δf 为什么重要？</h3>
+              <p>
+                频谱横轴不是连续的，而是一格一格的。两格之间的间隔就是 Δf。Δf 越小，频谱越细，越容易区分两个靠得很近的频率。
+              </p>
+              <div class="eq">Δf = Fs / N<br>第 k 个频点：f[k] = k · Δf</div>
+              <p>
+                例如 Fs=1000Hz，N=512，则 Δf≈1.953Hz。50Hz 不一定正好落在某个 bin 上，所以峰值可能出现在 50.78Hz 附近。
+              </p>
+            </div>
+
+            <div class="theoryItem">
+              <h3><span class="miniTag amber">3</span>为什么会出现频谱泄漏？</h3>
+              <p>
+                FFT 默认你截取的这 N 个点会无限周期重复。如果截取窗口的开头和结尾接不上，重复时就会产生突变。
+                这个突变会把原本集中的频率能量扩散到附近很多频点上，这就是频谱泄漏。
+              </p>
+              <div class="eq">整周期采样：能量集中在少数 bin<br>非整周期采样：能量扩散到邻近 bin</div>
+              <p>
+                你可以用“频谱泄漏演示”预设，然后把窗函数从 Rect 换成 Hann / Blackman，对比旁瓣如何下降。
+              </p>
+            </div>
+
+            <div class="theoryItem">
+              <h3><span class="miniTag purple">4</span>窗函数为什么能减轻泄漏？</h3>
+              <p>
+                窗函数会让数据片段两端逐渐变小，降低首尾拼接时的突变，因此旁瓣会降低。
+                代价是主瓣变宽，频率峰值会更“胖”，幅值也需要做一定校正。
+              </p>
+              <table class="compareTable">
+                <tr><th>窗函数</th><th>特点</th><th>适合观察</th></tr>
+                <tr><td>Rect 矩形窗</td><td>分辨率高，泄漏明显</td><td>整周期、干净信号</td></tr>
+                <tr><td>Hann</td><td>旁瓣较低，通用平衡</td><td>常规频谱观察</td></tr>
+                <tr><td>Hamming</td><td>旁瓣控制较好</td><td>噪声环境下的峰值</td></tr>
+                <tr><td>Blackman</td><td>旁瓣更低，主瓣更宽</td><td>看弱小频率成分</td></tr>
+              </table>
+            </div>
+
+            <div class="theoryItem">
+              <h3><span class="miniTag red">5</span>混叠：为什么超过 Fs/2 会“变成低频”？</h3>
+              <p>
+                采样后，频率轴会以 Fs 为周期重复。超过 Fs/2 的高频成分会折叠回 0~Fs/2 范围内，导致你在频谱上看到一个假的低频峰。
+              </p>
+              <div class="eq">可分析最高频率：Fs / 2<br>示例：Fs=500Hz，f=360Hz → 混叠到 140Hz</div>
+              <p>
+                这就是 ADC 前面经常需要抗混叠低通滤波器的原因：先把高于 Nyquist 的成分压掉，再采样。
+              </p>
+            </div>
+
+            <div class="theoryItem">
+              <h3><span class="miniTag green">6</span>幅度谱为什么要做单边谱？</h3>
+              <p>
+                对真实采样信号来说，FFT 结果左右两半是共轭对称的。0~Fs/2 已经包含全部有效频率信息，所以工程上通常看单边谱。
+              </p>
+              <div class="eq">双边谱：包含正频率和负频率<br>单边谱：只看 0 ~ Fs/2，并对非 DC 分量做约 2 倍幅值补偿</div>
+              <p>
+                本页面下方频谱图就是单边幅度谱，所以更接近你在传感器频谱分析里实际会看的结果。
+              </p>
+            </div>
+          </div>
+
+          <div class="readGuide">
+            <div class="guideItem">
+              <strong>怎么看主频？</strong>
+              <p>找频谱中最高或明显突出的峰值，横坐标就是主要频率成分。对电机、编码器、振动信号尤其有用。</p>
+            </div>
+            <div class="guideItem">
+              <strong>怎么看噪声？</strong>
+              <p>如果频谱底部整体抬高，说明宽带噪声强；如果某个频点特别尖，可能是固定频率干扰。</p>
+            </div>
+            <div class="guideItem">
+              <strong>怎么看滤波需求？</strong>
+              <p>先用 FFT 找出有效信号频段和干扰频段，再决定低通、高通、带通或陷波滤波器的截止频率。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+const defaults = { fs: 1000, f1: 50, a1: 1.0, f2: 120, a2: 0.6, dc: 0, noise: 0.2, n: 512, window: "hann", showComponents: true };
+const state = { ...defaults };
+let noiseSeed = 123456789;
+const sliderConfig = {
+  fs: { label: "采样频率 Fs", min: 100, max: 5000, step: 10, unit: "Hz", hint: "Fs 越大，Nyquist 频率越高，可观察的最高频率越高。" },
+  f1: { label: "信号 1 频率 f1", min: 1, max: 300, step: 1, unit: "Hz", hint: "第一路正弦信号的频率，频谱中应出现对应峰值。" },
+  a1: { label: "信号 1 幅值 A1", min: 0, max: 3, step: 0.05, unit: "", hint: "A1 越大，f1 对应的频谱峰值越高。" },
+  f2: { label: "信号 2 频率 f2", min: 1, max: 500, step: 1, unit: "Hz", hint: "第二路正弦信号频率。可设置超过 Fs/2 观察混叠。" },
+  a2: { label: "信号 2 幅值 A2", min: 0, max: 3, step: 0.05, unit: "", hint: "A2 越大，f2 对应的频谱峰值越高。" },
+  dc: { label: "直流偏置 DC", min: -2, max: 2, step: 0.05, unit: "", hint: "DC 会在频谱 0Hz 处形成直流分量。" },
+  noise: { label: "噪声强度 noise", min: 0, max: 2, step: 0.05, unit: "", hint: "噪声越强，频谱底噪越高，时域曲线越毛糙。" }
+};
+const presets = {
+  clean: { fs: 1000, n: 512, f1: 50, a1: 1.0, f2: 120, a2: 0.6, dc: 0, noise: 0.05, window: "hann", showComponents: true },
+  noise: { fs: 1000, n: 512, f1: 45, a1: 1.0, f2: 180, a2: 0.7, dc: 0.25, noise: 1.0, window: "hann", showComponents: false },
+  leak: { fs: 1000, n: 512, f1: 53, a1: 1.0, f2: 127, a2: 0.65, dc: 0, noise: 0.03, window: "rect", showComponents: false },
+  alias: { fs: 500, n: 512, f1: 50, a1: 1.0, f2: 360, a2: 0.8, dc: 0, noise: 0.04, window: "hann", showComponents: true }
+};
+function fmt(v, d = 2) { return Number(v).toFixed(d); }
+function windowLabel(w) { return ({ rect: "Rect", hann: "Hann", hamming: "Hamming", blackman: "Blackman" })[w] || w; }
+function createSlider(key) {
+  const c = sliderConfig[key]; const digits = c.step < 0.1 ? 2 : 0;
+  const wrap = document.createElement("div"); wrap.className = "sliderGroup";
+  wrap.innerHTML = `<div class="sliderHeader"><div><div class="sliderTitle">${c.label}</div><div class="hint">${c.hint}</div></div><div id="${key}Num" class="num">${fmt(state[key], digits)}${c.unit}</div></div><input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">`;
+  document.getElementById("sliders").appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e => { state[key] = Number(e.target.value); document.getElementById(`${key}Num`).textContent = `${fmt(state[key], digits)}${c.unit}`; scheduleUpdate(); });
+}
+function initControls() {
+  Object.keys(sliderConfig).forEach(createSlider);
+  document.getElementById("nSelect").addEventListener("change", e => { state.n = Number(e.target.value); document.getElementById("nNum").textContent = String(state.n); scheduleUpdate(); });
+  document.getElementById("windowSelect").addEventListener("change", e => { state.window = e.target.value; document.getElementById("windowNum").textContent = windowLabel(state.window); scheduleUpdate(); });
+  document.getElementById("showComponents").addEventListener("change", e => { state.showComponents = Boolean(e.target.checked); scheduleUpdate(); });
+}
+function syncControls() {
+  Object.keys(sliderConfig).forEach(key => { const c = sliderConfig[key]; const digits = c.step < 0.1 ? 2 : 0; document.getElementById(key).value = state[key]; document.getElementById(`${key}Num`).textContent = `${fmt(state[key], digits)}${c.unit}`; });
+  document.getElementById("nSelect").value = String(state.n); document.getElementById("nNum").textContent = String(state.n);
+  document.getElementById("windowSelect").value = state.window; document.getElementById("windowNum").textContent = windowLabel(state.window);
+  document.getElementById("showComponents").checked = state.showComponents;
+}
+function loadPreset(name) { Object.assign(state, presets[name]); if (name === "noise") rerollNoise(false); syncControls(); update(); }
+function resetAll() { Object.assign(state, defaults); noiseSeed = 123456789; syncControls(); update(); }
+function rerollNoise(needUpdate = true) { noiseSeed = Math.floor(Math.random() * 2147483646) + 1; if (needUpdate) update(); }
+function lcg(seed) { let s = seed % 2147483647; if (s <= 0) s += 2147483646; return function() { s = s * 16807 % 2147483647; return (s - 1) / 2147483646; }; }
+function gaussianGenerator(seed) { const rand = lcg(seed); let spare = null; return function() { if (spare !== null) { const v = spare; spare = null; return v; } const u = Math.max(rand(), 1e-12); const v = Math.max(rand(), 1e-12); const mag = Math.sqrt(-2 * Math.log(u)); spare = mag * Math.sin(2 * Math.PI * v); return mag * Math.cos(2 * Math.PI * v); }; }
+function generateSignal() {
+  const { fs, n, f1, a1, f2, a2, dc, noise } = state; const randn = gaussianGenerator(noiseSeed);
+  const samples = [], comp1 = [], comp2 = [], noiseArr = [];
+  for (let i = 0; i < n; i++) { const t = i / fs; const s1 = a1 * Math.sin(2 * Math.PI * f1 * t); const s2 = a2 * Math.sin(2 * Math.PI * f2 * t); const ns = noise * randn(); samples.push(dc + s1 + s2 + ns); comp1.push(s1); comp2.push(s2); noiseArr.push(ns); }
+  return { samples, comp1, comp2, noiseArr };
+}
+function makeWindow(type, n) { const w = new Array(n); for (let i = 0; i < n; i++) { const a = 2 * Math.PI * i / (n - 1); if (type === "hann") w[i] = 0.5 - 0.5 * Math.cos(a); else if (type === "hamming") w[i] = 0.54 - 0.46 * Math.cos(a); else if (type === "blackman") w[i] = 0.42 - 0.5 * Math.cos(a) + 0.08 * Math.cos(2 * a); else w[i] = 1; } return w; }
+function fft(re, im) {
+  const n = re.length; let j = 0;
+  for (let i = 1; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
+  for (let len = 2; len <= n; len <<= 1) { const ang = -2 * Math.PI / len; const wlenRe = Math.cos(ang), wlenIm = Math.sin(ang); for (let i = 0; i < n; i += len) { let wRe = 1, wIm = 0; for (let j = 0; j < len / 2; j++) { const uRe = re[i+j], uIm = im[i+j]; const idx = i + j + len / 2; const vRe = re[idx] * wRe - im[idx] * wIm; const vIm = re[idx] * wIm + im[idx] * wRe; re[i+j] = uRe + vRe; im[i+j] = uIm + vIm; re[idx] = uRe - vRe; im[idx] = uIm - vIm; const nextRe = wRe * wlenRe - wIm * wlenIm; const nextIm = wRe * wlenIm + wIm * wlenRe; wRe = nextRe; wIm = nextIm; } } }
+}
+function computeSpectrum(samples) { const n = samples.length; const win = makeWindow(state.window, n); const winSum = win.reduce((a,b)=>a+b,0); const re = new Array(n), im = new Array(n).fill(0); for (let i=0;i<n;i++) re[i] = samples[i] * win[i]; fft(re, im); const bins = []; const maxBin = Math.floor(n/2); for (let k=0;k<=maxBin;k++) { const raw = Math.sqrt(re[k]*re[k] + im[k]*im[k]); const scale = (k === 0 || k === maxBin) ? 1 : 2; bins.push({ k, f: k * state.fs / n, mag: scale * raw / winSum }); } return bins; }
+function svgEl(name, attrs={}, text="") { const el = document.createElementNS("http://www.w3.org/2000/svg", name); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); if (text) el.textContent = text; return el; }
+function polyline(points, color, width=2, dash="") { const attrs = { points: points.join(" "), fill: "none", stroke: color, "stroke-width": width, "stroke-linecap": "round", "stroke-linejoin": "round" }; if (dash) attrs["stroke-dasharray"] = dash; return svgEl("polyline", attrs); }
+function line(svg, x1, y1, x2, y2, color, width=1, dash="") { const attrs = { x1, y1, x2, y2, stroke: color, "stroke-width": width }; if (dash) attrs["stroke-dasharray"] = dash; svg.appendChild(svgEl("line", attrs)); }
+function text(svg, x, y, value, opts={}) { svg.appendChild(svgEl("text", { x, y, "font-size": opts.size || 12, "font-weight": opts.weight || 500, fill: opts.color || "#64748b", "text-anchor": opts.anchor || "start" }, value)); }
+function drawGrid(svg, plot, xTicks, yTicks, xScale, yScale, yFmt, xFmt) { for (let i=0;i<=yTicks;i++) { const v = plot.yMin + (plot.yMax - plot.yMin) * i / yTicks; const y = yScale(v); line(svg, plot.x, y, plot.x + plot.w, y, "#e2e8f0", 1, "4 4"); text(svg, plot.x - 10, y + 4, yFmt(v), { anchor: "end" }); } for (let i=0;i<=xTicks;i++) { const v = plot.xMin + (plot.xMax - plot.xMin) * i / xTicks; const x = xScale(v); line(svg, x, plot.y, x, plot.y + plot.h, "#f1f5f9"); text(svg, x, plot.y + plot.h + 22, xFmt(v), { anchor: "middle" }); } line(svg, plot.x, plot.y + plot.h, plot.x + plot.w, plot.y + plot.h, "#0f172a", 1.4); line(svg, plot.x, plot.y, plot.x, plot.y + plot.h, "#0f172a", 1.4); }
+function drawChart(data, spectrum) {
+  const svg = document.getElementById("chart"); svg.innerHTML = ""; const width = 920, height = 610; const topPlot = { x:58, y:34, w:832, h:236 }; const botPlot = { x:58, y:342, w:832, h:214 }; svg.appendChild(svgEl("rect", { x:0, y:0, width, height, fill:"white" })); text(svg, topPlot.x, 22, "时域波形 x[n]", { size:15, color:"#0f172a", weight:900 }); text(svg, botPlot.x, 328, "频域幅度谱 |X[k]|", { size:15, color:"#0f172a", weight:900 });
+  const n = state.n; const durationMs = (n - 1) / state.fs * 1000; const allTimeYs = state.showComponents ? data.samples.concat(data.comp1, data.comp2, data.noiseArr) : data.samples; let yMin = Math.min(...allTimeYs, 0), yMax = Math.max(...allTimeYs, 0); const margin = Math.max((yMax - yMin) * 0.15, 0.25); yMin -= margin; yMax += margin; Object.assign(topPlot, { xMin:0, xMax:durationMs, yMin, yMax });
+  const xTime = ms => topPlot.x + (ms - topPlot.xMin) / (topPlot.xMax - topPlot.xMin) * topPlot.w; const yTime = v => topPlot.y + (1 - (v - topPlot.yMin) / (topPlot.yMax - topPlot.yMin)) * topPlot.h; drawGrid(svg, topPlot, 6, 5, xTime, yTime, v=>v.toFixed(1), v=>v.toFixed(0)+"ms");
+  const timePoints = arr => { const step = Math.max(1, Math.floor(n / 700)); const pts = []; for (let i=0;i<n;i+=step) { const ms = i / state.fs * 1000; pts.push(`${xTime(ms).toFixed(1)},${yTime(arr[i]).toFixed(1)}`); } return pts; };
+  if (state.showComponents) { svg.appendChild(polyline(timePoints(data.comp1), "#94a3b8", 1.7, "4 4")); svg.appendChild(polyline(timePoints(data.comp2), "#cbd5e1", 1.7, "4 4")); if (state.noise > 0) svg.appendChild(polyline(timePoints(data.noiseArr), "#f59e0b", 1.2, "3 5")); }
+  svg.appendChild(polyline(timePoints(data.samples), "#2563eb", 3.2)); text(svg, topPlot.x + topPlot.w - 8, topPlot.y + 18, "x[n]", { color:"#2563eb", weight:900, anchor:"end", size:14 }); text(svg, topPlot.x + topPlot.w + 6, topPlot.y + topPlot.h + 4, "t", { color:"#0f172a", weight:900, size:13 }); text(svg, topPlot.x - 38, topPlot.y - 6, "幅值", { color:"#0f172a", weight:900, size:12 });
+  const nyquist = state.fs / 2; const maxMag = Math.max(...spectrum.map(b => b.mag), 0.01); Object.assign(botPlot, { xMin:0, xMax:nyquist, yMin:0, yMax:maxMag*1.20 }); const xFreq = f => botPlot.x + (f - botPlot.xMin) / (botPlot.xMax - botPlot.xMin) * botPlot.w; const yMag = m => botPlot.y + (1 - (m - botPlot.yMin) / (botPlot.yMax - botPlot.yMin)) * botPlot.h; drawGrid(svg, botPlot, 6, 5, xFreq, yMag, v=>v.toFixed(2), v=>v.toFixed(0)+"Hz");
+  const specPoints = spectrum.map(b => `${xFreq(b.f).toFixed(1)},${yMag(b.mag).toFixed(1)}`); svg.appendChild(polyline(specPoints, "#059669", 2.2)); const step = Math.max(1, Math.floor(spectrum.length / 260)); for (let i=0;i<spectrum.length;i+=step) { const b = spectrum[i]; line(svg, xFreq(b.f), yMag(0), xFreq(b.f), yMag(b.mag), "rgba(5, 150, 105, .23)", 1); }
+  const f1Alias = aliasFreq(state.f1, state.fs), f2Alias = aliasFreq(state.f2, state.fs); markFrequency(svg, xFreq, botPlot, f1Alias, "#dc2626", `f1→${f1Alias.toFixed(1)}Hz`); markFrequency(svg, xFreq, botPlot, f2Alias, "#7c3aed", `f2→${f2Alias.toFixed(1)}Hz`); text(svg, botPlot.x + botPlot.w - 8, botPlot.y + 18, `Nyquist = ${nyquist.toFixed(0)}Hz`, { color:"#0f172a", weight:900, anchor:"end", size:13 }); text(svg, botPlot.x + botPlot.w + 6, botPlot.y + botPlot.h + 4, "f", { color:"#0f172a", weight:900, size:13 }); text(svg, botPlot.x - 38, botPlot.y - 6, "幅度", { color:"#0f172a", weight:900, size:12 });
+}
+function markFrequency(svg, xScale, plot, freq, color, label) { if (freq < plot.xMin || freq > plot.xMax) return; const x = xScale(freq); line(svg, x, plot.y, x, plot.y + plot.h, color, 1.8, "6 5"); svg.appendChild(svgEl("circle", { cx:x, cy:plot.y+12, r:4.5, fill:color })); text(svg, x + 7, plot.y + 16, label, { color, weight:900, size:12 }); }
+let pending = false; function scheduleUpdate() { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; update(); }); }
+function update() { const data = generateSignal(); const spectrum = computeSpectrum(data.samples); drawChart(data, spectrum); updateMetrics(); }
+function updateMetrics() { const df = state.fs / state.n; const nyquist = state.fs / 2; const f1Alias = aliasFreq(state.f1, state.fs), f2Alias = aliasFreq(state.f2, state.fs); document.getElementById("dfValue").textContent = `${df.toFixed(3)} Hz`; document.getElementById("nyquistValue").textContent = `${fmt(nyquist,0)} Hz`; document.getElementById("f1BinValue").textContent = `${nearestBinFreq(f1Alias, df, nyquist).toFixed(2)} Hz`; document.getElementById("f2BinValue").textContent = `${nearestBinFreq(f2Alias, df, nyquist).toFixed(2)} Hz`; document.getElementById("paramText").textContent = `Fs=${fmt(state.fs,0)}Hz / N=${state.n} / Δf=${df.toFixed(3)}Hz / Window=${windowLabel(state.window)}`; }
+function nearestBinFreq(f, df, nyquist) { return Math.min(nyquist, Math.max(0, Math.round(f / df) * df)); }
+function aliasFreq(f, fs) { const wrapped = ((f % fs) + fs) % fs; return wrapped <= fs / 2 ? wrapped : fs - wrapped; }
+initControls(); syncControls(); update();
+</script>
+</body>
+</html>

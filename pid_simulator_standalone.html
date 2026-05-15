@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PID 在线仿真器</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: #0f172a;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 45%, #e2e8f0 100%);
+    }
+    .page {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      background: white;
+      color: #475569;
+      font-size: 14px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+    }
+    h1 {
+      margin: 16px 0 10px;
+      font-size: 42px;
+      line-height: 1.15;
+      letter-spacing: -1px;
+    }
+    .desc {
+      max-width: 800px;
+      color: #475569;
+      line-height: 1.75;
+      font-size: 16px;
+      margin: 0;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 16px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: 0.15s ease;
+    }
+    .btn-dark { background: #0f172a; color: white; }
+    .btn-dark:hover { background: #334155; }
+    .btn-light {
+      background: white;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-light:hover { background: #f8fafc; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+    }
+    .panel {
+      padding: 20px;
+    }
+    .typeBox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f5f9;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .label-muted { color: #64748b; font-size: 14px; }
+    .typeValue { font-size: 34px; font-weight: 900; margin-top: 2px; }
+    .formula {
+      background: white;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-weight: 800;
+      color: #475569;
+      box-shadow: 0 1px 6px rgba(15, 23, 42, 0.06);
+    }
+    .sliderGroup {
+      margin: 21px 0;
+    }
+    .sliderHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .sliderTitle {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .hint {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+    .num {
+      min-width: 68px;
+      text-align: right;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 6px 10px;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #0f172a;
+    }
+    .sectionLine {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 18px;
+      margin-top: 20px;
+    }
+    .sectionTitle {
+      font-size: 14px;
+      font-weight: 900;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+    .chartCard {
+      padding: 22px;
+    }
+    .chartTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .small {
+      color: #64748b;
+      font-size: 14px;
+      margin: 0;
+    }
+    .param {
+      white-space: nowrap;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 14px;
+      color: #334155;
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 10px 14px;
+    }
+    .chartWrap {
+      width: 100%;
+      height: 430px;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: white;
+      border-radius: 18px;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .metric {
+      padding: 16px;
+    }
+    .metric .mLabel {
+      color: #64748b;
+      font-size: 12px;
+    }
+    .metric .mValue {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .metric .mNote {
+      margin-top: 5px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .notes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 18px;
+    }
+    .note {
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .note h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .note p {
+      margin: 8px 0 0;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .blue { background: #eff6ff; }
+    .blue h3 { color: #1d4ed8; }
+    .green { background: #ecfdf5; }
+    .green h3 { color: #047857; }
+    .amber { background: #fffbeb; }
+    .amber h3 { color: #b45309; }
+
+    @media (max-width: 980px) {
+      .top { flex-direction: column; align-items: stretch; }
+      .buttons { justify-content: flex-start; }
+      .layout { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .notes { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      .page { padding: 18px; }
+      .chartTop { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge">在线 PID 参数调节仿真</div>
+        <h1>拖动 Kp / Ki / Kd，观察波形变化</h1>
+        <p class="desc">
+          这是一个简化二阶被控对象的阶跃响应仿真。重点不是替代真实电机或传感器模型，而是直观看懂：
+          P 管当前误差，I 管长期累计误差，D 管变化趋势。
+        </p>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('P')">P 控制</button>
+        <button class="btn-dark" onclick="loadPreset('PI')">PI 控制</button>
+        <button class="btn-dark" onclick="loadPreset('PD')">PD 控制</button>
+        <button class="btn-dark" onclick="loadPreset('PID')">PID 控制</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox">
+          <div>
+            <div class="label-muted">当前控制器类型</div>
+            <div id="controllerType" class="typeValue">PID</div>
+          </div>
+          <div class="formula">u = P + I + D</div>
+        </div>
+
+        <div id="sliders"></div>
+
+        <div class="sectionLine">
+          <div class="sectionTitle">被控对象与仿真设置</div>
+          <div id="plantSliders"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop">
+            <div>
+              <h2>阶跃响应波形</h2>
+              <p class="small">蓝线：系统输出 y(t)；黑色虚线：目标值 r(t)；灰色虚线：控制量归一化 u(t)</p>
+            </div>
+            <div id="paramText" class="param">Kp=2.00 / Ki=0.50 / Kd=0.25</div>
+          </div>
+          <div class="chartWrap">
+            <svg id="chart" viewBox="0 0 900 430"></svg>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="card metric">
+            <div class="mLabel">超调量</div>
+            <div id="overshoot" class="mValue">0%</div>
+            <div class="mNote">越大说明冲过目标越明显</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">稳态误差</div>
+            <div id="steadyError" class="mValue">0</div>
+            <div class="mNote">越接近 0 越好</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">上升时间</div>
+            <div id="riseTime" class="mValue">0s</div>
+            <div class="mNote">首次达到 90% 目标值</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">调节时间</div>
+            <div id="settleTime" class="mValue">0s</div>
+            <div class="mNote">进入 ±2% 误差带</div>
+          </div>
+        </div>
+
+        <div class="card notes">
+          <div class="note blue">
+            <h3>只加 Kp</h3>
+            <p>响应会变快，但 Kp 过大时容易超调、振荡。没有积分时，很多对象会留下稳态误差。</p>
+          </div>
+          <div class="note green">
+            <h3>再加 Ki</h3>
+            <p>积分会把长期误差累积起来，逼近目标值。但 Ki 过大时会让系统冲得更猛，调节时间变长。</p>
+          </div>
+          <div class="note amber">
+            <h3>少量加 Kd</h3>
+            <p>微分相当于看趋势，系统快冲过头时提前刹车。真实传感器有噪声时，D 不能盲目开太大。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const presets = {
+  P: { kp: 2.2, ki: 0, kd: 0 },
+  PI: { kp: 1.6, ki: 0.85, kd: 0 },
+  PD: { kp: 2.4, ki: 0, kd: 0.65 },
+  PID: { kp: 2.0, ki: 0.75, kd: 0.55 }
+};
+
+const config = {
+  kp: { label: "Kp 比例系数", value: 2.0, min: 0, max: 8, step: 0.1, hint: "越大响应越快，但更容易超调或振荡" },
+  ki: { label: "Ki 积分系数", value: 0.5, min: 0, max: 4, step: 0.05, hint: "用于消除稳态误差，过大容易积分饱和" },
+  kd: { label: "Kd 微分系数", value: 0.25, min: 0, max: 3, step: 0.05, hint: "提前刹车，抑制超调；真实系统中会放大噪声" },
+  target: { label: "目标值", value: 1.0, min: 0.5, max: 2, step: 0.1, hint: "黑色参考线" },
+  damping: { label: "对象阻尼", value: 0.38, min: 0.12, max: 1.2, step: 0.02, hint: "越小越容易振荡，越大越钝" },
+  naturalFreq: { label: "对象速度", value: 1.35, min: 0.6, max: 3, step: 0.05, hint: "近似表示对象本身反应快慢" },
+  simTime: { label: "仿真时长", value: 10, min: 4, max: 18, step: 1, hint: "单位：秒" }
+};
+
+const state = {};
+Object.keys(config).forEach(k => state[k] = config[k].value);
+
+function clamp(v, lo, hi) {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+function simulate() {
+  const { kp, ki, kd, target, damping, naturalFreq, simTime } = state;
+  const dt = 0.01;
+  const n = Math.floor(simTime / dt);
+  let y = 0, v = 0, integral = 0, lastError = target - y;
+  const uMax = 12;
+  const points = [];
+  let maxY = -Infinity;
+  let firstRiseTime = null;
+  let settleTime = null;
+
+  for (let i = 0; i <= n; i++) {
+    const t = i * dt;
+    const error = target - y;
+
+    integral += error * dt;
+    integral = clamp(integral, -8, 8);
+
+    const derivative = (error - lastError) / dt;
+    lastError = error;
+
+    let u = kp * error + ki * integral + kd * derivative;
+    u = clamp(u, -uMax, uMax);
+
+    const a = naturalFreq * naturalFreq * u - 2 * damping * naturalFreq * v - naturalFreq * naturalFreq * y;
+    v += a * dt;
+    y += v * dt;
+
+    maxY = Math.max(maxY, y);
+    if (firstRiseTime === null && y >= 0.9 * target) firstRiseTime = t;
+
+    if (i % 4 === 0) {
+      points.push({
+        t: Number(t.toFixed(2)),
+        y: Number(y.toFixed(4)),
+        target,
+        u: Number((u / uMax).toFixed(4))
+      });
+    }
+  }
+
+  const band = Math.abs(target) * 0.02;
+  for (let i = 0; i < points.length; i++) {
+    let ok = true;
+    for (let j = i; j < points.length; j++) {
+      if (Math.abs(points[j].y - target) > band) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) {
+      settleTime = points[i].t;
+      break;
+    }
+  }
+
+  const finalY = points[points.length - 1]?.y ?? y;
+  const steadyError = target - finalY;
+  const overshoot = target === 0 ? 0 : Math.max(0, ((maxY - target) / Math.abs(target)) * 100);
+  return { points, metrics: { overshoot, steadyError, riseTime: firstRiseTime, settleTime, finalY } };
+}
+
+function createSlider(key, containerId) {
+  const c = config[key];
+  const digits = c.step < 0.1 ? 2 : 1;
+  const wrap = document.createElement("div");
+  wrap.className = "sliderGroup";
+  wrap.innerHTML = `
+    <div class="sliderHeader">
+      <div>
+        <div class="sliderTitle">${c.label}</div>
+        <div class="hint">${c.hint}</div>
+      </div>
+      <div id="${key}Num" class="num">${state[key].toFixed(digits)}</div>
+    </div>
+    <input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">
+  `;
+  document.getElementById(containerId).appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e => {
+    state[key] = Number(e.target.value);
+    document.getElementById(key + "Num").textContent = state[key].toFixed(digits);
+    update();
+  });
+}
+
+function initSliders() {
+  ["kp", "ki", "kd"].forEach(k => createSlider(k, "sliders"));
+  ["target", "damping", "naturalFreq", "simTime"].forEach(k => createSlider(k, "plantSliders"));
+}
+
+function linePath(points, key, xScale, yScale) {
+  return points.map(p => `${xScale(p.t).toFixed(1)},${yScale(p[key]).toFixed(1)}`).join(" ");
+}
+
+function svgEl(name, attrs = {}, text = "") {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  if (text) el.textContent = text;
+  return el;
+}
+
+function drawChart(points) {
+  const svg = document.getElementById("chart");
+  svg.innerHTML = "";
+  const width = 900, height = 430;
+  const pad = { left: 58, right: 24, top: 24, bottom: 48 };
+  const innerW = width - pad.left - pad.right;
+  const innerH = height - pad.top - pad.bottom;
+  const ys = points.flatMap(p => [p.y, p.target, p.u]);
+  let minY = Math.min(...ys, 0);
+  let maxY = Math.max(...ys, state.target, 1);
+  const margin = (maxY - minY || 1) * 0.15;
+  minY -= margin;
+  maxY += margin;
+
+  const xScale = t => pad.left + (t / state.simTime) * innerW;
+  const yScale = v => pad.top + (1 - (v - minY) / (maxY - minY)) * innerH;
+
+  svg.appendChild(svgEl("rect", { x: 0, y: 0, width, height, fill: "white" }));
+
+  for (let i = 0; i < 6; i++) {
+    const gy = minY + ((maxY - minY) * i) / 5;
+    svg.appendChild(svgEl("line", {
+      x1: pad.left, y1: yScale(gy), x2: width - pad.right, y2: yScale(gy),
+      stroke: "#e2e8f0", "stroke-dasharray": "4 4"
+    }));
+    svg.appendChild(svgEl("text", {
+      x: pad.left - 10, y: yScale(gy) + 4, "text-anchor": "end",
+      "font-size": 12, fill: "#64748b"
+    }, gy.toFixed(1)));
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const gx = state.simTime * i / 5;
+    svg.appendChild(svgEl("line", {
+      x1: xScale(gx), y1: pad.top, x2: xScale(gx), y2: height - pad.bottom,
+      stroke: "#f1f5f9"
+    }));
+    svg.appendChild(svgEl("text", {
+      x: xScale(gx), y: height - 18, "text-anchor": "middle",
+      "font-size": 12, fill: "#64748b"
+    }, gx.toFixed(0) + "s"));
+  }
+
+  svg.appendChild(svgEl("line", { x1: pad.left, y1: height - pad.bottom, x2: width - pad.right, y2: height - pad.bottom, stroke: "#0f172a", "stroke-width": 1.5 }));
+  svg.appendChild(svgEl("line", { x1: pad.left, y1: pad.top, x2: pad.left, y2: height - pad.bottom, stroke: "#0f172a", "stroke-width": 1.5 }));
+
+  svg.appendChild(svgEl("line", {
+    x1: pad.left, y1: yScale(state.target), x2: width - pad.right, y2: yScale(state.target),
+    stroke: "#111827", "stroke-dasharray": "8 6", "stroke-width": 2
+  }));
+  svg.appendChild(svgEl("polyline", {
+    points: linePath(points, "u", xScale, yScale),
+    fill: "none", stroke: "#94a3b8", "stroke-width": 2, "stroke-dasharray": "4 5"
+  }));
+  svg.appendChild(svgEl("polyline", {
+    points: linePath(points, "y", xScale, yScale),
+    fill: "none", stroke: "#2563eb", "stroke-width": 4,
+    "stroke-linecap": "round", "stroke-linejoin": "round"
+  }));
+
+  svg.appendChild(svgEl("text", {
+    x: width - pad.right - 8, y: yScale(state.target) - 8, "text-anchor": "end",
+    "font-size": 14, "font-weight": 700, fill: "#111827"
+  }, "目标值 r(t)"));
+  svg.appendChild(svgEl("text", {
+    x: pad.left + 10, y: pad.top + 18, "font-size": 14, "font-weight": 700, fill: "#2563eb"
+  }, "输出 y(t)"));
+  svg.appendChild(svgEl("text", {
+    x: pad.left + 10, y: pad.top + 40, "font-size": 13, fill: "#64748b"
+  }, "灰色虚线：控制量 u(t) 归一化"));
+}
+
+function update() {
+  const { points, metrics } = simulate();
+  const type = state.ki > 0.05 && state.kd > 0.05 ? "PID" : state.ki > 0.05 ? "PI" : state.kd > 0.05 ? "PD" : "P";
+  document.getElementById("controllerType").textContent = type;
+  document.getElementById("paramText").textContent = `Kp=${state.kp.toFixed(2)} / Ki=${state.ki.toFixed(2)} / Kd=${state.kd.toFixed(2)}`;
+  document.getElementById("overshoot").textContent = metrics.overshoot.toFixed(1) + "%";
+  document.getElementById("steadyError").textContent = metrics.steadyError.toFixed(3);
+  document.getElementById("riseTime").textContent = metrics.riseTime === null ? "未达到" : metrics.riseTime.toFixed(2) + " s";
+  document.getElementById("settleTime").textContent = metrics.settleTime === null ? "未稳定" : metrics.settleTime.toFixed(2) + " s";
+  drawChart(points);
+}
+
+function syncInputs() {
+  Object.keys(config).forEach(key => {
+    const input = document.getElementById(key);
+    if (input) input.value = state[key];
+    const digits = config[key].step < 0.1 ? 2 : 1;
+    const num = document.getElementById(key + "Num");
+    if (num) num.textContent = state[key].toFixed(digits);
+  });
+}
+
+function loadPreset(name) {
+  state.kp = presets[name].kp;
+  state.ki = presets[name].ki;
+  state.kd = presets[name].kd;
+  syncInputs();
+  update();
+}
+
+function resetAll() {
+  Object.keys(config).forEach(k => state[k] = config[k].value);
+  syncInputs();
+  update();
+}
+
+initSliders();
+update();
+</script>
+</body>
+</html>

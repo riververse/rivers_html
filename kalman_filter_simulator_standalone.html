@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>卡尔曼滤波一维估计在线仿真器</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #f8fafc;
+      --blue: #2563eb;
+      --blue2: #1d4ed8;
+      --green: #059669;
+      --amber: #d97706;
+      --red: #dc2626;
+      --purple: #7c3aed;
+      --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(37,99,235,0.10), transparent 26%),
+        radial-gradient(circle at 90% 10%, rgba(5,150,105,0.10), transparent 26%),
+        linear-gradient(135deg, #ffffff 0%, #f8fafc 45%, #e2e8f0 100%);
+    }
+    .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      color: #475569;
+      font-size: 14px;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--blue); display: inline-block; }
+    h1 {
+      margin: 16px 0 10px;
+      font-size: 42px;
+      line-height: 1.15;
+      letter-spacing: -1px;
+    }
+    .desc {
+      max-width: 880px;
+      color: #475569;
+      line-height: 1.75;
+      font-size: 16px;
+      margin: 0;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      min-width: 330px;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 16px;
+      padding: 10px 16px;
+      font-weight: 800;
+      font-size: 14px;
+      transition: 0.16s ease;
+      font-family: inherit;
+    }
+    .btn-dark { background: #0f172a; color: white; }
+    .btn-dark:hover { background: #334155; transform: translateY(-1px); }
+    .btn-light {
+      background: rgba(255,255,255,0.92);
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-light:hover { background: #f8fafc; transform: translateY(-1px); }
+    .btn-blue { background: #2563eb; color: white; }
+    .btn-blue:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .card {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel { padding: 20px; }
+    .typeBox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #eff6ff, #ecfdf5);
+      border: 1px solid #dbeafe;
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 22px;
+    }
+    .label-muted { color: #64748b; font-size: 13px; font-weight: 700; }
+    .typeValue { font-size: 32px; font-weight: 950; margin-top: 3px; letter-spacing: -0.5px; }
+    .formula {
+      background: white;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-weight: 900;
+      color: #334155;
+      box-shadow: 0 1px 8px rgba(15, 23, 42, 0.06);
+      font-family: Cambria, Georgia, "Times New Roman", serif;
+      white-space: nowrap;
+    }
+    .sliderGroup { margin: 20px 0; }
+    .sliderHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .sliderTitle {
+      font-size: 14px;
+      font-weight: 900;
+      color: #1e293b;
+    }
+    .hint {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.55;
+      margin-top: 3px;
+    }
+    .num {
+      min-width: 82px;
+      text-align: right;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 14px;
+      font-weight: 900;
+      color: #334155;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+    }
+    input[type="range"] { width: 100%; accent-color: #0f172a; }
+    .sectionLine {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      margin-top: 20px;
+    }
+    .sectionTitle {
+      font-size: 14px;
+      font-weight: 950;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+    .explainBox {
+      margin-top: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 14px;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .explainBox strong { color: #0f172a; }
+    .chartCard { padding: 22px; }
+    .chartTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    h2 { margin: 0 0 6px; font-size: 22px; font-weight: 950; letter-spacing: -0.2px; }
+    .small { color: #64748b; font-size: 14px; margin: 0; line-height: 1.6; }
+    .param {
+      white-space: nowrap;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 14px;
+      color: #334155;
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      text-align: right;
+    }
+    .chartWrap { width: 100%; height: 460px; }
+    svg { width: 100%; height: 100%; display: block; background: white; border-radius: 18px; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
+      color: #475569;
+      font-size: 13px;
+    }
+    .legendItem { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch { width: 22px; height: 4px; border-radius: 999px; display: inline-block; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .metric { padding: 16px; }
+    .metric .mLabel { color: #64748b; font-size: 12px; font-weight: 800; }
+    .metric .mValue { margin-top: 6px; font-size: 22px; font-weight: 950; letter-spacing: -0.3px; }
+    .metric .mNote { margin-top: 5px; color: #64748b; font-size: 12px; line-height: 1.5; }
+    .notes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 18px;
+    }
+    .note { border-radius: 18px; padding: 16px; border: 1px solid transparent; }
+    .note h3 { margin: 0; font-size: 18px; font-weight: 950; }
+    .note p { margin: 8px 0 0; color: #334155; font-size: 14px; line-height: 1.75; }
+    .blue { background: #eff6ff; border-color: #dbeafe; }
+    .blue h3 { color: #1d4ed8; }
+    .green { background: #ecfdf5; border-color: #d1fae5; }
+    .green h3 { color: #047857; }
+    .amber { background: #fffbeb; border-color: #fef3c7; }
+    .amber h3 { color: #b45309; }
+    .purple { background: #f5f3ff; border-color: #ede9fe; }
+    .purple h3 { color: #6d28d9; }
+
+    .simulator {
+      margin-top: 24px;
+      padding: 22px;
+    }
+    .simGrid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .formulaGrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .formulaStep {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 112px;
+    }
+    .stepTag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .formulaText {
+      font-family: Cambria, Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+    .stepExplain { color: #64748b; font-size: 13px; line-height: 1.6; margin-top: 8px; }
+    .probe {
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f8fafc, #ffffff);
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+    }
+    .probeTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .probeTitle { font-size: 17px; font-weight: 950; }
+    .probeIndex { font-family: Consolas, Monaco, monospace; color: #475569; font-weight: 900; }
+    .kvGrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .kv {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 15px;
+      padding: 12px;
+    }
+    .kv .k { color: #64748b; font-size: 12px; font-weight: 800; }
+    .kv .v { font-family: Consolas, Monaco, monospace; margin-top: 6px; font-size: 18px; font-weight: 950; color: #0f172a; }
+    .stepNarrative {
+      margin-top: 12px;
+      border-radius: 16px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.7;
+      border: 1px solid #dbeafe;
+    }
+    .bottomControls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .footerTip {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #0f172a;
+      color: white;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+    .footerTip span { color: #93c5fd; font-weight: 900; }
+
+    @media (max-width: 1050px) {
+      .top { flex-direction: column; align-items: stretch; }
+      .buttons { justify-content: flex-start; min-width: 0; }
+      .layout { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .notes { grid-template-columns: 1fr; }
+      .simGrid { grid-template-columns: 1fr; }
+      .formulaGrid { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      .page { padding: 18px; }
+      .chartTop { flex-direction: column; align-items: flex-start; }
+      .param { text-align: left; white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge"><span class="dot"></span> 一维卡尔曼滤波在线仿真</div>
+        <h1>拖动 Q / R / P，看卡尔曼估计如何变化</h1>
+        <p class="desc">
+          这个页面用最小的一维卡尔曼模型演示“预测 + 修正”。真实值按设定速度运动，传感器测量值带噪声；滤波器根据 Q、R、P 的设置，在“相信模型”和“相信测量”之间自动折中。
+        </p>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('trustSensor')">更信传感器</button>
+        <button class="btn-dark" onclick="loadPreset('smooth')">更平滑</button>
+        <button class="btn-dark" onclick="loadPreset('follow')">快速跟随</button>
+        <button class="btn-light" onclick="regenNoise()">重抽噪声</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox">
+          <div>
+            <div class="label-muted">当前滤波状态</div>
+            <div id="filterMode" class="typeValue">均衡</div>
+          </div>
+          <div class="formula">x̂ = x̂⁻ + K(z − x̂⁻)</div>
+        </div>
+
+        <div id="sliders"></div>
+
+        <div class="sectionLine">
+          <div class="sectionTitle">真实对象与传感器设置</div>
+          <div id="plantSliders"></div>
+        </div>
+
+        <div class="explainBox" id="liveExplain">
+          <strong>调参直觉：</strong>R 越大，越不相信传感器；Q 越大，越不相信“状态基本不变”的模型预测。
+        </div>
+      </div>
+
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop">
+            <div>
+              <h2>真实值 / 传感器测量值 / 卡尔曼估计值</h2>
+              <p class="small">蓝线：真实值；灰色点线：传感器测量值；红线：卡尔曼估计值。拖动 R 和 Q，观察平滑度与跟随速度的取舍。</p>
+            </div>
+            <div id="paramText" class="param">Q=0.050 / R=2.250 / P₀=5.00</div>
+          </div>
+          <div class="chartWrap">
+            <svg id="chart" viewBox="0 0 940 460"></svg>
+          </div>
+          <div class="legend">
+            <span class="legendItem"><span class="swatch" style="background:#2563eb"></span>真实值 true</span>
+            <span class="legendItem"><span class="swatch" style="background:#94a3b8"></span>传感器测量 z</span>
+            <span class="legendItem"><span class="swatch" style="background:#dc2626"></span>卡尔曼估计 x̂</span>
+            <span class="legendItem"><span class="swatch" style="background:#111827"></span>查看时刻游标</span>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="card metric">
+            <div class="mLabel">平均卡尔曼增益 K</div>
+            <div id="avgK" class="mValue">0.000</div>
+            <div class="mNote">越大越相信测量值</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">估计 RMSE</div>
+            <div id="rmseEst" class="mValue">0.000</div>
+            <div class="mNote">估计值相对真实值的误差</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">测量 RMSE</div>
+            <div id="rmseMea" class="mValue">0.000</div>
+            <div class="mNote">原始传感器相对真实值的误差</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">最终估计误差 P</div>
+            <div id="lastP" class="mValue">0.000</div>
+            <div class="mNote">滤波器认为自己还有多不确定</div>
+          </div>
+        </div>
+
+        <div class="card notes">
+          <div class="note blue">
+            <h3>拖大 R</h3>
+            <p>R 表示测量噪声方差。R 越大，滤波器越不信传感器，估计曲线更平滑，但真实值变化时跟随会变慢。</p>
+          </div>
+          <div class="note green">
+            <h3>拖大 Q</h3>
+            <p>Q 表示过程噪声方差。Q 越大，滤波器越认为模型预测不靠谱，因此更愿意跟着测量值走。</p>
+          </div>
+          <div class="note amber">
+            <h3>拖大 P₀</h3>
+            <p>P₀ 是初始估计误差。P₀ 越大，刚开始越“不自信”，初期卡尔曼增益更大，收敛更快。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card simulator">
+      <div class="chartTop">
+        <div>
+          <h2>卡尔曼滤波一维估计仿真器</h2>
+          <p class="small">下面把某一个采样点拆开看：先预测，再算增益，最后用测量值修正。拖动“查看第 k 步”可以逐帧理解每一步在做什么。</p>
+        </div>
+        <div class="param" id="stepSummary">k=0 / K=0.000 / P=0.000</div>
+      </div>
+
+      <div class="simGrid">
+        <div class="formulaGrid">
+          <div class="formulaStep">
+            <span class="stepTag">1. 预测</span>
+            <div class="formulaText">x̂<sub>k</sub><sup>−</sup> = x̂<sub>k−1</sub></div>
+            <div class="formulaText">P<sub>k</sub><sup>−</sup> = P<sub>k−1</sub> + Q</div>
+            <div class="stepExplain">这个一维模型默认“下一刻大概率接近上一刻”，Q 用来承认模型并不完美。</div>
+          </div>
+          <div class="formulaStep">
+            <span class="stepTag">2. 计算增益</span>
+            <div class="formulaText">K<sub>k</sub> = P<sub>k</sub><sup>−</sup> / (P<sub>k</sub><sup>−</sup> + R)</div>
+            <div class="stepExplain">K 是权重。K 大，测量值 z 的影响大；K 小，预测值 x̂⁻ 的影响大。</div>
+          </div>
+          <div class="formulaStep">
+            <span class="stepTag">3. 修正估计</span>
+            <div class="formulaText">x̂<sub>k</sub> = x̂<sub>k</sub><sup>−</sup> + K<sub>k</sub>(z<sub>k</sub> − x̂<sub>k</sub><sup>−</sup>)</div>
+            <div class="stepExplain">z − x̂⁻ 是“测量残差”。滤波器只吸收其中一部分，吸收比例就是 K。</div>
+          </div>
+          <div class="formulaStep">
+            <span class="stepTag">4. 更新不确定性</span>
+            <div class="formulaText">P<sub>k</sub> = (1 − K<sub>k</sub>)P<sub>k</sub><sup>−</sup></div>
+            <div class="stepExplain">完成一次测量修正后，滤波器通常会比预测时更自信，所以 P 会下降。</div>
+          </div>
+        </div>
+
+        <div class="probe">
+          <div class="probeTop">
+            <div class="probeTitle">单步数据查看</div>
+            <div id="probeIndex" class="probeIndex">k = 0</div>
+          </div>
+          <input id="sampleIndex" type="range" min="0" max="100" step="1" value="40" />
+          <div class="bottomControls">
+            <button class="btn-blue" id="playBtn" onclick="togglePlay()">播放</button>
+            <button class="btn-light" onclick="jumpToStart()">回到开头</button>
+            <button class="btn-light" onclick="jumpToMiddle()">跳到中间</button>
+          </div>
+
+          <div class="kvGrid">
+            <div class="kv"><div class="k">真实值 x</div><div id="probeTrue" class="v">0.000</div></div>
+            <div class="kv"><div class="k">测量值 z</div><div id="probeZ" class="v">0.000</div></div>
+            <div class="kv"><div class="k">预测 x̂⁻</div><div id="probePred" class="v">0.000</div></div>
+            <div class="kv"><div class="k">估计 x̂</div><div id="probeEst" class="v">0.000</div></div>
+            <div class="kv"><div class="k">残差 z−x̂⁻</div><div id="probeResidual" class="v">0.000</div></div>
+            <div class="kv"><div class="k">卡尔曼增益 K</div><div id="probeK" class="v">0.000</div></div>
+          </div>
+          <div id="stepNarrative" class="stepNarrative">这一帧的解释会显示在这里。</div>
+        </div>
+      </div>
+
+      <div class="footerTip">
+        <span>记住核心：</span>卡尔曼滤波不是简单平均，而是用 P、Q、R 动态计算一个权重 K。R 控制“测量可信度”，Q 控制“模型可信度”，P 表示“我现在对估计值有多不确定”。
+      </div>
+    </div>
+  </div>
+
+<script>
+const presets = {
+  trustSensor: { q: 0.08, r: 0.35, p0: 5, velocity: 1.2, sensorNoise: 1.5 },
+  smooth:      { q: 0.015, r: 8.0, p0: 5, velocity: 1.2, sensorNoise: 1.5 },
+  follow:      { q: 0.75, r: 2.25, p0: 5, velocity: 1.2, sensorNoise: 1.5 }
+};
+
+const config = {
+  q: { label: "过程噪声 Q", value: 0.05, min: 0.001, max: 1.5, step: 0.001, digits: 3, hint: "越大越不信模型预测，估计更愿意跟着测量走" },
+  r: { label: "测量噪声 R", value: 2.25, min: 0.05, max: 16, step: 0.05, digits: 2, hint: "越大越不信传感器，曲线更平滑但跟随更慢" },
+  p0: { label: "初始估计误差 P₀", value: 5.0, min: 0.05, max: 50, step: 0.05, digits: 2, hint: "越大表示初始越不自信，刚开始更容易被测量拉动" },
+  velocity: { label: "真实运动速度", value: 1.2, min: 0, max: 4, step: 0.05, digits: 2, hint: "真实值随时间变化的速度；当前滤波模型并不知道这个速度" },
+  sensorNoise: { label: "传感器噪声强度 σ", value: 1.5, min: 0, max: 5, step: 0.05, digits: 2, hint: "实际生成测量噪声的标准差；它不等于 R，R 是滤波器假设的方差" },
+  simTime: { label: "仿真时长", value: 12, min: 5, max: 25, step: 1, digits: 0, hint: "单位：秒" },
+  dt: { label: "采样周期 dt", value: 0.10, min: 0.02, max: 0.35, step: 0.01, digits: 2, hint: "采样越密，曲线越细；这里只用于演示" }
+};
+
+const state = {};
+Object.keys(config).forEach(k => state[k] = config[k].value);
+let simData = [];
+let noiseSeed = 20260515;
+let playTimer = null;
+let playing = false;
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function mulberry32(seed) {
+  return function() {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+function gaussianFactory(seed) {
+  const rand = mulberry32(seed);
+  let spare = null;
+  return function() {
+    if (spare !== null) { const v = spare; spare = null; return v; }
+    let u = 0, v = 0;
+    while (u === 0) u = rand();
+    while (v === 0) v = rand();
+    const mag = Math.sqrt(-2.0 * Math.log(u));
+    const z0 = mag * Math.cos(2.0 * Math.PI * v);
+    spare = mag * Math.sin(2.0 * Math.PI * v);
+    return z0;
+  }
+}
+
+function simulate() {
+  const n = Math.floor(state.simTime / state.dt);
+  const gaussian = gaussianFactory(noiseSeed);
+  const data = [];
+  let xHat = 0;
+  let P = state.p0;
+  let sumK = 0;
+  let sumErrEst2 = 0;
+  let sumErrMea2 = 0;
+
+  for (let k = 0; k <= n; k++) {
+    const t = k * state.dt;
+    const trueX = state.velocity * t;
+    const noise = gaussian() * state.sensorNoise;
+    const z = trueX + noise;
+
+    const xPred = xHat;
+    const pPred = P + state.q;
+    const K = pPred / (pPred + state.r);
+    const residual = z - xPred;
+    xHat = xPred + K * residual;
+    P = (1 - K) * pPred;
+
+    sumK += K;
+    sumErrEst2 += Math.pow(xHat - trueX, 2);
+    sumErrMea2 += Math.pow(z - trueX, 2);
+
+    data.push({
+      k, t, trueX, z, xPred, pPred, K, residual, xHat, P,
+      errEst: xHat - trueX,
+      errMea: z - trueX
+    });
+  }
+
+  const metrics = {
+    avgK: sumK / data.length,
+    rmseEst: Math.sqrt(sumErrEst2 / data.length),
+    rmseMea: Math.sqrt(sumErrMea2 / data.length),
+    lastP: data[data.length - 1]?.P ?? P
+  };
+  return { data, metrics };
+}
+
+function createSlider(key, containerId) {
+  const c = config[key];
+  const wrap = document.createElement("div");
+  wrap.className = "sliderGroup";
+  wrap.innerHTML = `
+    <div class="sliderHeader">
+      <div>
+        <div class="sliderTitle">${c.label}</div>
+        <div class="hint">${c.hint}</div>
+      </div>
+      <div id="${key}Num" class="num">${formatVal(key, state[key])}</div>
+    </div>
+    <input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">
+  `;
+  document.getElementById(containerId).appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e => {
+    state[key] = Number(e.target.value);
+    document.getElementById(key + "Num").textContent = formatVal(key, state[key]);
+    update();
+  });
+}
+
+function formatVal(key, value) { return Number(value).toFixed(config[key].digits); }
+function initSliders() {
+  ["r", "q", "p0"].forEach(k => createSlider(k, "sliders"));
+  ["velocity", "sensorNoise", "simTime", "dt"].forEach(k => createSlider(k, "plantSliders"));
+}
+
+function svgEl(name, attrs = {}, text = "") {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  if (text) el.textContent = text;
+  return el;
+}
+function linePath(points, key, xScale, yScale) {
+  return points.map(p => `${xScale(p.t).toFixed(1)},${yScale(p[key]).toFixed(1)}`).join(" ");
+}
+
+function drawChart(points) {
+  const svg = document.getElementById("chart");
+  svg.innerHTML = "";
+  const width = 940, height = 460;
+  const pad = { left: 62, right: 28, top: 28, bottom: 52 };
+  const innerW = width - pad.left - pad.right;
+  const innerH = height - pad.top - pad.bottom;
+  const values = points.flatMap(p => [p.trueX, p.z, p.xHat]);
+  let minY = Math.min(...values, 0);
+  let maxY = Math.max(...values, 1);
+  const margin = (maxY - minY || 1) * 0.12;
+  minY -= margin;
+  maxY += margin;
+
+  const xScale = t => pad.left + (t / state.simTime) * innerW;
+  const yScale = v => pad.top + (1 - (v - minY) / (maxY - minY)) * innerH;
+  const idx = Number(document.getElementById("sampleIndex")?.value || Math.floor(points.length / 2));
+  const selected = points[clamp(idx, 0, points.length - 1)] || points[0];
+
+  svg.appendChild(svgEl("rect", { x: 0, y: 0, width, height, fill: "white" }));
+
+  for (let i = 0; i < 6; i++) {
+    const gy = minY + ((maxY - minY) * i) / 5;
+    svg.appendChild(svgEl("line", {
+      x1: pad.left, y1: yScale(gy), x2: width - pad.right, y2: yScale(gy),
+      stroke: "#e2e8f0", "stroke-dasharray": "4 4"
+    }));
+    svg.appendChild(svgEl("text", {
+      x: pad.left - 10, y: yScale(gy) + 4, "text-anchor": "end",
+      "font-size": 12, fill: "#64748b"
+    }, gy.toFixed(1)));
+  }
+  for (let i = 0; i < 7; i++) {
+    const gx = state.simTime * i / 6;
+    svg.appendChild(svgEl("line", {
+      x1: xScale(gx), y1: pad.top, x2: xScale(gx), y2: height - pad.bottom,
+      stroke: "#f1f5f9"
+    }));
+    svg.appendChild(svgEl("text", {
+      x: xScale(gx), y: height - 18, "text-anchor": "middle",
+      "font-size": 12, fill: "#64748b"
+    }, gx.toFixed(0) + "s"));
+  }
+
+  svg.appendChild(svgEl("line", { x1: pad.left, y1: height - pad.bottom, x2: width - pad.right, y2: height - pad.bottom, stroke: "#0f172a", "stroke-width": 1.5 }));
+  svg.appendChild(svgEl("line", { x1: pad.left, y1: pad.top, x2: pad.left, y2: height - pad.bottom, stroke: "#0f172a", "stroke-width": 1.5 }));
+
+  svg.appendChild(svgEl("polyline", {
+    points: linePath(points, "z", xScale, yScale),
+    fill: "none", stroke: "#94a3b8", "stroke-width": 1.5,
+    "stroke-dasharray": "4 5", opacity: 0.80
+  }));
+  points.forEach((p, i) => {
+    if (i % Math.max(1, Math.floor(points.length / 80)) === 0) {
+      svg.appendChild(svgEl("circle", {
+        cx: xScale(p.t), cy: yScale(p.z), r: 2.3,
+        fill: "#94a3b8", opacity: 0.55
+      }));
+    }
+  });
+  svg.appendChild(svgEl("polyline", {
+    points: linePath(points, "trueX", xScale, yScale),
+    fill: "none", stroke: "#2563eb", "stroke-width": 3.2,
+    "stroke-linecap": "round", "stroke-linejoin": "round"
+  }));
+  svg.appendChild(svgEl("polyline", {
+    points: linePath(points, "xHat", xScale, yScale),
+    fill: "none", stroke: "#dc2626", "stroke-width": 3.8,
+    "stroke-linecap": "round", "stroke-linejoin": "round"
+  }));
+
+  if (selected) {
+    const cx = xScale(selected.t);
+    svg.appendChild(svgEl("line", { x1: cx, y1: pad.top, x2: cx, y2: height - pad.bottom, stroke: "#111827", "stroke-width": 1.4, "stroke-dasharray": "6 6", opacity: 0.75 }));
+    svg.appendChild(svgEl("circle", { cx, cy: yScale(selected.trueX), r: 5, fill: "#2563eb", stroke: "white", "stroke-width": 2 }));
+    svg.appendChild(svgEl("circle", { cx, cy: yScale(selected.xHat), r: 5, fill: "#dc2626", stroke: "white", "stroke-width": 2 }));
+    svg.appendChild(svgEl("circle", { cx, cy: yScale(selected.z), r: 4, fill: "#94a3b8", stroke: "white", "stroke-width": 1.5 }));
+  }
+
+  svg.appendChild(svgEl("text", { x: pad.left + 12, y: pad.top + 18, "font-size": 14, "font-weight": 800, fill: "#2563eb" }, "真实值"));
+  svg.appendChild(svgEl("text", { x: pad.left + 12, y: pad.top + 40, "font-size": 14, "font-weight": 800, fill: "#dc2626" }, "卡尔曼估计"));
+  svg.appendChild(svgEl("text", { x: pad.left + 12, y: pad.top + 62, "font-size": 13, fill: "#64748b" }, "灰色点线：传感器测量"));
+}
+
+function updateProbe() {
+  const slider = document.getElementById("sampleIndex");
+  if (!simData.length || !slider) return;
+  const maxIndex = simData.length - 1;
+  slider.max = maxIndex;
+  let idx = clamp(Number(slider.value), 0, maxIndex);
+  slider.value = idx;
+  const p = simData[idx];
+  document.getElementById("probeIndex").textContent = `k = ${p.k}, t = ${p.t.toFixed(2)}s`;
+  document.getElementById("stepSummary").textContent = `k=${p.k} / K=${p.K.toFixed(3)} / P=${p.P.toFixed(3)}`;
+  document.getElementById("probeTrue").textContent = p.trueX.toFixed(3);
+  document.getElementById("probeZ").textContent = p.z.toFixed(3);
+  document.getElementById("probePred").textContent = p.xPred.toFixed(3);
+  document.getElementById("probeEst").textContent = p.xHat.toFixed(3);
+  document.getElementById("probeResidual").textContent = p.residual.toFixed(3);
+  document.getElementById("probeK").textContent = p.K.toFixed(3);
+
+  const trust = p.K > 0.65 ? "这一步 K 很大，说明滤波器明显偏向相信测量值。" : p.K < 0.25 ? "这一步 K 较小，说明滤波器主要相信预测值，只吸收少量测量残差。" : "这一步 K 处在中间，预测和测量都在起作用。";
+  const equation = `x̂ = ${p.xPred.toFixed(3)} + ${p.K.toFixed(3)} × (${p.z.toFixed(3)} − ${p.xPred.toFixed(3)}) = ${p.xHat.toFixed(3)}`;
+  document.getElementById("stepNarrative").innerHTML = `<strong>本步修正：</strong>${equation}<br>${trust}`;
+}
+
+function classifyMode() {
+  const ratio = state.r / Math.max(state.q, 1e-9);
+  if (state.r > 6 && state.q < 0.08) return "强平滑";
+  if (state.q > 0.5) return "快跟随";
+  if (state.r < 0.8) return "信测量";
+  if (ratio > 100) return "信模型";
+  return "均衡";
+}
+
+function updateExplain(metrics) {
+  const relation = state.r > state.sensorNoise * state.sensorNoise * 2
+    ? "你设定的 R 明显大于实际传感器噪声方差，滤波器会偏保守。"
+    : state.r < Math.max(0.05, state.sensorNoise * state.sensorNoise * 0.5)
+      ? "你设定的 R 小于实际传感器噪声方差，滤波器会过度相信带噪声的测量。"
+      : "你设定的 R 和实际传感器噪声方差比较接近，参数假设相对合理。";
+  const qMsg = state.q > 0.5
+    ? "当前 Q 较大，估计值会更积极跟随变化，但平滑性会下降。"
+    : state.q < 0.03
+      ? "当前 Q 较小，估计值会更平滑，但真实值持续运动时容易滞后。"
+      : "当前 Q 适中，平滑和跟随之间比较均衡。";
+  document.getElementById("liveExplain").innerHTML = `<strong>当前判断：</strong>${relation}<br>${qMsg}<br>平均 K ≈ ${metrics.avgK.toFixed(3)}，K 越大代表测量值权重越高。`;
+}
+
+function update() {
+  const result = simulate();
+  simData = result.data;
+  const metrics = result.metrics;
+  document.getElementById("filterMode").textContent = classifyMode();
+  document.getElementById("paramText").textContent = `Q=${state.q.toFixed(3)} / R=${state.r.toFixed(2)} / P₀=${state.p0.toFixed(2)} / σ=${state.sensorNoise.toFixed(2)}`;
+  document.getElementById("avgK").textContent = metrics.avgK.toFixed(3);
+  document.getElementById("rmseEst").textContent = metrics.rmseEst.toFixed(3);
+  document.getElementById("rmseMea").textContent = metrics.rmseMea.toFixed(3);
+  document.getElementById("lastP").textContent = metrics.lastP.toFixed(3);
+
+  const sample = document.getElementById("sampleIndex");
+  if (sample) {
+    const oldRatio = Number(sample.value) / Math.max(1, Number(sample.max || 1));
+    sample.max = Math.max(0, simData.length - 1);
+    sample.value = Math.round(oldRatio * Number(sample.max));
+  }
+  updateExplain(metrics);
+  updateProbe();
+  drawChart(simData);
+}
+
+function syncInputs() {
+  Object.keys(config).forEach(key => {
+    const input = document.getElementById(key);
+    if (input) input.value = state[key];
+    const num = document.getElementById(key + "Num");
+    if (num) num.textContent = formatVal(key, state[key]);
+  });
+}
+
+function loadPreset(name) {
+  const p = presets[name];
+  Object.assign(state, p);
+  syncInputs();
+  update();
+}
+function resetAll() {
+  Object.keys(config).forEach(k => state[k] = config[k].value);
+  noiseSeed = 20260515;
+  syncInputs();
+  update();
+}
+function regenNoise() {
+  noiseSeed = (noiseSeed + 9973) % 2147483647;
+  update();
+}
+function jumpToStart() {
+  const s = document.getElementById("sampleIndex");
+  s.value = 0;
+  updateProbe();
+  drawChart(simData);
+}
+function jumpToMiddle() {
+  const s = document.getElementById("sampleIndex");
+  s.value = Math.floor(Number(s.max) / 2);
+  updateProbe();
+  drawChart(simData);
+}
+function togglePlay() {
+  playing = !playing;
+  document.getElementById("playBtn").textContent = playing ? "暂停" : "播放";
+  if (playing) {
+    playTimer = setInterval(() => {
+      const s = document.getElementById("sampleIndex");
+      let v = Number(s.value) + 1;
+      if (v > Number(s.max)) v = 0;
+      s.value = v;
+      updateProbe();
+      drawChart(simData);
+    }, 120);
+  } else {
+    clearInterval(playTimer);
+    playTimer = null;
+  }
+}
+
+initSliders();
+document.getElementById("sampleIndex").addEventListener("input", () => { updateProbe(); drawChart(simData); });
+update();
+</script>
+</body>
+</html>

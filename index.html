@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>好想玩原神</title>
-  <link rel="icon" href="./favicon.png?v=3" type="image/png" />
-  <link rel="shortcut icon" href="./favicon.png?v=3" type="image/png" />
+  <link rel="icon" href="./favicon.png?v=4" type="image/png" />
+  <link rel="shortcut icon" href="./favicon.png?v=4" type="image/png" />
 
   <style>
     * {
@@ -31,20 +31,20 @@
       pointer-events: none;
       user-select: none;
       filter: grayscale(100%);
-      opacity: 0.34;
+      opacity: 0.38;
     }
 
     .decor-left {
-      width: 420px;
-      left: 5vw;
-      bottom: 6vh;
+      width: 460px;
+      left: 10vw;
+      bottom: 8vh;
       transform: rotate(-4deg);
     }
 
     .decor-right {
-      width: 460px;
-      right: 4vw;
-      bottom: 8vh;
+      width: 500px;
+      right: 10vw;
+      bottom: 9vh;
       transform: rotate(3deg);
     }
 
@@ -142,19 +142,31 @@
       text-align: center;
     }
 
+    .footer-note a {
+      color: #5b6ee1;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
+
     @media (max-width: 900px) {
+      .decor {
+        opacity: 0.22;
+      }
+
       .decor-left {
-        width: 300px;
-        left: -60px;
-        bottom: 80px;
-        opacity: 0.18;
+        width: 320px;
+        left: 2vw;
+        bottom: 90px;
       }
 
       .decor-right {
-        width: 330px;
-        right: -80px;
-        bottom: 40px;
-        opacity: 0.18;
+        width: 350px;
+        right: 2vw;
+        bottom: 50px;
       }
 
       .container {
@@ -223,14 +235,17 @@
 
     <h2 class="section-title">Rivers OSAL</h2>
     <div class="grid">
-      <a class="card" href="./rivers_timer_queue_knowledge_notes_v4_links.html">
+      <a class="card" href="./rivers_timer_queue_knowledge_notes_v4.html">
         <span class="tag">Rivers OSAL</span>
         <h2>Rivers Timer / Queue 知识整理</h2>
         <p>整理 rivers_timer 和 rivers_queue 的运行流程、接口设计、使用方式和软件架构思路。</p>
       </a>
     </div>
 
-    <p class="footer-note">Powered by GitHub Pages · Rivers HTML</p>
+    <p class="footer-note">
+      Powered by GitHub Pages · 
+      <a href="https://github.com/riververse/rivers_html" target="_blank">riververse / rivers_html</a>
+    </p>
   </main>
 </body>
 </html>

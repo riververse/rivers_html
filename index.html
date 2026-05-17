@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>好想玩原神</title>
-  <link rel="icon" href="./favicon.png?v=5" type="image/png" />
-  <link rel="shortcut icon" href="./favicon.png?v=5" type="image/png" />
+  <link rel="icon" href="./favicon.png?v=6" type="image/png" />
+  <link rel="shortcut icon" href="./favicon.png?v=6" type="image/png" />
 
   <style>
     * {
@@ -25,35 +25,12 @@
       overflow-x: hidden;
     }
 
-    .decor {
-      position: fixed;
-      z-index: 0;
-      pointer-events: none;
-      user-select: none;
-      filter: grayscale(100%);
-      opacity: 0.38;
-    }
-
-    .decor-left {
-      width: 460px;
-      left: 5vw;
-      bottom: 22vh;
-      transform: rotate(-4deg);
-    }
-
-    .decor-right {
-      width: 500px;
-      right: 4vw;
-      bottom: 20vh;
-      transform: rotate(3deg);
-    }
-
     .container {
       position: relative;
       z-index: 2;
       max-width: 1080px;
       margin: 64px auto;
-      padding: 0 28px 120px;
+      padding: 0 28px 56px;
     }
 
     .hero {
@@ -135,8 +112,38 @@
       font-size: 14px;
     }
 
+    .decor-zone {
+      position: relative;
+      height: 460px;
+      margin: 42px 0 10px;
+      overflow: visible;
+    }
+
+    .decor-img {
+      position: absolute;
+      bottom: 0;
+      max-height: 430px;
+      object-fit: contain;
+      filter: grayscale(100%);
+      opacity: 0.42;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .decor-left {
+      left: 0;
+      width: min(42vw, 430px);
+      transform: rotate(-3deg);
+    }
+
+    .decor-right {
+      right: 0;
+      width: min(46vw, 500px);
+      transform: rotate(3deg);
+    }
+
     .footer-note {
-      margin-top: 46px;
+      margin-top: 8px;
       color: #7b8190;
       font-size: 14px;
       text-align: center;
@@ -153,25 +160,9 @@
     }
 
     @media (max-width: 900px) {
-      .decor {
-        opacity: 0.22;
-      }
-
-      .decor-left {
-        width: 320px;
-        left: -40px;
-        bottom: 22vh;
-      }
-
-      .decor-right {
-        width: 350px;
-        right: -50px;
-        bottom: 20vh;
-      }
-
       .container {
         margin: 36px auto;
-        padding: 0 18px 80px;
+        padding: 0 18px 48px;
       }
 
       .hero {
@@ -181,14 +172,31 @@
       h1 {
         font-size: 32px;
       }
+
+      .decor-zone {
+        height: 320px;
+        margin-top: 34px;
+      }
+
+      .decor-img {
+        max-height: 290px;
+        opacity: 0.32;
+      }
+
+      .decor-left {
+        left: -16px;
+        width: 50vw;
+      }
+
+      .decor-right {
+        right: -18px;
+        width: 54vw;
+      }
     }
   </style>
 </head>
 
 <body>
-  <img class="decor decor-left" src="./decor_left.jpg" alt="左侧装饰图" />
-  <img class="decor decor-right" src="./decor_right.jpg" alt="右侧装饰图" />
-
   <main class="container">
     <section class="hero">
       <h1>好想玩原神</h1>
@@ -241,6 +249,11 @@
         <p>整理 rivers_timer 和 rivers_queue 的运行流程、接口设计、使用方式和软件架构思路。</p>
       </a>
     </div>
+
+    <section class="decor-zone" aria-hidden="true">
+      <img class="decor-img decor-left" src="./decor_left.jpg" alt="" />
+      <img class="decor-img decor-right" src="./decor_right.jpg" alt="" />
+    </section>
 
     <p class="footer-note">
       Powered by GitHub Pages ·

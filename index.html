@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>好想玩原神</title>
-  <link rel="icon" href="./favicon.png?v=6" type="image/png" />
-  <link rel="shortcut icon" href="./favicon.png?v=6" type="image/png" />
+  <link rel="icon" href="./favicon.png?v=7" type="image/png" />
+  <link rel="shortcut icon" href="./favicon.png?v=7" type="image/png" />
 
   <style>
     * {
@@ -25,12 +25,49 @@
       overflow-x: hidden;
     }
 
+    .page {
+      position: relative;
+      min-height: 100vh;
+      overflow: visible;
+    }
+
+    .decor-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+      overflow: visible;
+    }
+
+    .decor {
+      position: absolute;
+      filter: grayscale(100%);
+      opacity: 0.38;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .decor-left {
+      width: 520px;
+      left: 4vw;
+      top: 780px;
+      transform: rotate(-3deg);
+    }
+
+    .decor-right {
+      width: 560px;
+      right: 3vw;
+      top: 760px;
+      transform: rotate(3deg);
+    }
+
     .container {
       position: relative;
       z-index: 2;
       max-width: 1080px;
-      margin: 64px auto;
-      padding: 0 28px 56px;
+      margin: 64px auto 0;
+      padding: 0 28px 360px;
     }
 
     .hero {
@@ -112,38 +149,10 @@
       font-size: 14px;
     }
 
-    .decor-zone {
-      position: relative;
-      height: 460px;
-      margin: 42px 0 10px;
-      overflow: visible;
-    }
-
-    .decor-img {
-      position: absolute;
-      bottom: 0;
-      max-height: 430px;
-      object-fit: contain;
-      filter: grayscale(100%);
-      opacity: 0.42;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .decor-left {
-      left: 0;
-      width: min(42vw, 430px);
-      transform: rotate(-3deg);
-    }
-
-    .decor-right {
-      right: 0;
-      width: min(46vw, 500px);
-      transform: rotate(3deg);
-    }
-
     .footer-note {
-      margin-top: 8px;
+      position: relative;
+      z-index: 3;
+      margin-top: 56px;
       color: #7b8190;
       font-size: 14px;
       text-align: center;
@@ -161,8 +170,8 @@
 
     @media (max-width: 900px) {
       .container {
-        margin: 36px auto;
-        padding: 0 18px 48px;
+        margin: 36px auto 0;
+        padding: 0 18px 300px;
       }
 
       .hero {
@@ -173,92 +182,90 @@
         font-size: 32px;
       }
 
-      .decor-zone {
-        height: 320px;
-        margin-top: 34px;
-      }
-
-      .decor-img {
-        max-height: 290px;
-        opacity: 0.32;
+      .decor {
+        opacity: 0.24;
       }
 
       .decor-left {
-        left: -16px;
-        width: 50vw;
+        width: 360px;
+        left: -60px;
+        top: 850px;
       }
 
       .decor-right {
-        right: -18px;
-        width: 54vw;
+        width: 390px;
+        right: -80px;
+        top: 900px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="container">
-    <section class="hero">
-      <h1>好想玩原神</h1>
-      <p class="desc">
-        这里整理了一些嵌入式、控制算法、信号处理和知识可视化页面。点击卡片即可进入对应的在线仿真或知识整理页面。
+  <div class="page">
+    <div class="decor-layer" aria-hidden="true">
+      <img class="decor decor-left" src="./decor_left.jpg" alt="" />
+      <img class="decor decor-right" src="./decor_right.jpg" alt="" />
+    </div>
+
+    <main class="container">
+      <section class="hero">
+        <h1>好想玩原神</h1>
+        <p class="desc">
+          这里整理了一些嵌入式、控制算法、信号处理和知识可视化页面。点击卡片即可进入对应的在线仿真或知识整理页面。
+        </p>
+      </section>
+
+      <h2 class="section-title">控制算法</h2>
+      <div class="grid">
+        <a class="card" href="./pid_simulator_standalone.html">
+          <span class="tag">PID Control</span>
+          <h2>PID 在线仿真器</h2>
+          <p>通过调节 Kp、Ki、Kd，观察系统响应、超调量、稳态误差和收敛速度的变化。</p>
+        </a>
+
+        <a class="card" href="./kalman_filter_simulator_standalone.html">
+          <span class="tag">Kalman Filter</span>
+          <h2>卡尔曼滤波仿真器</h2>
+          <p>通过调节 Q、R、P 等参数，理解预测、测量、估计和滤波效果之间的关系。</p>
+        </a>
+      </div>
+
+      <h2 class="section-title">信号处理与滤波</h2>
+      <div class="grid">
+        <a class="card" href="./fft_time_frequency_visualizer_v2.html">
+          <span class="tag">FFT</span>
+          <h2>FFT 时域 / 频域可视化</h2>
+          <p>直观看到时域信号如何分解到频域，理解频率成分、幅值谱和采样参数的影响。</p>
+        </a>
+
+        <a class="card" href="./iir_lowpass_tuner.html">
+          <span class="tag">IIR Low-pass</span>
+          <h2>IIR 低通滤波器参数调节器</h2>
+          <p>通过调节滤波参数，观察低通滤波对噪声、响应速度和信号平滑程度的影响。</p>
+        </a>
+
+        <a class="card" href="./butterworth_chebyshev_filter_compare.html">
+          <span class="tag">Butterworth / Chebyshev</span>
+          <h2>巴特沃斯 / 切比雪夫滤波器对比</h2>
+          <p>对比两类经典滤波器在通带平坦性、过渡带陡峭程度和纹波特性上的差异。</p>
+        </a>
+      </div>
+
+      <h2 class="section-title">Rivers OSAL</h2>
+      <div class="grid">
+        <a class="card" href="./rivers_timer_queue_knowledge_notes_v4.html">
+          <span class="tag">Rivers OSAL</span>
+          <h2>Rivers Timer / Queue 知识整理</h2>
+          <p>整理 rivers_timer 和 rivers_queue 的运行流程、接口设计、使用方式和软件架构思路。</p>
+        </a>
+      </div>
+
+      <p class="footer-note">
+        Powered by GitHub Pages ·
+        <a href="https://github.com/riververse/rivers_html" target="_blank">riververse / rivers_html</a>
       </p>
-    </section>
-
-    <h2 class="section-title">控制算法</h2>
-    <div class="grid">
-      <a class="card" href="./pid_simulator_standalone.html">
-        <span class="tag">PID Control</span>
-        <h2>PID 在线仿真器</h2>
-        <p>通过调节 Kp、Ki、Kd，观察系统响应、超调量、稳态误差和收敛速度的变化。</p>
-      </a>
-
-      <a class="card" href="./kalman_filter_simulator_standalone.html">
-        <span class="tag">Kalman Filter</span>
-        <h2>卡尔曼滤波仿真器</h2>
-        <p>通过调节 Q、R、P 等参数，理解预测、测量、估计和滤波效果之间的关系。</p>
-      </a>
-    </div>
-
-    <h2 class="section-title">信号处理与滤波</h2>
-    <div class="grid">
-      <a class="card" href="./fft_time_frequency_visualizer_v2.html">
-        <span class="tag">FFT</span>
-        <h2>FFT 时域 / 频域可视化</h2>
-        <p>直观看到时域信号如何分解到频域，理解频率成分、幅值谱和采样参数的影响。</p>
-      </a>
-
-      <a class="card" href="./iir_lowpass_tuner.html">
-        <span class="tag">IIR Low-pass</span>
-        <h2>IIR 低通滤波器参数调节器</h2>
-        <p>通过调节滤波参数，观察低通滤波对噪声、响应速度和信号平滑程度的影响。</p>
-      </a>
-
-      <a class="card" href="./butterworth_chebyshev_filter_compare.html">
-        <span class="tag">Butterworth / Chebyshev</span>
-        <h2>巴特沃斯 / 切比雪夫滤波器对比</h2>
-        <p>对比两类经典滤波器在通带平坦性、过渡带陡峭程度和纹波特性上的差异。</p>
-      </a>
-    </div>
-
-    <h2 class="section-title">Rivers OSAL</h2>
-    <div class="grid">
-      <a class="card" href="./rivers_timer_queue_knowledge_notes_v4.html">
-        <span class="tag">Rivers OSAL</span>
-        <h2>Rivers Timer / Queue 知识整理</h2>
-        <p>整理 rivers_timer 和 rivers_queue 的运行流程、接口设计、使用方式和软件架构思路。</p>
-      </a>
-    </div>
-
-    <section class="decor-zone" aria-hidden="true">
-      <img class="decor-img decor-left" src="./decor_left.jpg" alt="" />
-      <img class="decor-img decor-right" src="./decor_right.jpg" alt="" />
-    </section>
-
-    <p class="footer-note">
-      Powered by GitHub Pages ·
-      <a href="https://github.com/riververse/rivers_html" target="_blank">riververse / rivers_html</a>
-    </p>
-  </main>
+    </main>
+  </div>
 </body>
 </html>

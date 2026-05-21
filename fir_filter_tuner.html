@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIR 滤波器参数调节器</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --blue:#2563eb;
+      --green:#059669;
+      --amber:#d97706;
+      --red:#dc2626;
+      --purple:#7c3aed;
+      --shadow:0 2px 14px rgba(15,23,42,.07);
+    }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 4%, rgba(37,99,235,.10), transparent 24%),
+        radial-gradient(circle at 88% 6%, rgba(124,58,237,.10), transparent 24%),
+        radial-gradient(circle at 58% 0%, rgba(5,150,105,.08), transparent 24%),
+        linear-gradient(135deg,#ffffff 0%,#f8fafc 48%,#e2e8f0 100%);
+    }
+    .page{ max-width:1360px; margin:0 auto; padding:28px; }
+    .top{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:24px;
+      align-items:end;
+      margin-bottom:22px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#475569;
+      font-size:14px;
+      box-shadow:0 1px 4px rgba(15,23,42,.05);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:42px;
+      line-height:1.12;
+      letter-spacing:-1px;
+    }
+    .desc{
+      max-width:930px;
+      color:#475569;
+      line-height:1.8;
+      font-size:16px;
+      margin:0;
+    }
+    .formulaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .pill{
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      color:#1d4ed8;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .pill.green{ border-color:#bbf7d0; background:#ecfdf5; color:#047857; }
+    .pill.amber{ border-color:#fed7aa; background:#fff7ed; color:#b45309; }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      max-width:510px;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:15px;
+      padding:10px 15px;
+      font-weight:800;
+      font-size:14px;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-dark{ background:#0f172a; color:#fff; }
+    .btn-dark:hover{ background:#334155; transform:translateY(-1px); }
+    .btn-light{ background:#fff; color:#334155; border:1px solid #cbd5e1; }
+    .btn-light:hover{ background:#f8fafc; transform:translateY(-1px); }
+
+    .layout{
+      display:grid;
+      grid-template-columns:380px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+    }
+    .panel{ padding:20px; }
+    .typeBox{
+      background:linear-gradient(135deg,#eff6ff,#f5f3ff 55%,#ecfdf5);
+      border-radius:20px;
+      padding:16px;
+      margin-bottom:18px;
+      border:1px solid #dbeafe;
+    }
+    .label-muted{ color:#64748b; font-size:14px; }
+    .typeValue{ font-size:30px; font-weight:950; margin-top:3px; letter-spacing:-.4px; }
+    .formula{
+      margin-top:12px;
+      background:rgba(255,255,255,.84);
+      border:1px solid rgba(226,232,240,.85);
+      border-radius:15px;
+      padding:11px 12px;
+      font-weight:900;
+      color:#334155;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .sliderGroup{ margin:19px 0; }
+    .sliderHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .sliderTitle{ font-size:14px; font-weight:900; color:#1e293b; }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+      margin-top:3px;
+    }
+    .num{
+      min-width:86px;
+      text-align:right;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      font-weight:900;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:12px;
+      padding:6px 9px;
+    }
+    input[type="range"]{ width:100%; accent-color:#0f172a; }
+    select{
+      width:100%;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      color:#0f172a;
+      font-weight:800;
+      outline:none;
+    }
+    .toggleBox{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:12px 13px;
+      margin-top:15px;
+    }
+    .toggleBox label{ font-size:14px; font-weight:900; color:#1e293b; }
+    input[type="checkbox"]{ width:19px; height:19px; accent-color:#2563eb; }
+    .sectionLine{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:20px;
+    }
+    .sectionTitle{
+      font-size:14px;
+      font-weight:950;
+      color:#334155;
+      margin-bottom:10px;
+    }
+    .chartCard{ padding:22px; }
+    .chartTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    h2{ margin:0 0 6px; font-size:22px; font-weight:950; }
+    .small{ color:#64748b; font-size:14px; margin:0; line-height:1.6; }
+    .param{
+      white-space:nowrap;
+      font-family:Consolas,Monaco,monospace;
+      font-size:13px;
+      color:#334155;
+      background:#f1f5f9;
+      border-radius:16px;
+      padding:10px 13px;
+      font-weight:900;
+    }
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      margin:13px 0 6px;
+      color:#475569;
+      font-size:13px;
+      font-weight:800;
+    }
+    .leg{ display:inline-flex; align-items:center; gap:7px; }
+    .swatch{ width:22px; height:0; border-top:4px solid #000; border-radius:999px; }
+    .swatch.dashed{ border-top-style:dashed; }
+    .chartWrap{ width:100%; height:720px; }
+    svg{ width:100%; height:100%; display:block; background:#fff; border-radius:18px; }
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin:18px 0;
+    }
+    .metric{ padding:16px; }
+    .mLabel{ color:#64748b; font-size:12px; }
+    .mValue{
+      margin-top:6px;
+      font-size:21px;
+      font-weight:950;
+      font-family:Consolas,Monaco,monospace;
+    }
+    .mNote{ margin-top:5px; color:#64748b; font-size:12px; line-height:1.5; }
+    .notes{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+      padding:18px;
+    }
+    .note{ border-radius:18px; padding:16px; border:1px solid transparent; }
+    .note h3{ margin:0; font-size:18px; font-weight:950; }
+    .note p{ margin:8px 0 0; color:#334155; font-size:14px; line-height:1.72; }
+    .blue{ background:#eff6ff; border-color:#dbeafe; }
+    .blue h3{ color:#1d4ed8; }
+    .green{ background:#ecfdf5; border-color:#bbf7d0; }
+    .green h3{ color:#047857; }
+    .amber{ background:#fffbeb; border-color:#fde68a; }
+    .amber h3{ color:#b45309; }
+    .purple{ background:#f5f3ff; border-color:#ddd6fe; }
+    .purple h3{ color:#6d28d9; }
+    .red{ background:#fef2f2; border-color:#fecaca; }
+    .red h3{ color:#b91c1c; }
+
+    .theory{ margin-top:18px; padding:18px; }
+    .theoryTitle{ margin:0 0 12px; font-size:22px; font-weight:950; }
+    .theoryGrid{
+      display:grid;
+      grid-template-columns:1.15fr 1fr;
+      gap:16px;
+      margin-bottom:16px;
+    }
+    .theoryBlock{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+    .theoryBlock h3{ margin:0 0 8px; font-size:17px; font-weight:950; }
+    .theoryBlock p, .theoryBlock li{ color:#334155; font-size:14px; line-height:1.75; }
+    .theoryBlock ul{ margin:8px 0 0 18px; padding:0; }
+    .mono{
+      font-family:Consolas,Monaco,monospace;
+      background:#f1f5f9;
+      border-radius:10px;
+      padding:2px 6px;
+      font-size:13px;
+      font-weight:900;
+    }
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    .step{
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:14px;
+    }
+    .step .idx{
+      width:28px; height:28px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:13px;
+      font-weight:950;
+      background:#eff6ff;
+      color:#1d4ed8;
+      margin-bottom:8px;
+    }
+    .step h4{ margin:0 0 6px; font-size:15px; font-weight:950; }
+    .step p{ margin:0; color:#475569; font-size:13px; line-height:1.65; }
+
+    @media (max-width:1100px){
+      .top{ grid-template-columns:1fr; align-items:stretch; }
+      .buttons{ justify-content:flex-start; max-width:none; }
+      .layout{ grid-template-columns:1fr; }
+      .metrics{ grid-template-columns:repeat(2,1fr); }
+      .notes{ grid-template-columns:1fr; }
+      .theoryGrid{ grid-template-columns:1fr; }
+      .steps{ grid-template-columns:1fr 1fr; }
+      h1{ font-size:32px; }
+      .page{ padding:18px; }
+      .chartTop{ flex-direction:column; align-items:flex-start; }
+      .param{ white-space:normal; }
+      .chartWrap{ height:690px; }
+    }
+    @media (max-width:700px){
+      .steps{ grid-template-columns:1fr; }
+      .metrics{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <div class="badge">FIR 滤波器参数调节器</div>
+        <h1>拖动阶数、截止频率和窗函数，观察“平滑 ↔ 延迟 ↔ 计算量”的取舍</h1>
+        <p class="desc">
+          FIR 的核心思想是：当前输出只由当前输入和过去有限个输入共同决定，不使用历史输出反馈。
+          它可以做最简单的滑动平均，也可以通过 sinc + 窗函数设计成更标准的低通滤波器。
+          在 MCU 和工业传感器场景里，FIR 的行为稳定、相位关系更好理解，但阶数越高，延迟和计算量也越明显。
+        </p>
+        <div class="formulaRow">
+          <span class="pill">y[n] = Σ b[k] · x[n-k]</span>
+          <span class="pill green">N 大 → 更平滑，但更慢</span>
+          <span class="pill amber">FIR 不反馈历史输出，天然稳定</span>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn-dark" onclick="loadPreset('avg5')">5 点平均</button>
+        <button class="btn-dark" onclick="loadPreset('avg21')">21 点强平滑</button>
+        <button class="btn-dark" onclick="loadPreset('lowpass')">窗函数低通</button>
+        <button class="btn-dark" onclick="loadPreset('step')">阶跃响应</button>
+        <button class="btn-dark" onclick="loadPreset('noise')">噪声抑制</button>
+        <button class="btn-dark" onclick="loadPreset('sine')">正弦延迟</button>
+        <button class="btn-light" onclick="rerollNoise()">重抽噪声</button>
+        <button class="btn-light" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card panel">
+        <div class="typeBox">
+          <div class="label-muted">当前滤波器</div>
+          <div id="filterName" class="typeValue">FIR 有限冲激响应</div>
+          <div class="formula">
+            通用形式： y[n] = b0x[n] + b1x[n-1] + ... + bN-1x[n-N+1]<br>
+            滑动平均： b[k] = 1 / N<br>
+            窗函数低通： ideal sinc × window，再归一化 DC 增益
+          </div>
+        </div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">FIR 类型</div>
+              <div class="hint">滑动平均更直观；窗函数低通更接近实际滤波器设计。</div>
+            </div>
+            <div id="filterTypeNum" class="num">滑动平均</div>
+          </div>
+          <select id="filterTypeSelect">
+            <option value="movingAverage" selected>滑动平均 FIR</option>
+            <option value="lowpass">窗函数低通 FIR</option>
+          </select>
+        </div>
+
+        <div id="sliders"></div>
+
+        <div class="sliderGroup" id="windowGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">窗函数</div>
+              <div class="hint">只在“窗函数低通 FIR”模式下生效；它影响过渡带和旁瓣抑制。</div>
+            </div>
+            <div id="windowNum" class="num">Hamming</div>
+          </div>
+          <select id="windowSelect">
+            <option value="rect">Rectangular 矩形窗</option>
+            <option value="hann">Hann 汉宁窗</option>
+            <option value="hamming" selected>Hamming 海明窗</option>
+            <option value="blackman">Blackman 布莱克曼窗</option>
+          </select>
+        </div>
+
+        <div class="sliderGroup">
+          <div class="sliderHeader">
+            <div>
+              <div class="sliderTitle">输入信号类型</div>
+              <div class="hint">阶跃看响应慢感，正弦看相位延迟，噪声看平滑效果。</div>
+            </div>
+            <div id="signalTypeNum" class="num">正弦</div>
+          </div>
+          <select id="signalTypeSelect">
+            <option value="sine" selected>正弦</option>
+            <option value="step">阶跃</option>
+            <option value="square">方波</option>
+            <option value="ramp">斜坡</option>
+            <option value="sensor">传感器噪声</option>
+          </select>
+        </div>
+
+        <div class="toggleBox">
+          <div>
+            <label for="showInput">显示原始输入 x[n]</label>
+            <div class="hint">灰色线：带噪声的采样输入</div>
+          </div>
+          <input id="showInput" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showOutput">显示 FIR 输出 y[n]</label>
+            <div class="hint">蓝色线：有限长度卷积后的输出</div>
+          </div>
+          <input id="showOutput" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showError">显示误差曲线 e[n]</label>
+            <div class="hint">中间副图：e[n] = y[n] - true[n]</div>
+          </div>
+          <input id="showError" type="checkbox" checked>
+        </div>
+        <div class="toggleBox">
+          <div>
+            <label for="showCoeffs">显示 FIR 系数 b[k]</label>
+            <div class="hint">底部副图：有限冲激响应，也就是 FIR 的系数序列</div>
+          </div>
+          <input id="showCoeffs" type="checkbox" checked>
+        </div>
+
+        <div class="sectionLine">
+          <div class="sectionTitle">你应该重点观察什么？</div>
+          <div class="hint">
+            1）看 N：N 越大，输出越平滑，但群延迟越大；<br>
+            2）看 fc：fc 越低，越像强低通，快速变化被压得越明显；<br>
+            3）看窗函数：窗函数低通不是简单平均，系数会呈现中间大、两边小的形状；<br>
+            4）看底部系数图：FIR 的“冲激响应”就是有限个 b[k]。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card chartCard">
+          <div class="chartTop">
+            <div>
+              <h2>输入 / 理想 / FIR 输出波形</h2>
+              <p class="small">
+                主图里：黑色虚线是真实理想信号 <span class="mono">true[n]</span>，灰色是带噪原始输入 <span class="mono">x[n]</span>，
+                蓝色是 FIR 输出 <span class="mono">y[n]</span>。中间副图显示误差，底部副图显示 FIR 系数 <span class="mono">b[k]</span>。
+              </p>
+            </div>
+            <div id="paramText" class="param">N=9 / fc=5.00Hz / Fs=100Hz / delay=40.0ms</div>
+          </div>
+
+          <div class="legend">
+            <span class="leg"><span class="swatch dashed" style="border-color:#111827"></span>理想真实信号 true[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#94a3b8"></span>原始输入 x[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#2563eb"></span>FIR 输出 y[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#dc2626"></span>误差 e[n]</span>
+            <span class="leg"><span class="swatch" style="border-color:#7c3aed"></span>系数 b[k]</span>
+          </div>
+
+          <div class="chartWrap">
+            <svg id="chart" viewBox="0 0 920 720"></svg>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="card metric">
+            <div class="mLabel">FIR 长度 N</div>
+            <div id="tapValue" class="mValue">9</div>
+            <div class="mNote">需要保存 N 个输入样本，阶数通常为 N-1。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">理论群延迟</div>
+            <div id="delayValue" class="mValue">40.0 ms</div>
+            <div class="mNote">对称 FIR 约为 (N-1)/(2Fs)，N 越大越慢。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">输出 RMS 误差</div>
+            <div id="rmsValue" class="mValue">0.000</div>
+            <div class="mNote">误差受噪声抑制和动态延迟共同影响。</div>
+          </div>
+          <div class="card metric">
+            <div class="mLabel">噪声抑制估计</div>
+            <div id="noiseValue" class="mValue">0.0 dB</div>
+            <div class="mNote">基于输入误差 RMS / 输出误差 RMS 的粗略估计。</div>
+          </div>
+        </div>
+
+        <div class="card notes">
+          <div class="note blue">
+            <h3>N 越大</h3>
+            <p>参与平均或卷积的历史样本越多，输出越平滑；但延迟、RAM 占用和乘加次数都会上升。</p>
+          </div>
+          <div class="note green">
+            <h3>FIR 的稳定性</h3>
+            <p>FIR 不把历史输出反馈回来，所以不会因为反馈系数错误导致振荡发散，行为更可控。</p>
+          </div>
+          <div class="note amber">
+            <h3>滑动平均</h3>
+            <p>它是最简单的 FIR。所有系数相等，容易实现，但频率选择性不如专门设计的低通 FIR。</p>
+          </div>
+          <div class="note purple">
+            <h3>窗函数低通</h3>
+            <p>先由理想 sinc 得到无限长低通，再用有限窗截断，得到 MCU 可以运行的有限长度系数。</p>
+          </div>
+          <div class="note red">
+            <h3>工程取舍</h3>
+            <p>不要只追求曲线平。真正要看的是：动态慢了多少、控制是否还能接受、MCU 算力是否足够。</p>
+          </div>
+        </div>
+
+        <div class="card theory">
+          <h2 class="theoryTitle">FIR 原理补充：为什么它有限？为什么它常说“线性相位”？</h2>
+
+          <div class="theoryGrid">
+            <div class="theoryBlock">
+              <h3>1. FIR 的公式到底在做什么？</h3>
+              <p>
+                FIR 的核心公式是：<span class="mono">y[n] = Σ b[k]x[n-k]</span>。
+                这句话翻成人话就是：<b>拿最近 N 个输入样本，按一组固定权重加权求和</b>。
+                只要 N 是有限的，一个输入样本最多只影响后面有限个输出点。
+              </p>
+              <ul>
+                <li><b>滑动平均</b>：所有权重都一样，适合理解和快速实现。</li>
+                <li><b>低通 FIR</b>：中间系数通常更大，两侧系数逐渐变小，频率选择性更好。</li>
+                <li>底部的 <span class="mono">b[k]</span> 图，就是 FIR 的有限冲激响应。</li>
+              </ul>
+            </div>
+
+            <div class="theoryBlock">
+              <h3>2. FIR 为什么天然稳定？</h3>
+              <p>
+                因为 FIR 没有 <span class="mono">y[n-1]</span>、<span class="mono">y[n-2]</span> 这种历史输出反馈项。
+                输入数据走完这段有限长度的系数序列后，影响就结束了。
+                所以它不会像某些 IIR 那样因为反馈参数不当而发散。
+              </p>
+              <ul>
+                <li>公式结构更直观；</li>
+                <li>调参风险更低；</li>
+                <li>适合对相位和波形形状有要求的场景。</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="theoryGrid">
+            <div class="theoryBlock">
+              <h3>3. 为什么 N 越大越慢？</h3>
+              <p>
+                对称 FIR 常见于低通设计。它的一个重要特点是群延迟近似固定：
+                <span class="mono">delay = (N-1) / (2Fs)</span>。
+                例如 Fs=100Hz、N=21 时，群延迟约为 100ms。
+              </p>
+              <ul>
+                <li>N 越大，频率选择性通常越好；</li>
+                <li>N 越大，输出越稳，但响应越慢；</li>
+                <li>N 越大，每个采样周期需要做的乘加次数越多。</li>
+              </ul>
+            </div>
+
+            <div class="theoryBlock">
+              <h3>4. FIR 和 IIR 的直观区别</h3>
+              <p>
+                IIR 更像“带惯性的递推系统”，只保留少量历史输出也能形成很强平滑；
+                FIR 更像“有限窗口内的加权平均”，用更多历史输入换稳定、可控、易分析的行为。
+              </p>
+              <ul>
+                <li><b>IIR</b>：省计算、省 RAM，但反馈结构需要注意稳定性和相位。</li>
+                <li><b>FIR</b>：更稳定、更可控，但阶数高时资源消耗明显。</li>
+                <li>MCU 工程里二者都常用，关键看实时性、噪声、延迟和算力。</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="theoryBlock">
+            <h3>5. 一个最实用的学习视角：把 FIR 当成“有限长度加权窗口”</h3>
+            <p>
+              看 FIR 不要只背公式。你可以把它理解成一个窗口：窗口滑过输入序列，窗口内每个样本乘以一个权重，累加后得到当前输出。
+              这个窗口越长，越能压掉高频乱跳，也越容易让真实变化变慢。
+            </p>
+            <div class="steps">
+              <div class="step">
+                <div class="idx">1</div>
+                <h4>先定采样频率</h4>
+                <p>Fs 决定每个样本间隔，也决定同样 N 下的真实时间延迟。</p>
+              </div>
+              <div class="step">
+                <div class="idx">2</div>
+                <h4>再定窗口长度 N</h4>
+                <p>N 决定参与计算的历史样本数量，也决定 RAM 和乘加次数。</p>
+              </div>
+              <div class="step">
+                <div class="idx">3</div>
+                <h4>选择系数形状</h4>
+                <p>简单平均适合快速平滑；窗函数低通适合更明确的频率目标。</p>
+              </div>
+              <div class="step">
+                <div class="idx">4</div>
+                <h4>评估工程取舍</h4>
+                <p>噪声压下去了没有？响应慢了多少？MCU 每周期算得完吗？</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const defaults = {
+  filterType: "movingAverage",
+  taps: 9,
+  fc: 5,
+  window: "hamming",
+  signalType: "sine",
+  freq: 2,
+  noise: 0.4,
+  fs: 100,
+  simTime: 8,
+  amp: 1.0,
+  showInput: true,
+  showOutput: true,
+  showError: true,
+  showCoeffs: true
+};
+
+const state = { ...defaults };
+let noiseSeed = 246813579;
+
+const sliderConfig = {
+  taps: { label: "FIR 长度 N", value: 9, min: 3, max: 101, step: 2, unit: " taps", hint: "N 必须为奇数，N 越大越平滑，但延迟和计算量越大。" },
+  fc:    { label: "截止频率 fc", value: 5, min: 0.2, max: 80, step: 0.1, unit: "Hz", hint: "只在窗函数低通 FIR 中生效；有效值会被限制在 Fs/2 以下。" },
+  freq:  { label: "信号频率", value: 2, min: 0.1, max: 20, step: 0.1, unit: "Hz", hint: "对正弦、方波、斜坡等输入，决定变化快慢。" },
+  noise: { label: "噪声强度", value: 0.4, min: 0, max: 2, step: 0.05, unit: "", hint: "噪声越大，越容易观察 FIR 的平滑作用。" },
+  fs:    { label: "采样频率 Fs", value: 100, min: 20, max: 1000, step: 5, unit: "Hz", hint: "Fs 决定采样周期 dt，也决定同样 N 下的真实时间延迟。" },
+  simTime:{ label: "仿真时长", value: 8, min: 2, max: 20, step: 0.5, unit: "s", hint: "仿真时间越长，越方便观察稳态和延迟。" },
+  amp:   { label: "信号幅值", value: 1.0, min: 0.2, max: 2.5, step: 0.05, unit: "", hint: "仅影响输入幅度，不改变滤波器本质。" }
+};
+
+const presets = {
+  avg5:   { filterType:"movingAverage", taps:5, signalType:"sensor", freq:2, noise:0.45, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true },
+  avg21:  { filterType:"movingAverage", taps:21, signalType:"sensor", freq:2, noise:0.75, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true },
+  lowpass:{ filterType:"lowpass", taps:41, fc:6, window:"hamming", signalType:"sensor", freq:2.5, noise:0.75, fs:160, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true },
+  step:   { filterType:"movingAverage", taps:17, signalType:"step", freq:1.2, noise:0.15, fs:100, simTime:8, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true },
+  noise:  { filterType:"lowpass", taps:51, fc:4, window:"blackman", signalType:"sensor", freq:3, noise:1.15, fs:150, simTime:10, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true },
+  sine:   { filterType:"lowpass", taps:31, fc:8, window:"hann", signalType:"sine", freq:3.5, noise:0.15, fs:120, simTime:6, amp:1.0, showInput:true, showOutput:true, showError:true, showCoeffs:true }
+};
+
+function formatNumber(v, digits=2){ return Number(v).toFixed(digits); }
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+function createSlider(key){
+  const c = sliderConfig[key];
+  const digits = c.step < 0.1 ? 2 : (c.step < 1 ? 1 : 0);
+  const wrap = document.createElement("div");
+  wrap.className = "sliderGroup";
+  wrap.id = key + "Group";
+  wrap.innerHTML = `
+    <div class="sliderHeader">
+      <div>
+        <div class="sliderTitle">${c.label}</div>
+        <div class="hint">${c.hint}</div>
+      </div>
+      <div id="${key}Num" class="num">${formatNumber(state[key], digits)}${c.unit}</div>
+    </div>
+    <input id="${key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${state[key]}">
+  `;
+  document.getElementById("sliders").appendChild(wrap);
+  document.getElementById(key).addEventListener("input", e=>{
+    state[key] = Number(e.target.value);
+    if(key === "taps") state[key] = makeOdd(Math.round(state[key]));
+    syncSliderOnly(key);
+    scheduleUpdate();
+  });
+}
+
+function makeOdd(n){
+  n = Math.max(3, Math.round(n));
+  return n % 2 === 0 ? n + 1 : n;
+}
+
+function initControls(){
+  Object.keys(sliderConfig).forEach(createSlider);
+
+  document.getElementById("filterTypeSelect").addEventListener("change", e=>{
+    state.filterType = e.target.value;
+    syncControls();
+    update();
+  });
+
+  document.getElementById("windowSelect").addEventListener("change", e=>{
+    state.window = e.target.value;
+    syncControls();
+    update();
+  });
+
+  document.getElementById("signalTypeSelect").addEventListener("change", e=>{
+    state.signalType = e.target.value;
+    syncControls();
+    update();
+  });
+
+  ["showInput","showOutput","showError","showCoeffs"].forEach(id=>{
+    document.getElementById(id).addEventListener("change", e=>{
+      state[id] = e.target.checked;
+      update();
+    });
+  });
+}
+
+function applyModeVisibility(){
+  document.getElementById("fcGroup").style.display = state.filterType === "lowpass" ? "block" : "none";
+  document.getElementById("windowGroup").style.display = state.filterType === "lowpass" ? "block" : "none";
+  document.getElementById("filterName").textContent = state.filterType === "movingAverage" ? "滑动平均 FIR" : "窗函数低通 FIR";
+}
+
+function syncSliderOnly(key){
+  const c = sliderConfig[key];
+  const digits = c.step < 0.1 ? 2 : (c.step < 1 ? 1 : 0);
+  const input = document.getElementById(key);
+  const num = document.getElementById(key + "Num");
+  if(input) input.value = state[key];
+  if(num) num.textContent = `${formatNumber(state[key], digits)}${c.unit}`;
+}
+
+function syncControls(){
+  state.taps = makeOdd(state.taps);
+  Object.keys(sliderConfig).forEach(syncSliderOnly);
+  document.getElementById("filterTypeSelect").value = state.filterType;
+  document.getElementById("filterTypeNum").textContent = filterTypeLabel(state.filterType);
+  document.getElementById("windowSelect").value = state.window;
+  document.getElementById("windowNum").textContent = windowLabel(state.window);
+  document.getElementById("signalTypeSelect").value = state.signalType;
+  document.getElementById("signalTypeNum").textContent = signalTypeLabel(state.signalType);
+  document.getElementById("showInput").checked = state.showInput;
+  document.getElementById("showOutput").checked = state.showOutput;
+  document.getElementById("showError").checked = state.showError;
+  document.getElementById("showCoeffs").checked = state.showCoeffs;
+  applyModeVisibility();
+}
+
+function filterTypeLabel(v){
+  return ({movingAverage:"滑动平均", lowpass:"低通 FIR"})[v] || v;
+}
+function windowLabel(v){
+  return ({rect:"Rect", hann:"Hann", hamming:"Hamming", blackman:"Blackman"})[v] || v;
+}
+function signalTypeLabel(v){
+  return ({sine:"正弦", step:"阶跃", square:"方波", ramp:"斜坡", sensor:"传感器噪声"})[v] || v;
+}
+
+function resetAll(){
+  Object.assign(state, defaults);
+  noiseSeed = 246813579;
+  syncControls();
+  update();
+}
+
+function loadPreset(name){
+  Object.assign(state, defaults, presets[name]);
+  state.taps = makeOdd(state.taps);
+  syncControls();
+  update();
+}
+
+function rerollNoise(){
+  noiseSeed = Math.floor(Math.random()*2147483646) + 1;
+  update();
+}
+
+/* 随机数与信号生成 */
+function lcg(seed){
+  let s = seed % 2147483647;
+  if(s <= 0) s += 2147483646;
+  return function(){
+    s = s * 16807 % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+function gaussianGenerator(seed){
+  const rand = lcg(seed);
+  let spare = null;
+  return function(){
+    if(spare !== null){
+      const v = spare; spare = null; return v;
+    }
+    const u = Math.max(rand(), 1e-12);
+    const v = Math.max(rand(), 1e-12);
+    const mag = Math.sqrt(-2 * Math.log(u));
+    spare = mag * Math.sin(2 * Math.PI * v);
+    return mag * Math.cos(2 * Math.PI * v);
+  };
+}
+
+function sinc(x){
+  if(Math.abs(x) < 1e-10) return 1;
+  return Math.sin(Math.PI * x) / (Math.PI * x);
+}
+
+function windowValue(i, n, type){
+  if(n <= 1) return 1;
+  const a = 2 * Math.PI * i / (n - 1);
+  if(type === "hann") return 0.5 - 0.5 * Math.cos(a);
+  if(type === "hamming") return 0.54 - 0.46 * Math.cos(a);
+  if(type === "blackman") return 0.42 - 0.5 * Math.cos(a) + 0.08 * Math.cos(2 * a);
+  return 1;
+}
+
+function buildCoeffs(){
+  const N = makeOdd(state.taps);
+  const coeffs = new Array(N);
+
+  if(state.filterType === "movingAverage"){
+    for(let i=0;i<N;i++) coeffs[i] = 1 / N;
+    return { coeffs, effectiveFc: null };
+  }
+
+  const fs = state.fs;
+  const effectiveFc = clamp(state.fc, 0.05, fs * 0.45);
+  const center = (N - 1) / 2;
+  let sum = 0;
+  for(let i=0;i<N;i++){
+    const m = i - center;
+    const ideal = 2 * effectiveFc / fs * sinc(2 * effectiveFc * m / fs);
+    const w = windowValue(i, N, state.window);
+    coeffs[i] = ideal * w;
+    sum += coeffs[i];
+  }
+  if(Math.abs(sum) > 1e-12){
+    for(let i=0;i<N;i++) coeffs[i] /= sum;
+  }
+  return { coeffs, effectiveFc };
+}
+
+function generateSignal(){
+  const { signalType, freq, noise, fs, simTime, amp } = state;
+  const n = Math.max(2, Math.floor(fs * simTime));
+  const dt = 1 / fs;
+  const randn = gaussianGenerator(noiseSeed);
+  const { coeffs, effectiveFc } = buildCoeffs();
+  const N = coeffs.length;
+
+  const t = new Array(n);
+  const trueSig = new Array(n);
+  const input = new Array(n);
+  const output = new Array(n);
+  const error = new Array(n);
+  const inputError = new Array(n);
+
+  let sensorBias = 0;
+  let lowFreqDrift = randn() * 0.15;
+
+  for(let i=0;i<n;i++){
+    const time = i * dt;
+    t[i] = time;
+
+    let s = 0;
+    if(signalType === "sine"){
+      s = amp * Math.sin(2 * Math.PI * freq * time);
+    }else if(signalType === "step"){
+      s = time > simTime * 0.18 ? amp : 0;
+    }else if(signalType === "square"){
+      s = Math.sin(2 * Math.PI * freq * time) >= 0 ? amp : -amp;
+    }else if(signalType === "ramp"){
+      const period = Math.max(0.8, 1 / Math.max(freq, 0.1));
+      const phase = (time % period) / period;
+      s = -amp + 2 * amp * phase;
+    }else if(signalType === "sensor"){
+      const slow = 0.55 * amp * Math.sin(2 * Math.PI * 0.35 * time);
+      const mid  = 0.25 * amp * Math.sin(2 * Math.PI * Math.max(1, freq) * time);
+      sensorBias += 0.003 * randn();
+      sensorBias = clamp(sensorBias, -0.6*amp, 0.6*amp);
+      lowFreqDrift += 0.002 * randn();
+      lowFreqDrift = clamp(lowFreqDrift, -0.5*amp, 0.5*amp);
+      s = slow + mid + 0.4 * sensorBias + 0.25 * lowFreqDrift;
+    }
+
+    trueSig[i] = s;
+
+    const white = noise * randn();
+    const hf = 0.18 * noise * Math.sin(2 * Math.PI * (fs * 0.18) * time);
+    const x = s + white + hf;
+    input[i] = x;
+    inputError[i] = x - s;
+  }
+
+  for(let i=0;i<n;i++){
+    let acc = 0;
+    for(let k=0;k<N;k++){
+      const idx = i - k;
+      const xk = idx >= 0 ? input[idx] : input[0];
+      acc += coeffs[k] * xk;
+    }
+    output[i] = acc;
+    error[i] = acc - trueSig[i];
+  }
+
+  return { t, trueSig, input, output, error, inputError, coeffs, effectiveFc, n, dt };
+}
+
+/* 指标计算 */
+function rms(arr){
+  let s = 0;
+  for(const v of arr) s += v*v;
+  return Math.sqrt(s / Math.max(1, arr.length));
+}
+function groupDelayMs(){
+  return ((makeOdd(state.taps) - 1) / 2) / state.fs * 1000;
+}
+function noiseSuppressionDb(data){
+  const start = Math.floor(data.n * 0.15);
+  const inErr = data.inputError.slice(start);
+  const outErr = data.error.slice(start);
+  const rIn = rms(inErr);
+  const rOut = rms(outErr);
+  if(rOut < 1e-12) return 99;
+  return 20 * Math.log10(Math.max(rIn, 1e-12) / rOut);
+}
+
+/* SVG 绘图 */
+function svgEl(name, attrs = {}, text = ""){
+  const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
+  if(text) el.textContent = text;
+  return el;
+}
+function line(svg, x1, y1, x2, y2, color, width=1, dash=""){
+  const attrs = { x1, y1, x2, y2, stroke:color, "stroke-width":width };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  svg.appendChild(svgEl("line", attrs));
+}
+function text(svg, x, y, value, opts = {}){
+  svg.appendChild(svgEl("text", {
+    x, y,
+    "font-size": opts.size || 12,
+    "font-weight": opts.weight || 500,
+    fill: opts.color || "#64748b",
+    "text-anchor": opts.anchor || "start"
+  }, value));
+}
+function polyline(points, color, width=2, dash=""){
+  const attrs = {
+    points: points.join(" "),
+    fill: "none",
+    stroke: color,
+    "stroke-width": width,
+    "stroke-linecap":"round",
+    "stroke-linejoin":"round"
+  };
+  if(dash) attrs["stroke-dasharray"] = dash;
+  return svgEl("polyline", attrs);
+}
+function drawGrid(svg, plot, xTicks, yTicks, xScale, yScale, yFmt, xFmt){
+  for(let i=0;i<=yTicks;i++){
+    const v = plot.yMin + (plot.yMax - plot.yMin) * i / yTicks;
+    const y = yScale(v);
+    line(svg, plot.x, y, plot.x + plot.w, y, "#e2e8f0", 1, "4 4");
+    text(svg, plot.x - 10, y + 4, yFmt(v), { anchor:"end" });
+  }
+  for(let i=0;i<=xTicks;i++){
+    const v = plot.xMin + (plot.xMax - plot.xMin) * i / xTicks;
+    const x = xScale(v);
+    line(svg, x, plot.y, x, plot.y + plot.h, "#f1f5f9");
+    text(svg, x, plot.y + plot.h + 22, xFmt(v), { anchor:"middle" });
+  }
+  line(svg, plot.x, plot.y + plot.h, plot.x + plot.w, plot.y + plot.h, "#0f172a", 1.4);
+  line(svg, plot.x, plot.y, plot.x, plot.y + plot.h, "#0f172a", 1.4);
+}
+function drawChart(data){
+  const svg = document.getElementById("chart");
+  svg.innerHTML = "";
+  const width = 920, height = 720;
+  const topPlot = { x:58, y:34, w:832, h:325 };
+  const errPlot = { x:58, y:432, w:832, h:118 };
+  const coefPlot = { x:58, y:625, w:832, h:58 };
+
+  svg.appendChild(svgEl("rect", { x:0, y:0, width, height, fill:"white" }));
+  text(svg, topPlot.x, 22, "主图：输入 / 理想 / FIR 输出", { size:15, color:"#0f172a", weight:900 });
+  text(svg, errPlot.x, 420, "副图：误差 e[n] = y[n] - true[n]", { size:15, color:"#0f172a", weight:900 });
+  text(svg, coefPlot.x, 612, "底部：FIR 系数 b[k] / 有限冲激响应", { size:15, color:"#0f172a", weight:900 });
+
+  const allMain = [].concat(data.trueSig);
+  if(state.showInput) allMain.push(...data.input);
+  if(state.showOutput) allMain.push(...data.output);
+
+  let yMin = Math.min(...allMain, -0.1);
+  let yMax = Math.max(...allMain, 0.1);
+  const m = Math.max(0.2, (yMax - yMin) * 0.15);
+  yMin -= m; yMax += m;
+
+  topPlot.xMin = 0; topPlot.xMax = state.simTime; topPlot.yMin = yMin; topPlot.yMax = yMax;
+  const xMain = t => topPlot.x + (t - topPlot.xMin) / (topPlot.xMax - topPlot.xMin) * topPlot.w;
+  const yMain = v => topPlot.y + (1 - (v - topPlot.yMin) / (topPlot.yMax - topPlot.yMin)) * topPlot.h;
+  drawGrid(svg, topPlot, 6, 5, xMain, yMain, v => v.toFixed(1), v => v.toFixed(1) + "s");
+
+  const step = Math.max(1, Math.floor(data.n / 700));
+  const makePts = arr => {
+    const pts = [];
+    for(let i=0;i<data.n;i+=step){
+      pts.push(`${xMain(data.t[i]).toFixed(1)},${yMain(arr[i]).toFixed(1)}`);
+    }
+    return pts;
+  };
+
+  svg.appendChild(polyline(makePts(data.trueSig), "#111827", 2.0, "8 5"));
+  if(state.showInput) svg.appendChild(polyline(makePts(data.input), "#94a3b8", 1.9));
+  if(state.showOutput) svg.appendChild(polyline(makePts(data.output), "#2563eb", 3.0));
+
+  text(svg, topPlot.x + topPlot.w - 8, topPlot.y + 18, "true[n]", { color:"#111827", weight:900, anchor:"end", size:14 });
+  text(svg, topPlot.x - 36, topPlot.y - 6, "幅值", { color:"#0f172a", weight:900, size:12 });
+  text(svg, topPlot.x + topPlot.w + 6, topPlot.y + topPlot.h + 4, "t", { color:"#0f172a", weight:900, size:13 });
+
+  // error subplot
+  const errArr = state.showError ? data.error : [0, 0];
+  let eMin = Math.min(...errArr, -0.01);
+  let eMax = Math.max(...errArr,  0.01);
+  const em = Math.max(0.05, (eMax - eMin) * 0.18);
+  eMin -= em; eMax += em;
+
+  errPlot.xMin = 0; errPlot.xMax = state.simTime; errPlot.yMin = eMin; errPlot.yMax = eMax;
+  const xErr = t => errPlot.x + (t - errPlot.xMin) / (errPlot.xMax - errPlot.xMin) * errPlot.w;
+  const yErr = v => errPlot.y + (1 - (v - errPlot.yMin) / (errPlot.yMax - errPlot.yMin)) * errPlot.h;
+  drawGrid(svg, errPlot, 6, 4, xErr, yErr, v => v.toFixed(2), v => v.toFixed(1) + "s");
+
+  line(svg, errPlot.x, yErr(0), errPlot.x + errPlot.w, yErr(0), "#0f172a", 1.2, "6 5");
+  if(state.showError){
+    const pts = [];
+    for(let i=0;i<data.n;i+=step){
+      pts.push(`${xErr(data.t[i]).toFixed(1)},${yErr(data.error[i]).toFixed(1)}`);
+    }
+    svg.appendChild(polyline(pts, "#dc2626", 2.2));
+  }
+
+  text(svg, errPlot.x - 36, errPlot.y - 6, "误差", { color:"#0f172a", weight:900, size:12 });
+  text(svg, errPlot.x + errPlot.w + 6, errPlot.y + errPlot.h + 4, "t", { color:"#0f172a", weight:900, size:13 });
+
+  // coefficients subplot
+  const coeffs = data.coeffs;
+  const cAbs = Math.max(...coeffs.map(v => Math.abs(v)), 0.001);
+  coefPlot.xMin = 0; coefPlot.xMax = coeffs.length - 1;
+  coefPlot.yMin = -cAbs * 1.25;
+  coefPlot.yMax = cAbs * 1.25;
+  const xCoef = k => coefPlot.x + (coeffs.length <= 1 ? 0 : k / (coeffs.length - 1) * coefPlot.w);
+  const yCoef = v => coefPlot.y + (1 - (v - coefPlot.yMin) / (coefPlot.yMax - coefPlot.yMin)) * coefPlot.h;
+  drawGrid(svg, coefPlot, 6, 2, xCoef, yCoef, v => v.toFixed(2), v => Math.round(v).toString());
+  line(svg, coefPlot.x, yCoef(0), coefPlot.x + coefPlot.w, yCoef(0), "#0f172a", 1.1, "5 5");
+
+  if(state.showCoeffs){
+    for(let k=0;k<coeffs.length;k++){
+      const x = xCoef(k);
+      const y0 = yCoef(0);
+      const y1 = yCoef(coeffs[k]);
+      line(svg, x, y0, x, y1, "#7c3aed", 2.0);
+      svg.appendChild(svgEl("circle", { cx:x, cy:y1, r:2.7, fill:"#7c3aed" }));
+    }
+  }
+  text(svg, coefPlot.x - 36, coefPlot.y - 6, "系数", { color:"#0f172a", weight:900, size:12 });
+  text(svg, coefPlot.x + coefPlot.w + 6, coefPlot.y + coefPlot.h + 4, "k", { color:"#0f172a", weight:900, size:13 });
+}
+
+/* 更新 */
+let pending = false;
+function scheduleUpdate(){
+  if(pending) return;
+  pending = true;
+  requestAnimationFrame(()=>{
+    pending = false;
+    update();
+  });
+}
+
+function update(){
+  state.taps = makeOdd(state.taps);
+  const data = generateSignal();
+  drawChart(data);
+
+  const delayMs = groupDelayMs();
+  const rmsErr = rms(data.error);
+  const noiseDb = noiseSuppressionDb(data);
+  const fcText = state.filterType === "lowpass" ? `${(data.effectiveFc || state.fc).toFixed(2)}Hz` : "均值窗口";
+
+  document.getElementById("paramText").textContent =
+    `N=${state.taps} / fc=${fcText} / Fs=${state.fs.toFixed(0)}Hz / delay=${delayMs.toFixed(1)}ms`;
+  document.getElementById("tapValue").textContent = `${state.taps}`;
+  document.getElementById("delayValue").textContent = `${delayMs.toFixed(1)} ms`;
+  document.getElementById("rmsValue").textContent = rmsErr.toFixed(3);
+  document.getElementById("noiseValue").textContent = `${noiseDb.toFixed(1)} dB`;
+}
+
+/* 启动 */
+initControls();
+syncControls();
+update();
+</script>
+</body>
+</html>

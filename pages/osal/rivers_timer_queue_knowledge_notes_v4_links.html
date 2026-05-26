@@ -135,6 +135,61 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
 .ascii-viz{font-family:var(--mono);white-space:pre;line-height:1.7;border-radius:18px;padding:16px;background:rgba(255,255,255,.72);border:1px dashed rgba(20,30,50,.18);overflow:auto}
 .compare-table td:first-child{font-weight:900;color:var(--blue)}.compare-table td:nth-child(3){color:#0f8a55}
 @media(max-width:980px){.deep-grid,.deep-grid.three,.arch-strip{grid-template-columns:1fr}.arch-mid{min-width:0}.flowline{display:grid}.flowline span::after{content:""}}
+
+/* Visual refinement: quieter canvas, tighter heading hierarchy, table-led boundary card */
+body{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfcff 54%,#f7f9fc 100%) !important;
+}
+.sidebar{
+  background:rgba(250,251,253,.92) !important;
+}
+.topbar{
+  background:rgba(255,255,255,.88) !important;
+}
+.hero{
+  background:rgba(255,255,255,.88) !important;
+  border-color:rgba(20,30,50,.08) !important;
+  box-shadow:0 14px 36px rgba(23,32,51,.07) !important;
+}
+.hero::before,.hero.queue::before{display:none !important}
+h1{font-size:clamp(30px,3.4vw,46px) !important;line-height:1.12 !important;letter-spacing:-.035em !important}
+h2{font-size:clamp(24px,2.25vw,34px) !important;line-height:1.18 !important;letter-spacing:-.025em !important}
+h3{font-size:20px !important;letter-spacing:-.01em !important;margin:22px 0 10px !important}
+h4{font-size:16px !important}
+.card,.flowbox{
+  background:rgba(255,255,255,.88) !important;
+  border-color:rgba(20,30,50,.08) !important;
+  box-shadow:0 10px 28px rgba(23,32,51,.055) !important;
+  backdrop-filter:none !important;
+}
+.soft-blue{background:linear-gradient(180deg,#fff,rgba(245,249,255,.72)) !important}
+.soft-green{background:linear-gradient(180deg,#fff,rgba(244,252,248,.72)) !important}
+.soft-orange{background:linear-gradient(180deg,#fff,rgba(255,250,244,.76)) !important}
+.soft-purple{background:linear-gradient(180deg,#fff,rgba(249,247,255,.70)) !important}
+.soft-cyan{background:linear-gradient(180deg,#fff,rgba(244,252,254,.70)) !important}
+.deep-card,.arch-node,.feature,.func,.path-card,.mini-ui,.example-card,.visual,.mem-panel,.ring-panel,.stat{
+  background:rgba(255,255,255,.78) !important;
+}
+.boundary-table-card table{font-size:14px;margin-top:16px;background:rgba(255,255,255,.82)}
+.boundary-table-card th{background:rgba(247,249,252,.94)}
+.boundary-table-card td:first-child{width:220px;font-weight:850;color:#26344d}
+.boundary-summary{
+  border-radius:18px;
+  padding:16px 18px;
+  margin-top:18px;
+  background:rgba(236,246,255,.62);
+  border:1px solid rgba(22,119,255,.26);
+}
+.flowbox{margin-top:26px !important}
+.flowbox h2::after{
+  content:"";
+  display:block;
+  width:72px;
+  height:3px;
+  border-radius:999px;
+  margin-top:10px;
+  background:linear-gradient(90deg,var(--blue),rgba(22,119,255,.15));
+}
 </style>
 </head>
 <body>
@@ -155,13 +210,12 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
     <a class="nav-item sub" href="#timer-mindset" data-page="timer" data-target="timer-mindset"><span class="nav-num">1.3</span><span>软件思维</span></a>
     <a class="nav-item sub" href="#timer-porting" data-page="timer" data-target="timer-porting"><span class="nav-num">1.4</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#timer-guide" data-page="timer" data-target="timer-guide"><span class="nav-num">1.5</span><span>使用指南</span></a>
-    <a class="nav-item sub" href="#timer-flow" data-page="timer" data-target="timer-flow"><span class="nav-num">1.6</span><span>动态流程</span></a>
-
-    <a class="nav-item sub" href="#timer-core" data-page="timer" data-target="timer-core"><span class="nav-num">1.7</span><span>核心思路</span></a>
-    <a class="nav-item sub" href="#timer-rounding" data-page="timer" data-target="timer-rounding"><span class="nav-num">1.8</span><span>周期换算</span></a>
-    <a class="nav-item sub" href="#timer-accumulate" data-page="timer" data-target="timer-accumulate"><span class="nav-num">1.9</span><span>累计逻辑</span></a>
-    <a class="nav-item sub" href="#timer-subtick" data-page="timer" data-target="timer-subtick"><span class="nav-num">1.10</span><span>子 tick</span></a>
-    <a class="nav-item sub" href="#timer-subtick-boundary" data-page="timer" data-target="timer-subtick-boundary"><span class="nav-num">1.11</span><span>边界说明</span></a>
+        <a class="nav-item sub" href="#timer-core" data-page="timer" data-target="timer-core"><span class="nav-num">1.6</span><span>核心思路</span></a>
+    <a class="nav-item sub" href="#timer-rounding" data-page="timer" data-target="timer-rounding"><span class="nav-num">1.7</span><span>周期换算</span></a>
+    <a class="nav-item sub" href="#timer-accumulate" data-page="timer" data-target="timer-accumulate"><span class="nav-num">1.8</span><span>累计逻辑</span></a>
+    <a class="nav-item sub" href="#timer-subtick" data-page="timer" data-target="timer-subtick"><span class="nav-num">1.9</span><span>子 tick</span></a>
+    <a class="nav-item sub" href="#timer-subtick-boundary" data-page="timer" data-target="timer-subtick-boundary"><span class="nav-num">1.10</span><span>边界说明</span></a>
+    <a class="nav-item sub" href="#timer-flow" data-page="timer" data-target="timer-flow"><span class="nav-num">1.11</span><span>动态流程</span></a>
     <div class="nav-title">queue</div>
     <a class="nav-item" href="#queue" data-page="queue"><span class="nav-num">2</span><span>rivers_queue</span></a>
     <a class="nav-item sub" href="#queue-features" data-page="queue" data-target="queue-features"><span class="nav-num">2.1</span><span>支持功能</span></a>
@@ -170,13 +224,12 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
     <a class="nav-item sub" href="#queue-mem" data-page="queue" data-target="queue-mem"><span class="nav-num">2.4</span><span>内存管理</span></a>
     <a class="nav-item sub" href="#queue-porting" data-page="queue" data-target="queue-porting"><span class="nav-num">2.5</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#queue-guide" data-page="queue" data-target="queue-guide"><span class="nav-num">2.6</span><span>使用指南</span></a>
-    <a class="nav-item sub" href="#queue-flow" data-page="queue" data-target="queue-flow"><span class="nav-num">2.7</span><span>动态流程</span></a>
-
-    <a class="nav-item sub" href="#queue-core" data-page="queue" data-target="queue-core"><span class="nav-num">2.8</span><span>核心思路</span></a>
-    <a class="nav-item sub" href="#queue-create-flow" data-page="queue" data-target="queue-create-flow"><span class="nav-num">2.9</span><span>创建流程</span></a>
-    <a class="nav-item sub" href="#queue-mem-deep" data-page="queue" data-target="queue-mem-deep"><span class="nav-num">2.10</span><span>mem 深入</span></a>
-    <a class="nav-item sub" href="#queue-critical" data-page="queue" data-target="queue-critical"><span class="nav-num">2.11</span><span>临界区</span></a>
-    <a class="nav-item sub" href="#queue-cost" data-page="queue" data-target="queue-cost"><span class="nav-num">2.12</span><span>内存估算</span></a>
+        <a class="nav-item sub" href="#queue-core" data-page="queue" data-target="queue-core"><span class="nav-num">2.7</span><span>核心思路</span></a>
+    <a class="nav-item sub" href="#queue-create-flow" data-page="queue" data-target="queue-create-flow"><span class="nav-num">2.8</span><span>创建流程</span></a>
+    <a class="nav-item sub" href="#queue-mem-deep" data-page="queue" data-target="queue-mem-deep"><span class="nav-num">2.9</span><span>mem 深入</span></a>
+    <a class="nav-item sub" href="#queue-critical" data-page="queue" data-target="queue-critical"><span class="nav-num">2.10</span><span>临界区</span></a>
+    <a class="nav-item sub" href="#queue-cost" data-page="queue" data-target="queue-cost"><span class="nav-num">2.11</span><span>内存估算</span></a>
+    <a class="nav-item sub" href="#queue-flow" data-page="queue" data-target="queue-flow"><span class="nav-num">2.12</span><span>动态流程</span></a>
   </nav>
   <div class="side-note">1 和 2 是完整大页面；1.1、2.1 等是页内锚点。动态效果用于解释源码逻辑，不等同于真实硬件仿真。</div>
   <div class="side-source">
@@ -220,14 +273,14 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
 
   <div class="section card soft-orange" id="home-architecture">
     <h2>0.1 · 总体架构：轻量 standalone 基础模块</h2>
-    <div class="warn"><strong>定位边界：</strong>这四个文件整体上不是完整 RTOS，而是两个独立的 standalone 基础模块：<code>queue + mem</code> 和 <code>timer</code>。它们的设计目标是给裸机 / CubeMX 工程提供轻量的“中断与主循环协作”能力。</div>
+    <div class="warn"><strong>定位边界：</strong>这四个文件整体上不是完整操作系统，而是两个独立的 standalone 基础模块：<code>queue + mem</code> 和 <code>timer</code>。它们的设计目标是给裸机 / CubeMX 工程提供轻量的“中断与主循环协作”能力。</div>
     <div class="arch-strip">
       <div class="arch-node">
         <h4>queue + mem</h4>
         <p><code>rivers_mem</code> 位于 <code>rivers_queue.c</code> 内部，是静态内存池分配器；既可以使用模块内置的 <code>s_default_heap</code>，也可以使用用户传入的外部 buffer。队列控制块和队列数据区都从这里分配。</p>
         <p><code>rivers_queue</code> 是固定长度、固定 item 大小的环形队列。创建后容量和单元大小不变，send/recv 只做立即尝试，不等待、不阻塞、不覆盖旧数据。</p>
       </div>
-      <div class="arch-mid">裸机前后台协作<br>不是 RTOS</div>
+      <div class="arch-mid">裸机前后台协作<br>中断只做最小工作</div>
       <div class="arch-node">
         <h4>timer</h4>
         <p><code>rivers_timer_init()</code> 直接配置 Cortex-M SysTick 寄存器，<code>SysTick_Handler()</code> 中调用 <code>rivers_timer_tick_handler()</code> 推进 uptime。</p>
@@ -244,14 +297,9 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
     </div>
     <div class="deep-grid">
       <div class="deep-card"><h4>不依赖</h4><ul><li>HAL</li><li>CMSIS</li><li>malloc/free</li></ul></div>
-      <div class="deep-card"><h4>不提供</h4><ul><li>任务阻塞</li><li>任务调度</li><li>timeout 等待</li><li>RTOS 语义</li></ul></div>
+      <div class="deep-card"><h4>不提供</h4><ul><li>任务阻塞</li><li>任务调度</li><li>timeout 等待</li><li>任务调度语义</li></ul></div>
     </div>
-    <div class="note">这套代码不是 FreeRTOS 队列和软件定时器的替代品，而是一个适合裸机前后台模型的小型 OSAL 雏形。</div>
-    <table class="compare-table">
-      <tr><th>对比项</th><th>rivers 实现</th><th>RTOS 实现</th></tr>
-      <tr><td>Queue</td><td>非阻塞；满直接返回错误；空直接返回错误；不唤醒任务；适合 ISR → 主循环消息传递。</td><td>可阻塞等待；可设置 timeout；可触发任务调度；ISR API 通常带任务唤醒语义。</td></tr>
-      <tr><td>Software Timer</td><td>SysTick 只推进时间；回调在 poll 中执行；精度受主循环轮询频率影响；不提供任务调度。</td><td>通常由 timer service task 执行回调；和调度器配合；有系统任务上下文。</td></tr>
-    </table>
+    <div class="note">这套代码面向裸机前后台协作，适合做小型 OSAL 基础模块。</div>    <div class="note">边界只需要记住一点：这些模块只负责“时间、内存、消息缓冲”这些基础能力，不负责决定哪个任务运行，也不负责唤醒或切换执行上下文。</div>
   </div>
 
   <div class="section card" id="home-usage">
@@ -293,19 +341,22 @@ void Some_IRQHandler(void)
     </div>
   </div>
 
-  <div class="section card soft-purple" id="home-boundaries">
-    <h2>0.3 · 关键边界</h2>
-    <div class="feature-list">
-      <div class="feature"><span class="check">✓</span><span>这套代码适合裸机主循环模型，不是 RTOS 队列 / 定时器替代品。</span></div>
-      <div class="feature"><span class="check">✓</span><span>队列不会阻塞等待；队列满了返回 <code>RIVERS_QUEUE_ERR_FULL</code>，队列空了返回 <code>RIVERS_QUEUE_ERR_EMPTY</code>。</span></div>
-      <div class="feature"><span class="check">✓</span><span>软件定时器精度取决于 <code>rivers_timer_poll()</code> 被调用得多频繁。</span></div>
-      <div class="feature"><span class="check">✓</span><span>SysTick 只负责时间推进，软件定时器回调不会自动在中断中执行。</span></div>
-      <div class="feature"><span class="check">✓</span><span><code>send_from_isr()</code> 目前只是调用普通 send()，语义上是“可以在 ISR 中立即尝试”，不是专门的 RTOS ISR API。</span></div>
-      <div class="feature"><span class="check">✓</span><span><code>rivers_mem</code> 是静态内存池上的可控动态分配，不是系统 malloc/free。</span></div>
-      <div class="feature"><span class="check">✓</span><span>queue 创建后 <code>length</code> 和 <code>item_size</code> 固定不变。</span></div>
-      <div class="feature"><span class="check">✓</span><span>queue 满时不覆盖旧数据。</span></div>
-    </div>
-    <div class="note">如果一句话概括，这四个文件是在做一个轻量 OSAL 雏形，把静态内存管理、消息队列、系统时间、软件定时器拆成了可独立移植的小模块，核心思想是用临界区保护共享状态，用主循环承担业务处理，用中断只做最小工作。</div>
+  <div class="section card soft-purple boundary-table-card" id="home-boundaries">
+    <span class="pill-title">0.3 · 关键边界</span>
+    <h2>使用时必须知道的边界</h2>
+    <table>
+      <thead><tr><th>边界点</th><th>含义</th></tr></thead>
+      <tbody>
+        <tr><td>裸机主循环模型</td><td>适合前后台协作：中断快速记录事件，主循环集中处理业务。</td></tr>
+        <tr><td>队列不阻塞</td><td>队列不会等待。满了直接返回 <code>RIVERS_QUEUE_ERR_FULL</code>，空了直接返回 <code>RIVERS_QUEUE_ERR_EMPTY</code>。</td></tr>
+        <tr><td>软件定时器依赖 poll</td><td>软件定时器精度取决于 <code>rivers_timer_poll()</code> 被调用得多频繁。</td></tr>
+        <tr><td>SysTick 只推进时间</td><td>SysTick 中断只更新 uptime，不执行用户回调，也不承载业务逻辑。</td></tr>
+        <tr><td>from_isr 是立即尝试</td><td><code>send_from_isr()</code> 语义是“可以在 ISR 中立即尝试发送”，不包含任务唤醒或调度语义。</td></tr>
+        <tr><td>rivers_mem 不是 malloc</td><td>它是在静态内存池上的可控动态分配，不使用系统堆。</td></tr>
+        <tr><td>queue 创建后固定</td><td><code>length</code> 和 <code>item_size</code> 固定不变；满时不覆盖旧数据。</td></tr>
+      </tbody>
+    </table>
+    <div class="boundary-summary">一句话概括：这四个文件把静态内存管理、消息队列、系统时间、软件定时器拆成可独立移植的小模块；核心思想是用临界区保护共享状态，用主循环承担业务处理，用中断只做最小工作。</div>
   </div>
 </section>
 
@@ -450,38 +501,8 @@ rivers_sw_timer_delete(once);</code></pre>
     <div class="note">只使用 tick / delay / uptime，可以不调用 <code>rivers_timer_poll()</code>；使用软件定时器，必须周期性调用 <code>rivers_timer_poll()</code>。</div>
   </div>
 
-  <div class="section flowbox" id="timer-flow">
-    <h2>1.6 · 动态流程</h2>
-    <p>这一节覆盖初始化、tick 计时、get_uptime_ms、get_uptime_us、delay 和软件定时器。注意：软件定时器到期判断发生在 <code>rivers_timer_poll()</code>，不是 SysTick 中断。</p>
-    <div class="flow-tabs" id="timerTabs">
-      <button class="flow-tab active" data-flow="init">A 初始化</button>
-      <button class="flow-tab" data-flow="tick">B tick 计时</button>
-      <button class="flow-tab" data-flow="getms">C get_uptime_ms</button>
-      <button class="flow-tab" data-flow="getus">D get_uptime_us</button>
-      <button class="flow-tab" data-flow="delay">E delay</button>
-      <button class="flow-tab" data-flow="sw">F 软件定时器</button>
-    </div>
-    <div id="timerStage" class="flow-stage cols4"></div>
-    <div class="visual">
-      <strong id="timerTitle">A 初始化流程</strong>
-      <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
-      <div class="stats">
-        <div class="stat"><span>s_uptime_ms32</span><strong id="tMs">0</strong></div>
-        <div class="stat"><span>s_uptime_us32</span><strong id="tUs">0</strong></div>
-        <div class="stat"><span>extra_us / diff</span><strong id="tExtra">0</strong></div>
-        <div class="stat"><span>callback</span><strong id="tCb">NO</strong></div>
-      </div>
-      <div class="note" id="timerExplain">点击播放当前流程。</div>
-    </div>
-    <div class="demo-controls">
-      <button class="primary-btn" onclick="playTimer()">播放当前流程</button>
-      <button class="ghost-btn" onclick="resetTimer()">重置</button>
-    </div>
-  </div>
-
-
   <div class="section card soft-blue" id="timer-core">
-    <h2>1.7 · timer 的核心思路</h2>
+    <h2>1.6 · timer 的核心思路</h2>
     <p><code>rivers_timer</code> 把“硬件 tick”和“软件定时器回调”分开。SysTick 中断只做一件事：</p>
 <pre><code>rivers_timer_accumulate_us(s_tick_period_us);</code></pre>
     <p>也就是更新 <code>s_uptime_us32</code>、<code>s_uptime_ms32</code>、<code>s_uptime_us64</code>、<code>s_uptime_ms64</code>。它不执行用户回调，不扫描定时器。这个设计的价值是：中断里越简单越稳定。</p>
@@ -493,7 +514,7 @@ rivers_sw_timer_delete(once);</code></pre>
   </div>
 
   <div class="section card" id="timer-rounding">
-    <h2>1.8 · SysTick 周期换算中的四舍五入</h2>
+    <h2>1.7 · SysTick 周期换算中的四舍五入</h2>
     <p>下面这个加法不是多余项：</p>
 <pre><code>+ ((uint64_t)counter_hz / 2ULL)</code></pre>
     <p>它是为了做四舍五入，而不是单纯向下取整。原始计算目标是：</p>
@@ -517,7 +538,7 @@ B = counter_hz</div>
   </div>
 
   <div class="section card soft-cyan" id="timer-accumulate">
-    <h2>1.9 · rivers_timer_accumulate_us 的作用</h2>
+    <h2>1.8 · rivers_timer_accumulate_us 的作用</h2>
 <pre><code>static void rivers_timer_accumulate_us(uint32_t delta_us) {
     uint32_t total_us;
     uint32_t elapsed_ms;
@@ -576,7 +597,7 @@ remainder = 400</div>
   </div>
 
   <div class="section card" id="timer-subtick">
-    <h2>1.10 · 子 tick 微秒估算</h2>
+    <h2>1.9 · 子 tick 微秒估算</h2>
     <p><code>rivers_timer_get_subtick_us_locked()</code> 的目的只有一个：在两个 SysTick 中断之间，估算当前这个 tick 周期内部已经过去了多少微秒。</p>
     <p>因为 <code>rivers_timer_tick_handler()</code> 只有在 SysTick 中断发生时才会给 <code>s_uptime_us32</code> 加一次，比如每 1ms 加 1000us。如果真实时间已经过了 <code>10ms + 300us</code>，但上一次 SysTick 只累计到了 <code>10ms</code>，这个函数就是用 SysTick 当前硬件计数值，把那 300us 估算出来。</p>
     <div class="formula">SysTick 是递减计数器。
@@ -626,7 +647,7 @@ counter_hz = 168000000
   </div>
 
   <div class="section card soft-orange" id="timer-subtick-boundary">
-    <h2>1.11 · 边界说明：不是万能的 SysTick 延迟补偿</h2>
+    <h2>1.10 · 边界说明：不是万能的 SysTick 延迟补偿</h2>
     <p>需要修正一个常见误解：这个函数主要不是补偿所有“被延迟的 SysTick 中断”，而是补偿“当前 SysTick 周期内、还没等到下一次中断时已经过去的那部分时间”。</p>
     <div class="deep-grid">
       <div class="deep-card"><h4>正确理解</h4><ul><li>SysTick 硬件计数器本身会继续递减。</li><li>CPU 进入临界区、关中断、或者被更高优先级中断占用时，<code>SysTick_Handler()</code> 可能延迟执行。</li><li><code>s_uptime_us32/ms32</code> 只有在 <code>rivers_timer_tick_handler()</code> 执行时才会累计，所以 handler 延迟时，软件时间账本确实会暂时落后。</li><li>读取 SysTick 的 VAL 可以知道当前周期内已经过去了多少硬件计数。</li></ul></div>
@@ -649,7 +670,37 @@ VAL 已经重新装载并进入下一轮计数
     <div class="note">SysTick 硬件计数不依赖软件 handler，会继续运行。<code>rivers_timer_get_subtick_us_locked()</code> 通过读取 SysTick 当前计数值，补上当前 tick 内已经过去、但软件 uptime 还没累计到的子节拍时间；如果 SysTick handler 被短暂延迟，它也能估算约一个 tick 范围内的延迟。但它不能作为长时间关中断后的完整时间补偿机制。</div>
     <p>这个函数是在 <code>rivers_timer_get_uptime_us()</code> 里关中断后调用的。关中断的目的不是让 SysTick 停止计数，而是避免这边刚读 <code>s_uptime_us32</code>，另一边 SysTick 中断又更新了 <code>s_uptime_us32</code>，导致“整 tick 时间”和“子 tick 时间”组合不一致。</p>
   </div>
-</section>
+<div class="section flowbox" id="timer-flow">
+    <h2>1.11 · 动态流程</h2>
+    <p>这一节放在 timer 章节最后，用动画把前面的关键点串起来：SysTick 只累计时间，<code>accumulate_us()</code> 维护 us/ms 账本，<code>get_uptime_us()</code> 补上子 tick，<code>poll()</code> 在主循环里执行回调。</p>
+    <div class="flow-tabs" id="timerTabs">
+      <button class="flow-tab active" data-flow="init">A 初始化</button>
+      <button class="flow-tab" data-flow="tick">B tick 计时</button>
+      <button class="flow-tab" data-flow="getms">C get_uptime_ms</button>
+      <button class="flow-tab" data-flow="getus">D get_uptime_us</button>
+      <button class="flow-tab" data-flow="delay">E delay</button>
+      <button class="flow-tab" data-flow="sw">F 软件定时器</button>
+    </div>
+    <div id="timerStage" class="flow-stage cols4"></div>
+    <div class="visual">
+      <strong id="timerTitle">A 初始化流程</strong>
+      <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+      <div class="stats">
+        <div class="stat"><span>s_uptime_ms32</span><strong id="tMs">0</strong></div>
+        <div class="stat"><span>s_uptime_us32</span><strong id="tUs">0</strong></div>
+        <div class="stat"><span>extra_us / diff</span><strong id="tExtra">0</strong></div>
+        <div class="stat"><span>callback</span><strong id="tCb">NO</strong></div>
+      </div>
+      <div class="note" id="timerExplain">点击播放当前流程。</div>
+    </div>
+    <div class="demo-controls">
+      <button class="primary-btn" onclick="playTimer()">播放当前流程</button>
+      <button class="ghost-btn" onclick="resetTimer()">重置</button>
+    </div>
+  </div>
+
+
+  </section>
 
 <section class="page" id="page-queue" data-title="2 · rivers_queue">
   <div class="hero queue">
@@ -677,7 +728,7 @@ VAL 已经重新装载并进入下一轮计数
       <div class="feature"><span class="check queue-check">✓</span><span>创建后 <code>length</code> 和 <code>item_size</code> 固定不变。</span></div>
       <div class="feature"><span class="check queue-check">✓</span><span><code>send/recv/from_isr</code> 都是非阻塞立即尝试。</span></div>
       <div class="feature"><span class="check queue-check">✓</span><span>队列满不覆盖旧数据，队列空返回 EMPTY。</span></div>
-      <div class="feature"><span class="check queue-check">✓</span><span>不提供 timeout、任务阻塞、等待链表、自动唤醒等 RTOS 语义。</span></div>
+      <div class="feature"><span class="check queue-check">✓</span><span>不提供 timeout、任务阻塞、等待链表、自动唤醒等调度语义。</span></div>
     </div>
   </div>
 
@@ -847,46 +898,8 @@ rivers_queue_delete(msg_q);</code></pre>
     <div class="note">UART 示例核心：RX 队列按字节缓存；TX 队列保存字符串内容副本；中断只负责快速入队；主循环负责组帧/解析和通过 TX 队列打印；行缓存收到 <code>\n</code> 后回显；drop_count 观察队列满导致的丢弃。</div>
   </div>
 
-  <div class="section flowbox" id="queue-flow">
-    <h2>2.7 · 动态流程</h2>
-    <p>本节把 <strong>mem 静态堆块链表</strong> 和 <strong>queue 环形缓冲区</strong> 分开展示，避免把两种结构混为一谈。</p>
-    <div class="flow-tabs" id="queueTabs">
-      <button class="flow-tab mem active" data-flow="memInit">A mem_init</button>
-      <button class="flow-tab mem" data-flow="alloc">B mem_alloc</button>
-      <button class="flow-tab mem" data-flow="free">C mem_free</button>
-      <button class="flow-tab queue" data-flow="create">D queue_create</button>
-      <button class="flow-tab queue" data-flow="ring">E send/recv</button>
-      <button class="flow-tab queue" data-flow="resetDelete">F reset/delete</button>
-    </div>
-    <div id="queueStage" class="flow-stage cols5"></div>
-
-    <div class="mem-panel">
-      <h4>mem 动态效果：静态堆 block 分裂/合并</h4>
-      <div class="memline" id="memLine"><div class="memseg free" style="width:100%">free block: 4096</div></div>
-      <p class="muted" id="memExplain">这里展示 rivers_mem_init / alloc / free 的内存条变化。</p>
-    </div>
-
-    <div class="ring-panel">
-      <h4>queue 动态效果：环形队列 head / tail / count</h4>
-      <div class="ring" id="ring"></div>
-      <div class="stats">
-        <div class="stat"><span>head</span><strong id="qHead">0</strong></div>
-        <div class="stat"><span>tail</span><strong id="qTail">0</strong></div>
-        <div class="stat"><span>count</span><strong id="qCount">0</strong></div>
-        <div class="stat"><span>free_count</span><strong id="qFree">8</strong></div>
-      </div>
-      <div class="demo-controls">
-        <button class="primary-btn queue" onclick="queueSend()">send</button>
-        <button class="ghost-btn" onclick="queueRecv()">recv</button>
-        <button class="ghost-btn" onclick="queueReset()">reset</button>
-        <button class="ghost-btn" onclick="playQueueFlow()">播放当前流程</button>
-      </div>
-    </div>
-  </div>
-
-
   <div class="section card soft-green" id="queue-core">
-    <h2>2.8 · queue 的核心思路</h2>
+    <h2>2.7 · queue 的核心思路</h2>
     <p><code>rivers_queue</code> 是固定单元 ring buffer，不是字节流 ring buffer。每个槽位保存一个完整 item，item 的大小由创建时的 <code>item_size</code> 决定。</p>
 <pre><code>struct rivers_queue {
     uint8_t *storage;
@@ -933,7 +946,7 @@ storage: [item] [item] [item] [    ]
   </div>
 
   <div class="section card" id="queue-create-flow">
-    <h2>2.9 · 队列创建流程</h2>
+    <h2>2.8 · 队列创建流程</h2>
     <p>调用：</p>
 <pre><code>rivers_queue_create(length, item_size);</code></pre>
     <p>内部先计算：</p>
@@ -947,7 +960,7 @@ q = rivers_mem_alloc(sizeof(rivers_queue_t));</code></pre>
   </div>
 
   <div class="section card soft-orange" id="queue-mem-deep">
-    <h2>2.10 · rivers_mem：动态分配静态内存</h2>
+    <h2>2.9 · rivers_mem：动态分配静态内存</h2>
     <p><strong>它不是从系统堆申请内存，而是先准备一块静态数组，再在这块静态数组里自己管理哪些地方空闲、哪些地方已分配。</strong></p>
 <pre><code>static rivers_default_heap_t s_default_heap;</code></pre>
 <pre><code>uint8_t bytes[RIVERS_QUEUE_HEAP_SIZE];</code></pre>
@@ -988,7 +1001,7 @@ coalesce 后：
   </div>
 
   <div class="section card" id="queue-critical">
-    <h2>2.11 · 临界区保护</h2>
+    <h2>2.10 · 临界区保护</h2>
     <p>queue 和 mem 都可能被主循环和中断同时访问，所以关键操作会进入临界区：</p>
 <pre><code>state = RIVERS_QUEUE_CRITICAL_ENTER();
 /* 修改链表、head、tail、count */
@@ -999,11 +1012,11 @@ RIVERS_QUEUE_CRITICAL_EXIT(state);</code></pre>
       <div class="deep-card"><h4>队列状态</h4><p><code>head/tail/count</code> 是 send/recv 的共享状态，需要原子地更新。</p></div>
     </div>
     <p>当 ISR 中 <code>send_from_isr()</code> 和主循环 <code>recv()</code> 同时操作同一个队列时，临界区可以避免状态被改乱。</p>
-    <div class="warn"><code>send_from_isr()</code> 当前语义是“可以在 ISR 中立即尝试发送”，不是 FreeRTOS 那种带任务唤醒语义的 ISR API。</div>
+    <div class="warn"><code>send_from_isr()</code> 当前语义是“可以在 ISR 中立即尝试发送”，不是带任务唤醒语义的 ISR 调度接口。</div>
   </div>
 
   <div class="section card soft-green" id="queue-cost">
-    <h2>2.12 · 队列内存占用估算</h2>
+    <h2>2.11 · 队列内存占用估算</h2>
     <p>每创建一个队列，实际会分配两块内存：队列数据区 <code>storage = length * item_size</code>，以及队列控制块 <code>struct rivers_queue</code>。因为不是裸分配，还要加 <code>rivers_mem</code> 的块头和 8 字节对齐，所以在 STM32 这类 32 位 MCU 上，可以近似按：</p>
     <div class="formula">单个队列总占用 ≈ align8(length * sizeof(item_type)) + 64 字节
 
@@ -1072,7 +1085,45 @@ uint32_t min_free = rivers_mem_get_min_free_size();</code></pre>
     </table>
     <div class="note">队列容量由 <code>length * sizeof(消息结构体)</code> 决定，但真实内存占用还要加队列控制块和内存分配块头；在这个实现里，32 位 MCU 上每个队列大约是 <code>align8(length * item_size) + 64</code> 字节。</div>
   </div>
-</section>
+<div class="section flowbox" id="queue-flow">
+    <h2>2.12 · 动态流程</h2>
+    <p>本节把 <strong>mem 静态堆块链表</strong> 和 <strong>queue 环形缓冲区</strong> 分开展示，避免把两种结构混为一谈。</p>
+    <div class="flow-tabs" id="queueTabs">
+      <button class="flow-tab mem active" data-flow="memInit">A mem_init</button>
+      <button class="flow-tab mem" data-flow="alloc">B mem_alloc</button>
+      <button class="flow-tab mem" data-flow="free">C mem_free</button>
+      <button class="flow-tab queue" data-flow="create">D queue_create</button>
+      <button class="flow-tab queue" data-flow="ring">E send/recv</button>
+      <button class="flow-tab queue" data-flow="resetDelete">F reset/delete</button>
+    </div>
+    <div id="queueStage" class="flow-stage cols5"></div>
+
+    <div class="mem-panel">
+      <h4>mem 动态效果：静态堆 block 分裂/合并</h4>
+      <div class="memline" id="memLine"><div class="memseg free" style="width:100%">free block: 4096</div></div>
+      <p class="muted" id="memExplain">这里展示 rivers_mem_init / alloc / free 的内存条变化。</p>
+    </div>
+
+    <div class="ring-panel">
+      <h4>queue 动态效果：环形队列 head / tail / count</h4>
+      <div class="ring" id="ring"></div>
+      <div class="stats">
+        <div class="stat"><span>head</span><strong id="qHead">0</strong></div>
+        <div class="stat"><span>tail</span><strong id="qTail">0</strong></div>
+        <div class="stat"><span>count</span><strong id="qCount">0</strong></div>
+        <div class="stat"><span>free_count</span><strong id="qFree">8</strong></div>
+      </div>
+      <div class="demo-controls">
+        <button class="primary-btn queue" onclick="queueSend()">send</button>
+        <button class="ghost-btn" onclick="queueRecv()">recv</button>
+        <button class="ghost-btn" onclick="queueReset()">reset</button>
+        <button class="ghost-btn" onclick="playQueueFlow()">播放当前流程</button>
+      </div>
+    </div>
+  </div>
+
+
+  </section>
 
 <div class="footer-nav">
   <a href="#home" id="footerPrev"><small>上一页</small><strong>—</strong></a>
@@ -1117,12 +1168,12 @@ document.getElementById("footerNext").onclick=e=>{e.preventDefault();route(e.cur
 window.addEventListener("hashchange",()=>route(location.hash,false));
 
 const timerFlows={
- init:["清零 uptime 变量","清空 s_sw_timers[]","配置 SysTick","同步 tick 参数"],
- tick:["tick 0: ms=0 us=0","tick 1: us+=1000 ms+=1","tick 2: us=2000 ms=2","tick 3: us=3000 ms=3"],
- getms:["进入临界区","读取 s_uptime_ms32=1234","退出临界区","返回 now_ms=1234"],
- getus:["已累计整 tick: 3000us","SysTick VAL 表示 tick 内已过 420us","extra_us=420","返回 3420us"],
- delay:["delay_ms(5): start=100","current=101 diff=1 不够","current=105 diff=5 退出","delay_us(500): start=3000","current=3450 diff=450 不够","current=3500 diff=500 退出"],
- sw:["create: 找空槽并保存 cb/arg","start: now=500 period=1000 expiry=1500","SysTick 只更新时间，不检测 timer","poll: now=1499 不到期","poll: now=1500 到期 callback","periodic: expiry 更新为 2500","one-shot: 到期后 active=false"]
+ init:["清空 uptime 与定时器表","配置 SysTick LOAD/VAL/CTRL","计算 tick_period_us","s_tick_ready=true"],
+ tick:["SysTick 进入中断","tick_handler 不做业务","accumulate_us(1000)","us+=1000, ms+=1"],
+ getms:["进入临界区","读取 s_uptime_ms32","退出临界区","返回整 ms"],
+ getus:["读取已累计整 tick us","读取 SysTick VAL/COUNTFLAG","估算当前 tick 内 extra_us","返回 now_us + extra_us"],
+ delay:["记录 start 时间","循环读取当前时间","diff 未到继续忙等","diff 到达后返回"],
+ sw:["主循环调用 poll","扫描 allocated && active","到期后先更新状态","退出临界区","执行用户 callback","周期 timer 写入下一次 expiry"]
 };
 const timerTitles={init:"A 初始化流程",tick:"B tick 计时流程",getms:"C get_uptime_ms 流程",getus:"D get_uptime_us 流程",delay:"E delay_ms / delay_us 流程",sw:"F 软件定时器流程"};
 let currentTimer="init",timerInt=null;
@@ -1163,12 +1214,12 @@ function playTimer(){
 document.querySelectorAll("#timerTabs .flow-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll("#timerTabs .flow-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentTimer=b.dataset.flow;resetTimer();});
 
 const queueFlows={
- memInit:["判断 buffer/size","使用 s_default_heap","对齐起始地址","对齐总大小","初始化 free block","s_mem_ready=true, s_queue_list=NULL"],
- alloc:["请求 128 字节 payload","计算 header/payload/request","遍历 free block","分裂 block","used + remaining free"],
- free:["传入 payload 指针","ptr - header_size 找 block","链表确认有效","block->free=true","与相邻 free 合并"],
- create:["示例 RX: length=128 item_size=1","alloc storage=128","alloc queue control block","初始化 head/tail/count","加入 s_queue_list","返回 s_uart_rx_queue"],
- ring:["初始 head=0 tail=0 count=0","send M1 到 index0","send M2 到 index1","recv M1，head=1","tail 按 modulo 回绕"],
- resetDelete:["reset: head=tail=count=0","storage 旧内容不清空","delete: 从活动链表摘除","free storage","free q，句柄失效"]
+ memInit:["选择默认 heap 或外部 buffer","对齐起始地址和总大小","建立一个大 free block","s_mem_ready=true"],
+ alloc:["请求 payload 大小","按 8 字节对齐","找到足够大的 free block","切成 used + free","返回 payload 指针"],
+ free:["payload 指针回退到 header","标记 block->free=true","检查后续相邻 free block","coalesce 合并碎片"],
+ create:["计算 length * item_size","分配 storage 数据区","分配 queue 控制块","初始化 head/tail/count","挂入 s_queue_list","返回 queue handle"],
+ ring:["tail 写入 item","tail 按 length 取模前进","count 增加","head 读取 item","head 按 length 取模前进","count 减少"],
+ resetDelete:["reset 清 head/tail/count","storage 旧内容不清零","delete 先摘出活动链表","释放 storage","释放 queue 控制块"]
 };
 const queueTitles={memInit:"A rivers_mem_init",alloc:"B rivers_mem_alloc：128 字节示例",free:"C rivers_mem_free",create:"D queue_create：具体队列示例",ring:"E send/recv 环形队列",resetDelete:"F reset / delete"};
 let currentQueue="memInit",qInt=null;

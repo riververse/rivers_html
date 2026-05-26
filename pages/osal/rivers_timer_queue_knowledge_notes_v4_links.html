@@ -119,6 +119,22 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
 .mini-ui strong{display:block;line-height:1.25}.mini-ui span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
 @media(max-width:980px){.source-links,.mini-ui-row{grid-template-columns:1fr}}
 
+
+
+/* Deep analysis additions */
+.deep-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.deep-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.deep-card{border-radius:22px;padding:18px;background:rgba(255,255,255,.68);border:1px solid rgba(20,30,50,.08);box-shadow:0 8px 24px rgba(23,32,51,.045)}
+.deep-card h4{margin-top:0}.deep-card ul{margin:8px 0 0;padding-left:20px}.deep-card li{margin:5px 0}
+.arch-strip{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;margin:18px 0}
+.arch-node{border-radius:22px;padding:18px;background:rgba(255,255,255,.70);border:1px solid rgba(20,30,50,.08)}
+.arch-mid{display:grid;place-items:center;text-align:center;min-width:190px;border-radius:22px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(237,246,255,.72));border:1px solid rgba(22,119,255,.18);font-weight:900}
+.tree{font-family:var(--mono);white-space:pre;line-height:1.7;border-radius:18px;padding:16px;background:rgba(247,249,252,.94);border:1px solid rgba(20,30,50,.09);overflow:auto}
+.flowline{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.flowline span{border-radius:999px;padding:8px 12px;background:rgba(255,255,255,.72);border:1px solid rgba(20,30,50,.08);font-weight:850}.flowline span::after{content:" →";color:var(--muted2)}.flowline span:last-child::after{content:""}
+.formula{font-family:var(--mono);border-radius:18px;padding:16px;background:rgba(246,248,252,.96);border:1px solid rgba(20,30,50,.09);overflow:auto;line-height:1.7}
+.ascii-viz{font-family:var(--mono);white-space:pre;line-height:1.7;border-radius:18px;padding:16px;background:rgba(255,255,255,.72);border:1px dashed rgba(20,30,50,.18);overflow:auto}
+.compare-table td:first-child{font-weight:900;color:var(--blue)}.compare-table td:nth-child(3){color:#0f8a55}
+@media(max-width:980px){.deep-grid,.deep-grid.three,.arch-strip{grid-template-columns:1fr}.arch-mid{min-width:0}.flowline{display:grid}.flowline span::after{content:""}}
 </style>
 </head>
 <body>
@@ -128,6 +144,10 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
   <nav id="nav">
     <div class="nav-title">总览</div>
     <a class="nav-item" href="#home" data-page="home"><span class="nav-num">0</span><span>总览</span></a>
+
+    <a class="nav-item sub" href="#home-architecture" data-page="home" data-target="home-architecture"><span class="nav-num">0.1</span><span>总体架构</span></a>
+    <a class="nav-item sub" href="#home-usage" data-page="home" data-target="home-usage"><span class="nav-num">0.2</span><span>典型使用</span></a>
+    <a class="nav-item sub" href="#home-boundaries" data-page="home" data-target="home-boundaries"><span class="nav-num">0.3</span><span>关键边界</span></a>
     <div class="nav-title">timer</div>
     <a class="nav-item" href="#timer" data-page="timer"><span class="nav-num">1</span><span>rivers_timer</span></a>
     <a class="nav-item sub" href="#timer-features" data-page="timer" data-target="timer-features"><span class="nav-num">1.1</span><span>支持功能</span></a>
@@ -136,6 +156,12 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
     <a class="nav-item sub" href="#timer-porting" data-page="timer" data-target="timer-porting"><span class="nav-num">1.4</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#timer-guide" data-page="timer" data-target="timer-guide"><span class="nav-num">1.5</span><span>使用指南</span></a>
     <a class="nav-item sub" href="#timer-flow" data-page="timer" data-target="timer-flow"><span class="nav-num">1.6</span><span>动态流程</span></a>
+
+    <a class="nav-item sub" href="#timer-core" data-page="timer" data-target="timer-core"><span class="nav-num">1.7</span><span>核心思路</span></a>
+    <a class="nav-item sub" href="#timer-rounding" data-page="timer" data-target="timer-rounding"><span class="nav-num">1.8</span><span>周期换算</span></a>
+    <a class="nav-item sub" href="#timer-accumulate" data-page="timer" data-target="timer-accumulate"><span class="nav-num">1.9</span><span>累计逻辑</span></a>
+    <a class="nav-item sub" href="#timer-subtick" data-page="timer" data-target="timer-subtick"><span class="nav-num">1.10</span><span>子 tick</span></a>
+    <a class="nav-item sub" href="#timer-subtick-boundary" data-page="timer" data-target="timer-subtick-boundary"><span class="nav-num">1.11</span><span>边界说明</span></a>
     <div class="nav-title">queue</div>
     <a class="nav-item" href="#queue" data-page="queue"><span class="nav-num">2</span><span>rivers_queue</span></a>
     <a class="nav-item sub" href="#queue-features" data-page="queue" data-target="queue-features"><span class="nav-num">2.1</span><span>支持功能</span></a>
@@ -145,6 +171,12 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
     <a class="nav-item sub" href="#queue-porting" data-page="queue" data-target="queue-porting"><span class="nav-num">2.5</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#queue-guide" data-page="queue" data-target="queue-guide"><span class="nav-num">2.6</span><span>使用指南</span></a>
     <a class="nav-item sub" href="#queue-flow" data-page="queue" data-target="queue-flow"><span class="nav-num">2.7</span><span>动态流程</span></a>
+
+    <a class="nav-item sub" href="#queue-core" data-page="queue" data-target="queue-core"><span class="nav-num">2.8</span><span>核心思路</span></a>
+    <a class="nav-item sub" href="#queue-create-flow" data-page="queue" data-target="queue-create-flow"><span class="nav-num">2.9</span><span>创建流程</span></a>
+    <a class="nav-item sub" href="#queue-mem-deep" data-page="queue" data-target="queue-mem-deep"><span class="nav-num">2.10</span><span>mem 深入</span></a>
+    <a class="nav-item sub" href="#queue-critical" data-page="queue" data-target="queue-critical"><span class="nav-num">2.11</span><span>临界区</span></a>
+    <a class="nav-item sub" href="#queue-cost" data-page="queue" data-target="queue-cost"><span class="nav-num">2.12</span><span>内存估算</span></a>
   </nav>
   <div class="side-note">1 和 2 是完整大页面；1.1、2.1 等是页内锚点。动态效果用于解释源码逻辑，不等同于真实硬件仿真。</div>
   <div class="side-source">
@@ -183,6 +215,97 @@ table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;bac
   <div class="grid two" style="margin-top:18px">
     <div class="card soft-blue"><h3>1 · rivers_timer</h3><p>小型 standalone SysTick timer module。默认自动配置 SysTick，SysTick 中断只推进系统时间；软件定时器到期判断和回调执行由主循环中的 poll 完成。</p></div>
     <div class="card soft-green"><h3>2 · rivers_queue</h3><p>standalone mem / queue module。包含静态内存池分配器和固定单元环形队列；mem 动态效果和 queue 环形队列效果在本页中分开展示。</p></div>
+  </div>
+
+
+  <div class="section card soft-orange" id="home-architecture">
+    <h2>0.1 · 总体架构：轻量 standalone 基础模块</h2>
+    <div class="warn"><strong>定位边界：</strong>这四个文件整体上不是完整 RTOS，而是两个独立的 standalone 基础模块：<code>queue + mem</code> 和 <code>timer</code>。它们的设计目标是给裸机 / CubeMX 工程提供轻量的“中断与主循环协作”能力。</div>
+    <div class="arch-strip">
+      <div class="arch-node">
+        <h4>queue + mem</h4>
+        <p><code>rivers_mem</code> 位于 <code>rivers_queue.c</code> 内部，是静态内存池分配器；既可以使用模块内置的 <code>s_default_heap</code>，也可以使用用户传入的外部 buffer。队列控制块和队列数据区都从这里分配。</p>
+        <p><code>rivers_queue</code> 是固定长度、固定 item 大小的环形队列。创建后容量和单元大小不变，send/recv 只做立即尝试，不等待、不阻塞、不覆盖旧数据。</p>
+      </div>
+      <div class="arch-mid">裸机前后台协作<br>不是 RTOS</div>
+      <div class="arch-node">
+        <h4>timer</h4>
+        <p><code>rivers_timer_init()</code> 直接配置 Cortex-M SysTick 寄存器，<code>SysTick_Handler()</code> 中调用 <code>rivers_timer_tick_handler()</code> 推进 uptime。</p>
+        <p>软件定时器使用静态数组 <code>s_sw_timers[]</code>，不动态分配。定时器回调不在 SysTick 中断中执行，而是在主循环调用 <code>rivers_timer_poll()</code> 时执行。</p>
+      </div>
+    </div>
+    <div class="deep-grid">
+      <div class="tree">rivers_queue.c
+├── rivers_mem：静态内存池分配器
+└── rivers_queue：固定 item 环形队列</div>
+      <div class="tree">rivers_timer.c
+├── SysTick 时间基准
+└── s_sw_timers[] 软件定时器数组</div>
+    </div>
+    <div class="deep-grid">
+      <div class="deep-card"><h4>不依赖</h4><ul><li>HAL</li><li>CMSIS</li><li>malloc/free</li></ul></div>
+      <div class="deep-card"><h4>不提供</h4><ul><li>任务阻塞</li><li>任务调度</li><li>timeout 等待</li><li>RTOS 语义</li></ul></div>
+    </div>
+    <div class="note">这套代码不是 FreeRTOS 队列和软件定时器的替代品，而是一个适合裸机前后台模型的小型 OSAL 雏形。</div>
+    <table class="compare-table">
+      <tr><th>对比项</th><th>rivers 实现</th><th>RTOS 实现</th></tr>
+      <tr><td>Queue</td><td>非阻塞；满直接返回错误；空直接返回错误；不唤醒任务；适合 ISR → 主循环消息传递。</td><td>可阻塞等待；可设置 timeout；可触发任务调度；ISR API 通常带任务唤醒语义。</td></tr>
+      <tr><td>Software Timer</td><td>SysTick 只推进时间；回调在 poll 中执行；精度受主循环轮询频率影响；不提供任务调度。</td><td>通常由 timer service task 执行回调；和调度器配合；有系统任务上下文。</td></tr>
+    </table>
+  </div>
+
+  <div class="section card" id="home-usage">
+    <h2>0.2 · 典型使用方式</h2>
+<pre><code>int main(void)
+{
+    HAL_Init();
+    SystemClock_Config();
+
+    rivers_mem_init(NULL, 0);
+    rivers_timer_init();
+
+    q = rivers_queue_create(128, sizeof(my_msg_t));
+
+    timer_id = rivers_sw_timer_create(1000, true, cb, NULL);
+    rivers_sw_timer_start(timer_id);
+
+    while (1) {
+        rivers_timer_poll();
+
+        while (rivers_queue_recv(q, &msg) == RIVERS_QUEUE_OK) {
+            // 主循环处理消息
+        }
+    }
+}
+
+void SysTick_Handler(void)
+{
+    rivers_timer_tick_handler();
+}
+
+void Some_IRQHandler(void)
+{
+    rivers_queue_send_from_isr(q, &msg);
+}</code></pre>
+    <div class="deep-grid">
+      <div class="deep-card"><h4>中断侧</h4><p>中断只做快速入队或更新时间。<code>SysTick_Handler()</code> 只推进系统时间，外设 ISR 可以把消息放进队列。</p></div>
+      <div class="deep-card"><h4>主循环侧</h4><p><code>rivers_timer_poll()</code> 在主循环里触发软件定时器回调，队列作为 ISR 与主循环之间的消息缓冲，真正业务处理放在主循环。</p></div>
+    </div>
+  </div>
+
+  <div class="section card soft-purple" id="home-boundaries">
+    <h2>0.3 · 关键边界</h2>
+    <div class="feature-list">
+      <div class="feature"><span class="check">✓</span><span>这套代码适合裸机主循环模型，不是 RTOS 队列 / 定时器替代品。</span></div>
+      <div class="feature"><span class="check">✓</span><span>队列不会阻塞等待；队列满了返回 <code>RIVERS_QUEUE_ERR_FULL</code>，队列空了返回 <code>RIVERS_QUEUE_ERR_EMPTY</code>。</span></div>
+      <div class="feature"><span class="check">✓</span><span>软件定时器精度取决于 <code>rivers_timer_poll()</code> 被调用得多频繁。</span></div>
+      <div class="feature"><span class="check">✓</span><span>SysTick 只负责时间推进，软件定时器回调不会自动在中断中执行。</span></div>
+      <div class="feature"><span class="check">✓</span><span><code>send_from_isr()</code> 目前只是调用普通 send()，语义上是“可以在 ISR 中立即尝试”，不是专门的 RTOS ISR API。</span></div>
+      <div class="feature"><span class="check">✓</span><span><code>rivers_mem</code> 是静态内存池上的可控动态分配，不是系统 malloc/free。</span></div>
+      <div class="feature"><span class="check">✓</span><span>queue 创建后 <code>length</code> 和 <code>item_size</code> 固定不变。</span></div>
+      <div class="feature"><span class="check">✓</span><span>queue 满时不覆盖旧数据。</span></div>
+    </div>
+    <div class="note">如果一句话概括，这四个文件是在做一个轻量 OSAL 雏形，把静态内存管理、消息队列、系统时间、软件定时器拆成了可独立移植的小模块，核心思想是用临界区保护共享状态，用主循环承担业务处理，用中断只做最小工作。</div>
   </div>
 </section>
 
@@ -354,6 +477,177 @@ rivers_sw_timer_delete(once);</code></pre>
       <button class="primary-btn" onclick="playTimer()">播放当前流程</button>
       <button class="ghost-btn" onclick="resetTimer()">重置</button>
     </div>
+  </div>
+
+
+  <div class="section card soft-blue" id="timer-core">
+    <h2>1.7 · timer 的核心思路</h2>
+    <p><code>rivers_timer</code> 把“硬件 tick”和“软件定时器回调”分开。SysTick 中断只做一件事：</p>
+<pre><code>rivers_timer_accumulate_us(s_tick_period_us);</code></pre>
+    <p>也就是更新 <code>s_uptime_us32</code>、<code>s_uptime_ms32</code>、<code>s_uptime_us64</code>、<code>s_uptime_ms64</code>。它不执行用户回调，不扫描定时器。这个设计的价值是：中断里越简单越稳定。</p>
+<pre><code>while (1) {
+    rivers_timer_poll();
+}</code></pre>
+    <p><code>rivers_timer_poll()</code> 扫描静态数组，发现某个 <code>allocated && active</code> 的 timer 到期，就先更新它的状态，然后退出临界区，再调用用户回调。这样可以避免用户回调在关中断状态下运行，也避免用户业务在 SysTick 中断里执行。</p>
+    <div class="flowline"><span>SysTick IRQ</span><span>tick_handler</span><span>accumulate_us</span><span>主循环 poll</span><span>执行 callback</span></div>
+  </div>
+
+  <div class="section card" id="timer-rounding">
+    <h2>1.8 · SysTick 周期换算中的四舍五入</h2>
+    <p>下面这个加法不是多余项：</p>
+<pre><code>+ ((uint64_t)counter_hz / 2ULL)</code></pre>
+    <p>它是为了做四舍五入，而不是单纯向下取整。原始计算目标是：</p>
+<pre><code>period_us = period_ticks * 1000000 / counter_hz;</code></pre>
+    <div class="formula">一个 SysTick 周期的计数个数 / SysTick 每秒计数次数 = 周期秒数
+再乘 1000000 = 周期微秒数</div>
+    <p>C 语言整数除法会直接丢掉小数部分。例如真实结果是 <code>999.6 us</code>，直接整数除法会得到 <code>999 us</code>，而不是更接近真实值的 <code>1000 us</code>。所以代码写成：</p>
+<pre><code>period_us =
+    (period_ticks * 1000000 + counter_hz / 2) / counter_hz;</code></pre>
+    <div class="formula">数学上等价于：
+round(period_ticks * 1000000 / counter_hz)
+
+整数四舍五入通用写法：
+(A + B / 2) / B
+
+这里：
+A = period_ticks * 1000000
+B = counter_hz</div>
+    <div class="note">这个加法是为了提高时间换算精度，让结果四舍五入到最接近的微秒，而不是总是偏小。</div>
+    <div class="deep-card"><h4>默认配置</h4><p><code>RIVERS_TIMER_SYSTICK_CLOCK_HZ = 168000000</code>，<code>RIVERS_TIMER_TICK_RATE_HZ = 1000</code>，算出来 <code>s_tick_period_us = 1000</code>。如果 <code>rivers_timer_init()</code> 成功配置 SysTick，<code>s_tick_ready == true</code>，那么后面每次进入 <code>rivers_timer_tick_handler()</code> 都不会再执行 <code>rivers_timer_sync_systick_source()</code>，当前场景下 <code>s_tick_period_us</code> 会一直是 1000。除非重新配置了 SysTick，或者某种原因导致 <code>s_tick_ready == false</code>。</p></div>
+  </div>
+
+  <div class="section card soft-cyan" id="timer-accumulate">
+    <h2>1.9 · rivers_timer_accumulate_us 的作用</h2>
+<pre><code>static void rivers_timer_accumulate_us(uint32_t delta_us) {
+    uint32_t total_us;
+    uint32_t elapsed_ms;
+
+    s_uptime_us32 += delta_us;
+    s_uptime_us64 += (uint64_t)delta_us;
+
+    total_us = s_ms_remainder_us + delta_us;
+    elapsed_ms = total_us / 1000U;
+    s_uptime_ms32 += elapsed_ms;
+    s_uptime_ms64 += (uint64_t)elapsed_ms;
+    s_ms_remainder_us = (total_us % 1000U);
+}</code></pre>
+    <p>这个函数的作用是：每来一次 SysTick 中断，就把系统运行时间往前推进 <code>delta_us</code> 微秒。在当前默认 1ms tick 下，每次调用 <code>delta_us = 1000</code>。</p>
+    <div class="ascii-viz">第 1 次中断：us = 1000
+第 2 次中断：us = 2000
+第 3 次中断：us = 3000
+...</div>
+    <p>然后同步维护毫秒计数：</p>
+<pre><code>total_us = s_ms_remainder_us + delta_us;
+elapsed_ms = total_us / 1000U;
+s_uptime_ms32 += elapsed_ms;
+s_uptime_ms64 += (uint64_t)elapsed_ms;
+s_ms_remainder_us = (total_us % 1000U);</code></pre>
+    <div class="formula">delta_us = 1000 时：
+total_us = 0 + 1000 = 1000
+elapsed_ms = 1000 / 1000 = 1
+remainder = 1000 % 1000 = 0
+
+等价于：
+s_uptime_us32 += 1000;
+s_uptime_ms32 += 1;</div>
+    <p>代码写得更通用，是为了兼容 SysTick 周期不是刚好 1000us 的情况。例如 tick 频率不是 1000Hz，而是 1024Hz，每个 tick 大约是 <code>976.5625 us</code>，整数微秒可能算成 <code>delta_us = 977</code>。这样每次 tick 不满或不刚好等于 1ms，所以需要把不足 1ms 的余数保存下来，累计到后面。</p>
+    <div class="formula">假设 delta_us = 600：
+
+第 1 次：
+total_us = 0 + 600 = 600
+elapsed_ms = 600 / 1000 = 0
+remainder = 600
+
+第 2 次：
+total_us = 600 + 600 = 1200
+elapsed_ms = 1200 / 1000 = 1
+remainder = 200
+
+第 3 次：
+total_us = 200 + 600 = 800
+elapsed_ms = 0
+remainder = 800
+
+第 4 次：
+total_us = 800 + 600 = 1400
+elapsed_ms = 1
+remainder = 400</div>
+    <div class="note"><code>rivers_timer_accumulate_us(delta_us)</code> 负责把“微秒级时间增量”累计进系统时间，同时把够 1000us 的部分换算成 ms，不够 1000us 的部分暂存在 <code>s_ms_remainder_us</code>。默认 1ms SysTick 下，它等价于 us 加 1000、ms 加 1、余数保持 0；写成现在这样，是为了适配非 1ms tick 或非整毫秒 tick 的配置。</div>
+  </div>
+
+  <div class="section card" id="timer-subtick">
+    <h2>1.10 · 子 tick 微秒估算</h2>
+    <p><code>rivers_timer_get_subtick_us_locked()</code> 的目的只有一个：在两个 SysTick 中断之间，估算当前这个 tick 周期内部已经过去了多少微秒。</p>
+    <p>因为 <code>rivers_timer_tick_handler()</code> 只有在 SysTick 中断发生时才会给 <code>s_uptime_us32</code> 加一次，比如每 1ms 加 1000us。如果真实时间已经过了 <code>10ms + 300us</code>，但上一次 SysTick 只累计到了 <code>10ms</code>，这个函数就是用 SysTick 当前硬件计数值，把那 300us 估算出来。</p>
+    <div class="formula">SysTick 是递减计数器。
+
+默认 168MHz，1ms tick：
+LOAD = 167999
+period_ticks = LOAD + 1 = 168000
+
+计数序列：
+167999, 167998, 167997, ... 2, 1, 0</div>
+    <p>所以：</p>
+<pre><code>elapsed_ticks = s_tick_reload_value - current_before;</code></pre>
+    <div class="formula">VAL = 117999 时：
+elapsed_ticks = 167999 - 117999 = 50000
+
+50000 * 1000000 / 168000000 ≈ 297us</div>
+    <p>入口保护逻辑：</p>
+<pre><code>if ((!s_tick_ready) || (!rivers_timer_systick_enabled()) || (s_tick_counter_hz == 0U)) {
+    return 0U;
+}</code></pre>
+    <p>如果 SysTick 没准备好、没启用，或者频率为 0，就没法估算，直接返回 0。</p>
+<pre><code>current_before = RIVERS_TIMER_SYSTICK_VAL_REG;
+elapsed_flag = ((RIVERS_TIMER_SYSTICK_CTRL_REG & RIVERS_TIMER_SYSTICK_COUNTFLAG_BIT) != 0U);
+current_after = RIVERS_TIMER_SYSTICK_VAL_REG;</code></pre>
+    <p>这里连续读了 VAL、CTRL 里的 COUNTFLAG、再读 VAL。COUNTFLAG 表示：从上次读取 CTRL 以来，SysTick 是否已经数到过 0。读两次 VAL 是为了处理刚好卡在 SysTick 回卷附近的情况：刚读完 <code>current_before</code>，计数器可能马上从 0 回装到 LOAD，所以再读一次 <code>current_after</code> 用于处理跨周期场景。</p>
+    <p>正常情况下，没有跨过 tick 边界：</p>
+<pre><code>elapsed_ticks = (uint64_t)s_tick_reload_value - (uint64_t)current_before;</code></pre>
+    <p>如果检测到 COUNTFLAG：</p>
+<pre><code>elapsed_ticks = (uint64_t)s_tick_period_ticks +
+                (uint64_t)s_tick_reload_value -
+                (uint64_t)current_after;</code></pre>
+    <p>这表示读取过程中已经跨过一次 SysTick 周期边界。加上 <code>s_tick_period_ticks</code>，是为了把“上一轮已经完整过去的一个 tick 周期”也算进去；当前新周期内已经过去的计数是 <code>s_tick_reload_value - current_after</code>。</p>
+<pre><code>return (uint32_t)((elapsed_ticks * 1000000ULL) / (uint64_t)s_tick_counter_hz);</code></pre>
+    <div class="formula">elapsed_ticks = 84000
+counter_hz = 168000000
+
+84000 * 1000000 / 168000000 = 500us</div>
+    <p>这个函数通常不是单独用，而是在 <code>rivers_timer_get_uptime_us()</code> 里组合：</p>
+<pre><code>uint32_t rivers_timer_get_uptime_us(void) {
+    ...
+    now_us = s_uptime_us32;
+    extra_us = rivers_timer_get_subtick_us_locked();
+    ...
+    return now_us + extra_us;
+}</code></pre>
+    <div class="note">它让 <code>rivers_timer_get_uptime_us()</code> 不只是 1000、2000、3000 这样跳变，而是能在两个 SysTick 中断之间估算出更细的微秒级时间。</div>
+  </div>
+
+  <div class="section card soft-orange" id="timer-subtick-boundary">
+    <h2>1.11 · 边界说明：不是万能的 SysTick 延迟补偿</h2>
+    <p>需要修正一个常见误解：这个函数主要不是补偿所有“被延迟的 SysTick 中断”，而是补偿“当前 SysTick 周期内、还没等到下一次中断时已经过去的那部分时间”。</p>
+    <div class="deep-grid">
+      <div class="deep-card"><h4>正确理解</h4><ul><li>SysTick 硬件计数器本身会继续递减。</li><li>CPU 进入临界区、关中断、或者被更高优先级中断占用时，<code>SysTick_Handler()</code> 可能延迟执行。</li><li><code>s_uptime_us32/ms32</code> 只有在 <code>rivers_timer_tick_handler()</code> 执行时才会累计，所以 handler 延迟时，软件时间账本确实会暂时落后。</li><li>读取 SysTick 的 VAL 可以知道当前周期内已经过去了多少硬件计数。</li></ul></div>
+      <div class="deep-card"><h4>明确边界</h4><p>当前这段实现只能可靠估算一个 SysTick 周期附近的偏移，不适合补偿长时间关中断导致错过多个 SysTick 周期。</p></div>
+    </div>
+    <div class="formula">正常情况：
+上一次 SysTick 中断已执行，s_uptime_us32 = 10000us
+当前距离下一次 SysTick 还有一半，VAL 显示已经过去 500us
+get_uptime_us() 返回约 10500us
+
+短暂中断延迟：
+SysTick 已经数到 0
+但 handler 还没执行
+COUNTFLAG = 1
+VAL 已经重新装载并进入下一轮计数
+
+此时可以估算：
+完整一个 tick + 新周期内已经过去的部分</div>
+    <p>如果关中断很久，比如错过了 5 个 SysTick 周期，SysTick 的 COUNTFLAG 只告诉你“至少发生过一次回卷”，不会告诉你发生了 5 次，所以这套逻辑没法准确补偿多个丢失 tick。</p>
+    <div class="note">SysTick 硬件计数不依赖软件 handler，会继续运行。<code>rivers_timer_get_subtick_us_locked()</code> 通过读取 SysTick 当前计数值，补上当前 tick 内已经过去、但软件 uptime 还没累计到的子节拍时间；如果 SysTick handler 被短暂延迟，它也能估算约一个 tick 范围内的延迟。但它不能作为长时间关中断后的完整时间补偿机制。</div>
+    <p>这个函数是在 <code>rivers_timer_get_uptime_us()</code> 里关中断后调用的。关中断的目的不是让 SysTick 停止计数，而是避免这边刚读 <code>s_uptime_us32</code>，另一边 SysTick 中断又更新了 <code>s_uptime_us32</code>，导致“整 tick 时间”和“子 tick 时间”组合不一致。</p>
   </div>
 </section>
 
@@ -588,6 +882,195 @@ rivers_queue_delete(msg_q);</code></pre>
         <button class="ghost-btn" onclick="playQueueFlow()">播放当前流程</button>
       </div>
     </div>
+  </div>
+
+
+  <div class="section card soft-green" id="queue-core">
+    <h2>2.8 · queue 的核心思路</h2>
+    <p><code>rivers_queue</code> 是固定单元 ring buffer，不是字节流 ring buffer。每个槽位保存一个完整 item，item 的大小由创建时的 <code>item_size</code> 决定。</p>
+<pre><code>struct rivers_queue {
+    uint8_t *storage;
+    uint32_t head;
+    uint32_t tail;
+    uint32_t length;
+    uint32_t item_size;
+    uint32_t count;
+    struct rivers_queue *next;
+};</code></pre>
+    <table>
+      <tr><th>字段</th><th>含义</th></tr>
+      <tr><td><code>storage</code></td><td>真正存消息的连续内存。</td></tr>
+      <tr><td><code>head</code></td><td>下一个要读的位置。</td></tr>
+      <tr><td><code>tail</code></td><td>下一个要写的位置。</td></tr>
+      <tr><td><code>length</code></td><td>队列最多能放多少个 item。</td></tr>
+      <tr><td><code>item_size</code></td><td>每个 item 的字节大小。</td></tr>
+      <tr><td><code>count</code></td><td>当前已经存了多少个 item。</td></tr>
+      <tr><td><code>next</code></td><td>用于挂到活动队列链表里，检查句柄是否有效。</td></tr>
+    </table>
+    <div class="deep-grid">
+      <div>
+        <h4>发送逻辑</h4>
+<pre><code>memcpy(q->storage + (q->tail * q->item_size), item, q->item_size);
+q->tail = (q->tail + 1U) % q->length;
+q->count++;</code></pre>
+      </div>
+      <div>
+        <h4>接收逻辑</h4>
+<pre><code>memcpy(item, q->storage + (q->head * q->item_size), q->item_size);
+q->head = (q->head + 1U) % q->length;
+q->count--;</code></pre>
+      </div>
+    </div>
+    <p>send 从 <code>tail</code> 写入，recv 从 <code>head</code> 读取，head/tail 到末尾后通过取模回到 0。<code>count</code> 用来判断空/满：<code>q->count >= q->length</code> 表示满，<code>q->count == 0</code> 表示空。使用 count 可以避免 <code>head == tail</code> 无法区分空和满的问题。</p>
+    <div class="ascii-viz">index:     0      1      2      3
+storage: [item] [item] [item] [    ]
+           ^             ^
+          head          tail</div>
+    <div class="deep-grid">
+      <div class="deep-card"><h4>UART RX</h4><p>可以把每个 byte 包成一个 <code>uart_rx_msg_t</code> 入队，让 ISR 只负责快速收字节，主循环再解析协议。</p></div>
+      <div class="deep-card"><h4>UART TX</h4><p>可以把一条短字符串包成一个结构体入队，主循环或发送状态机再按顺序取出。</p></div>
+    </div>
+  </div>
+
+  <div class="section card" id="queue-create-flow">
+    <h2>2.9 · 队列创建流程</h2>
+    <p>调用：</p>
+<pre><code>rivers_queue_create(length, item_size);</code></pre>
+    <p>内部先计算：</p>
+<pre><code>total_size = length * item_size;</code></pre>
+    <p>然后分两次内存：</p>
+<pre><code>storage = rivers_mem_alloc(total_size);
+q = rivers_mem_alloc(sizeof(rivers_queue_t));</code></pre>
+    <p>也就是说，一个队列由两块内存组成：队列控制块 <code>rivers_queue_t</code> 和队列数据区 <code>storage</code>。创建成功后，会把 <code>q</code> 挂到全局活动链表 <code>s_queue_list</code>。</p>
+    <div class="flowline"><span>rivers_queue_create()</span><span>计算 storage 大小</span><span>alloc storage</span><span>alloc control block</span><span>初始化 head/tail/count</span><span>挂入 s_queue_list</span><span>返回 handle</span></div>
+    <div class="note">后续 <code>send/recv/delete/reset/get_count</code> 等接口会先检查这个队列句柄是否还在链表里，这样可以尽量避免 delete 后继续使用野指针。</div>
+  </div>
+
+  <div class="section card soft-orange" id="queue-mem-deep">
+    <h2>2.10 · rivers_mem：动态分配静态内存</h2>
+    <p><strong>它不是从系统堆申请内存，而是先准备一块静态数组，再在这块静态数组里自己管理哪些地方空闲、哪些地方已分配。</strong></p>
+<pre><code>static rivers_default_heap_t s_default_heap;</code></pre>
+<pre><code>uint8_t bytes[RIVERS_QUEUE_HEAP_SIZE];</code></pre>
+<pre><code>#define RIVERS_QUEUE_HEAP_SIZE 4096U</code></pre>
+    <p>“静态”是因为总内存固定，编译期 / 启动后就在那里；“动态”是因为运行时可以 alloc/free 不同大小的块。所以这是“在静态内存池上实现动态分配”。</p>
+<pre><code>typedef struct rivers_mem_block {
+    uint32_t size;
+    bool free;
+    struct rivers_mem_block *next;
+} rivers_mem_block_t;</code></pre>
+    <p>每个内存块前面都有一个 header。初始化时，整个 heap 是一个大的 free block：</p>
+    <div class="ascii-viz">[ block header | free payload........................ ]
+
+s_heap_head -> 一个 free block，size = 整个 heap 大小</div>
+    <p>分配时，例如申请 100 字节：</p>
+<pre><code>rivers_mem_alloc(100);</code></pre>
+    <div class="flowline"><span>100 向上对齐</span><span>加 block header</span><span>找足够大的 free block</span><span>大块切开</span><span>前半 used</span><span>后半 free</span><span>返回 payload 地址</span></div>
+    <div class="ascii-viz">分配前：
+[ free 4096 ]
+
+分配后：
+[ used: header + payload ][ free: remaining ]
+
+多次分配后：
+[ used ][ used ][ free ]</div>
+    <p>释放时：</p>
+<pre><code>rivers_mem_free(ptr);</code></pre>
+    <p>它会用用户传入的 payload 指针往前退一个 header：</p>
+<pre><code>block = ptr - header_size;
+block->free = true;</code></pre>
+    <div class="ascii-viz">释放前：
+[ used ][ free ][ free ]
+
+coalesce 后：
+[ used ][ free bigger ]</div>
+    <p>这个合并动作叫 <strong>coalesce</strong>，目的是减少内存碎片。</p>
+    <div class="note"><strong>为什么要对齐：</strong><code>RIVERS_QUEUE_MEM_ALIGN_SIZE</code> 默认是 8。MCU 上不同类型有对齐要求，例如 <code>uint32_t</code> 通常希望地址是 4 字节对齐。该模块默认按 8 字节对齐，让返回的 payload 地址更安全。例如分配 13 字节，实际可能按 16 字节算。</div>
+  </div>
+
+  <div class="section card" id="queue-critical">
+    <h2>2.11 · 临界区保护</h2>
+    <p>queue 和 mem 都可能被主循环和中断同时访问，所以关键操作会进入临界区：</p>
+<pre><code>state = RIVERS_QUEUE_CRITICAL_ENTER();
+/* 修改链表、head、tail、count */
+RIVERS_QUEUE_CRITICAL_EXIT(state);</code></pre>
+    <div class="deep-grid three">
+      <div class="deep-card"><h4>内存块链表</h4><p>alloc/free 需要保护 block 链表，避免并发拆分、释放、合并时状态交错。</p></div>
+      <div class="deep-card"><h4>活动队列链表</h4><p>create/delete 维护 <code>s_queue_list</code>，其他 API 会用它检查句柄是否有效。</p></div>
+      <div class="deep-card"><h4>队列状态</h4><p><code>head/tail/count</code> 是 send/recv 的共享状态，需要原子地更新。</p></div>
+    </div>
+    <p>当 ISR 中 <code>send_from_isr()</code> 和主循环 <code>recv()</code> 同时操作同一个队列时，临界区可以避免状态被改乱。</p>
+    <div class="warn"><code>send_from_isr()</code> 当前语义是“可以在 ISR 中立即尝试发送”，不是 FreeRTOS 那种带任务唤醒语义的 ISR API。</div>
+  </div>
+
+  <div class="section card soft-green" id="queue-cost">
+    <h2>2.12 · 队列内存占用估算</h2>
+    <p>每创建一个队列，实际会分配两块内存：队列数据区 <code>storage = length * item_size</code>，以及队列控制块 <code>struct rivers_queue</code>。因为不是裸分配，还要加 <code>rivers_mem</code> 的块头和 8 字节对齐，所以在 STM32 这类 32 位 MCU 上，可以近似按：</p>
+    <div class="formula">单个队列总占用 ≈ align8(length * sizeof(item_type)) + 64 字节
+
+64 来自：
+storage 分配块头：16 字节
+queue 控制块分配：约 48 字节</div>
+    <div class="formula">queue_cost =
+    align8(length * item_size)
+  + align8(sizeof(rivers_queue_t))
+  + 2 * align8(sizeof(rivers_mem_block_t))
+
+32 位 MCU、默认 8 字节对齐下，通常就是：
+queue_cost = align8(length * item_size) + 64</div>
+    <div class="formula">align8(1)   = 8
+align8(66)  = 72
+align8(128) = 128
+align8(529) = 536</div>
+    <div class="deep-grid">
+      <div class="deep-card">
+        <h4>例子 1：UART RX 逐字节接收</h4>
+<pre><code>typedef struct {
+    uint8_t byte;
+} uart_rx_msg_t;
+
+rx_q = rivers_queue_create(128, sizeof(uart_rx_msg_t));</code></pre>
+        <div class="formula">length * item_size = 128 * 1 = 128
+queue_cost = align8(128) + 64 = 192 字节</div>
+      </div>
+      <div class="deep-card">
+        <h4>例子 2：TX 短字符串队列</h4>
+<pre><code>typedef struct {
+    uint16_t len;
+    char text[64];
+} uart_tx_msg_t;
+
+tx_q = rivers_queue_create(8, sizeof(uart_tx_msg_t));</code></pre>
+        <div class="formula">sizeof(uart_tx_msg_t) 通常是 66 字节
+8 * 66 = 528
+queue_cost = align8(528) + 64 = 592 字节</div>
+      </div>
+    </div>
+    <div class="formula">RX queue: 192
+TX queue: 592
+合计: 784 字节</div>
+    <p>两个队列合计约 784 字节，距离默认 4096 字节还有余量。</p>
+    <table>
+      <tr><th>队列名</th><th>item类型</th><th>sizeof(item)</th><th>length</th><th>数据区字节</th><th>总占用估算</th></tr>
+      <tr><td>RX队列</td><td><code>uart_rx_msg_t</code></td><td>1</td><td>128</td><td>128</td><td>192</td></tr>
+      <tr><td>TX队列</td><td><code>uart_tx_msg_t</code></td><td>66</td><td>8</td><td>528</td><td>592</td></tr>
+      <tr><td>事件队列</td><td><code>app_event_t</code></td><td>16</td><td>16</td><td>256</td><td>320</td></tr>
+    </table>
+    <div class="formula">检查原则：
+所有队列总占用 < RIVERS_QUEUE_HEAP_SIZE
+
+默认：
+#define RIVERS_QUEUE_HEAP_SIZE 4096U</div>
+    <p>建议不要算到刚好 4096，最好留 20% 到 30% 余量，因为还有对齐、碎片、以后扩展等问题。</p>
+<pre><code>uint32_t free_size = rivers_mem_get_free_size();
+uint32_t largest = rivers_mem_get_largest_free_block();
+uint32_t min_free = rivers_mem_get_min_free_size();</code></pre>
+    <table>
+      <tr><th>接口</th><th>意义</th></tr>
+      <tr><td><code>free_size</code></td><td>当前剩余总空间。</td></tr>
+      <tr><td><code>largest</code></td><td>当前最大连续可申请空间。</td></tr>
+      <tr><td><code>min_free</code></td><td>历史最低剩余空间。</td></tr>
+    </table>
+    <div class="note">队列容量由 <code>length * sizeof(消息结构体)</code> 决定，但真实内存占用还要加队列控制块和内存分配块头；在这个实现里，32 位 MCU 上每个队列大约是 <code>align8(length * item_size) + 64</code> 字节。</div>
   </div>
 </section>
 

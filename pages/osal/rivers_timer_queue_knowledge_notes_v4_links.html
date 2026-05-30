@@ -1212,8 +1212,15 @@ storage = active ? q->storage : NULL;</code></pre>
 <script>
 const pages=["home","timer","queue"];
 const titles={home:"0 · 总览",timer:"1 · rivers_timer",queue:"2 · rivers_queue"};
+function pauseAllAnimations(){
+  if(typeof pauseTimer==="function") pauseTimer();
+  if(typeof pauseQueueFlow==="function") pauseQueueFlow();
+  if(coopInt){clearInterval(coopInt);coopInt=null;}
+}
 function showPage(page,target,push=true){
   if(!pages.includes(page)) page="home";
+  const oldActive=document.querySelector(".page.active");
+  if(oldActive && oldActive.id!=="page-"+page) pauseAllAnimations();
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+page).classList.add("active");
   document.querySelectorAll(".nav-item").forEach(a=>a.classList.remove("active"));

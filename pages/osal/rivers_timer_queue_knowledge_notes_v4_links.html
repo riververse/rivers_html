@@ -46,11 +46,11 @@ body{
 .nav-item.active{background:rgba(255,255,255,.96);box-shadow:var(--shadow2);font-weight:850}
 .nav-item.sub{margin-left:16px}.nav-num{font-variant-numeric:tabular-nums;color:var(--muted2)}.active .nav-num{color:var(--blue)}
 .side-note{margin:22px 8px 0;padding:14px;border-radius:20px;background:rgba(255,255,255,.70);border:1px solid rgba(255,255,255,.86);color:var(--muted);font-size:12px;box-shadow:0 8px 24px rgba(23,32,51,.05)}
-.main{grid-column:2;padding:22px 34px 76px;min-width:0}
+.main{grid-column:2;padding:22px 34px 76px;min-width:0;width:100%}
 .topbar{position:sticky;top:0;z-index:20;max-width:1220px;margin:0 auto 28px;padding:13px 0;display:flex;justify-content:space-between;gap:14px;align-items:center;background:linear-gradient(180deg,rgba(251,252,255,.95),rgba(251,252,255,.72));backdrop-filter:blur(18px)}
 .crumb{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px}.dot{width:9px;height:9px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 7px rgba(22,119,255,.10)}
 .icon-btn{width:38px;height:38px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.76);color:var(--text);cursor:pointer;box-shadow:0 8px 22px rgba(23,32,51,.06)}.icon-btn:hover{background:white;transform:translateY(-1px)}
-.content{max-width:1220px;margin:0 auto}.page{display:none;animation:pageIn .22s ease}.page.active{display:block}
+.content{width:min(1220px,100%);max-width:1220px;margin:0 auto;min-width:0}.page{display:none;animation:pageIn .22s ease;min-width:0}.page.active{display:block}
 @keyframes pageIn{from{opacity:0;transform:translateY(8px) scale(.998)}to{opacity:1;transform:translateY(0) scale(1)}}
 .hero{position:relative;overflow:hidden;border-radius:36px;padding:46px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.82);box-shadow:var(--shadow)}
 .hero::before{content:"";position:absolute;right:-160px;top:-180px;width:420px;height:420px;background:radial-gradient(circle,rgba(22,119,255,.22),transparent 58%),radial-gradient(circle at 30% 78%,rgba(124,92,255,.18),transparent 54%);filter:blur(4px)}
@@ -66,12 +66,12 @@ h4{font-size:17px;margin:18px 0 8px}p{margin:10px 0}.lead{font-size:17px;color:v
 .grid{display:grid;gap:18px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.badge{border-radius:999px;padding:6px 11px;font-size:12px;font-weight:850;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.70)}.badge.blue{color:#0969da;background:rgba(22,119,255,.10)}.badge.purple{color:#5f45d9;background:rgba(124,92,255,.11)}.badge.green{color:#0f8a55;background:rgba(24,183,120,.12)}.badge.cyan{color:#078c99;background:rgba(22,199,217,.12)}.badge.orange{color:#b85c00;background:rgba(255,138,31,.12)}.badge.red{color:#cf222e;background:rgba(255,77,79,.10)}
 .note,.warn,.danger{border-radius:18px;padding:16px 18px;margin:18px 0;border:1px solid}.note{background:rgba(22,119,255,.075);border-color:rgba(22,119,255,.26)}.warn{background:rgba(255,138,31,.10);border-color:rgba(255,138,31,.30)}.danger{background:rgba(255,77,79,.085);border-color:rgba(255,77,79,.30)}
-code{font-family:var(--mono);font-size:.92em;border-radius:7px;padding:2px 6px;background:rgba(245,247,251,.92);border:1px solid rgba(20,30,50,.08)}pre{overflow-x:auto;border-radius:20px;padding:18px;background:rgba(247,249,252,.94);border:1px solid rgba(20,30,50,.09);margin:16px 0}pre code{background:transparent;border:0;padding:0;font-size:13px;line-height:1.65}
-table{width:100%;border-collapse:collapse;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.78);border:1px solid var(--line);font-size:14px;margin:16px 0}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:rgba(246,248,252,.92);font-weight:900}tr:last-child td{border-bottom:0}
+code{font-family:var(--mono);font-size:.92em;border-radius:7px;padding:2px 6px;background:rgba(245,247,251,.92);border:1px solid rgba(20,30,50,.08);white-space:normal;overflow-wrap:anywhere}pre{max-width:100%;overflow-x:auto;border-radius:20px;padding:18px;background:rgba(247,249,252,.94);border:1px solid rgba(20,30,50,.09);margin:16px 0}pre code{background:transparent;border:0;padding:0;font-size:13px;line-height:1.65;white-space:pre;overflow-wrap:normal}
+table{width:100%;max-width:100%;border-collapse:collapse;border-radius:18px;overflow-x:auto;background:rgba(255,255,255,.78);border:1px solid var(--line);font-size:14px;margin:16px 0}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;overflow-wrap:anywhere}th{background:rgba(246,248,252,.92);font-weight:900}tr:last-child td{border-bottom:0}
 .feature-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.feature{display:flex;gap:10px;align-items:flex-start;padding:13px;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(20,30,50,.07)}.check{width:22px;height:22px;flex:0 0 22px;border-radius:8px;display:grid;place-items:center;color:white;font-size:13px;font-weight:900;background:linear-gradient(135deg,var(--blue),var(--purple))}.queue-check{background:linear-gradient(135deg,var(--green),var(--cyan))}
 .func-list{display:grid;gap:10px}.func{display:grid;grid-template-columns:minmax(220px,.88fr) minmax(0,1.35fr);gap:12px;padding:14px;border-radius:16px;background:rgba(255,255,255,.66);border:1px solid rgba(20,30,50,.07)}.func code{font-weight:850}
 .path-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.path-card{padding:18px;border-radius:22px;background:rgba(255,255,255,.70);border:1px solid rgba(20,30,50,.08)}.path-card .n{color:var(--blue);font-size:13px;font-weight:950}.path-card.queue .n{color:#0f8a55}
-.flowbox{border-radius:28px;border:1px solid rgba(255,255,255,.82);background:rgba(255,255,255,.72);box-shadow:var(--shadow2);padding:24px;margin:18px 0}.flow-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.flow-tab{border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);padding:9px 14px;font-weight:850;cursor:pointer}.flow-tab.active{color:white;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 12px 26px rgba(22,119,255,.18)}.flow-tab.queue.active{background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 12px 26px rgba(24,183,120,.18)}.flow-tab.mem.active{background:linear-gradient(135deg,var(--orange),var(--yellow));box-shadow:0 12px 26px rgba(255,138,31,.18)}
+.flowbox{border-radius:28px;border:1px solid rgba(255,255,255,.82);background:rgba(255,255,255,.72);box-shadow:var(--shadow2);padding:24px;margin:18px 0;overflow:hidden}.flow-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.flow-tab{border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);padding:9px 14px;font-weight:850;cursor:pointer}.flow-tab.active{color:white;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 12px 26px rgba(22,119,255,.18)}.flow-tab.queue.active{background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 12px 26px rgba(24,183,120,.18)}.flow-tab.mem.active{background:linear-gradient(135deg,var(--orange),var(--yellow));box-shadow:0 12px 26px rgba(255,138,31,.18)}
 .flow-stage{display:grid;gap:12px;margin:18px 0}.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols4{grid-template-columns:repeat(4,minmax(0,1fr))}.cols5{grid-template-columns:repeat(5,minmax(0,1fr))}.cols6{grid-template-columns:repeat(6,minmax(0,1fr))}
 .step{min-height:126px;padding:16px;border-radius:20px;background:rgba(255,255,255,.76);border:1px solid rgba(20,30,50,.08);position:relative;transition:.24s ease}.step:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:44%;color:var(--muted2);font-weight:950;z-index:2}.step.active{transform:translateY(-4px);background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(237,246,255,.96));border-color:rgba(22,119,255,.28);box-shadow:0 18px 38px rgba(22,119,255,.13)}.step.queue.active{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(235,252,245,.96));border-color:rgba(24,183,120,.28);box-shadow:0 18px 38px rgba(24,183,120,.13)}.step.mem.active{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,235,.96));border-color:rgba(255,138,31,.32);box-shadow:0 18px 38px rgba(255,138,31,.13)}.step-num{width:30px;height:30px;border-radius:11px;display:grid;place-items:center;background:rgba(22,119,255,.10);color:var(--blue);font-weight:950;margin-bottom:8px}.step.queue .step-num{background:rgba(24,183,120,.11);color:#0f8a55}.step.mem .step-num{background:rgba(255,138,31,.13);color:#b85c00}.step strong{display:block;margin-bottom:5px}.step span{color:var(--muted);font-size:13px}
 .visual{min-height:170px;border-radius:24px;border:1px solid rgba(20,30,50,.08);background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(248,250,255,.72));margin-top:18px;padding:20px;overflow:hidden}
@@ -190,6 +190,181 @@ h4{font-size:16px !important}
   margin-top:10px;
   background:linear-gradient(90deg,var(--blue),rgba(22,119,255,.15));
 }
+
+/* Flow demo refinement: source-oriented, restrained animation */
+.flowbox .step.active{transform:none !important}
+.flowbox .step{min-height:112px}
+.demo-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:16px;align-items:start}
+.demo-state{border-radius:22px;padding:16px;background:rgba(255,255,255,.78);border:1px solid rgba(20,30,50,.08)}
+.demo-state h4{margin:0 0 10px}
+.state-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.state-cell{border-radius:15px;padding:10px 12px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.07)}
+.state-cell span{display:block;color:var(--muted);font-size:12px}
+.state-cell strong{display:block;font-family:var(--mono);font-size:16px;margin-top:2px}
+.source-note{margin-top:12px;border-radius:16px;padding:12px 14px;background:rgba(22,119,255,.07);border:1px solid rgba(22,119,255,.20);color:#26344d}
+.tick-track,.wait-track,.subtick-track{height:14px;border-radius:999px;background:rgba(20,30,50,.08);overflow:hidden;margin:14px 0 8px}
+.tick-fill,.wait-fill,.subtick-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .45s ease}
+.timeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:12px}
+.timeline span{border-radius:999px;padding:7px 8px;text-align:center;font-size:12px;font-weight:850;background:rgba(247,249,252,.9);border:1px solid rgba(20,30,50,.07);color:var(--muted)}
+.timeline span.active{background:rgba(22,119,255,.12);border-color:rgba(22,119,255,.28);color:var(--blue)}
+.timer-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.timer-slot{border-radius:16px;padding:11px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08);font-size:12px}
+.timer-slot strong{display:block;font-size:13px;margin-bottom:4px}.timer-slot.scan{border-color:rgba(22,119,255,.42);background:rgba(22,119,255,.08)}.timer-slot.due{border-color:rgba(24,183,120,.44);background:rgba(24,183,120,.10)}
+.callback-box{border-radius:16px;padding:12px;margin-top:12px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08);font-weight:850}.callback-box.on{background:rgba(24,183,120,.11);border-color:rgba(24,183,120,.34);color:#0f6f4f}
+.coop-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px}
+.coop-step{position:relative;border-radius:18px;padding:14px;background:rgba(255,255,255,.76);border:1px solid rgba(20,30,50,.08);min-height:92px}
+.coop-step:not(:last-child)::after{content:"→";position:absolute;right:-11px;top:34%;font-weight:950;color:var(--muted2)}
+.coop-step.active{border-color:rgba(22,119,255,.34);background:rgba(22,119,255,.08)}
+.coop-step strong{display:block}.coop-step span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.queue-demo-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:14px}
+.queue-demo-grid .mem-panel,.queue-demo-grid .ring-panel{margin-top:0}
+.queue-status{margin-top:12px;border-radius:16px;padding:12px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08)}
+.queue-status.warn{background:rgba(255,77,79,.08);border-color:rgba(255,77,79,.25);color:#a1262d}
+.cell.just{outline:2px solid rgba(22,119,255,.36)}.cell.old{background:rgba(247,249,252,.82);color:var(--muted2);opacity:.7}
+@media(max-width:980px){.demo-layout,.queue-demo-grid,.coop-flow{grid-template-columns:1fr}.coop-step:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-18px;transform:translateX(50%)}.timer-slots,.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Small polish for flow demos */
+.coop-panel{margin-top:18px;border-radius:22px;padding:18px;background:rgba(244,252,254,.74);border:1px solid rgba(20,30,50,.08)}
+.queue-demo-grid .ring{grid-template-columns:repeat(4,minmax(54px,1fr))}
+
+/* Relaxed dynamic-flow layout */
+.flowbox{padding:32px !important}
+.flowbox > p{max-width:1080px}
+.flow-tabs{gap:10px !important;margin:18px 0 20px !important}
+.flow-tab{padding:10px 17px !important}
+.flow-stage{gap:14px !important;margin:18px 0 20px !important}
+.flowbox .step{
+  min-height:132px !important;
+  padding:20px 18px !important;
+}
+.flowbox .step strong{
+  font-size:16px;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+.flowbox .step span{font-size:13px;line-height:1.7}
+.demo-layout{
+  display:block !important;
+}
+.demo-state{
+  margin-top:16px;
+  padding:18px !important;
+}
+.demo-state h4{margin:0 0 12px !important}
+.state-grid{
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+}
+.state-cell{
+  min-height:82px;
+  padding:14px !important;
+}
+.visual{
+  padding:22px !important;
+}
+.timeline{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+}
+.timer-slots{gap:12px}
+.timer-slot{min-height:104px}
+.queue-demo-grid{
+  gap:18px !important;
+  margin-top:18px !important;
+}
+.queue-demo-grid .mem-panel,
+.queue-demo-grid .ring-panel{
+  min-height:270px;
+  padding:22px !important;
+}
+.queue-demo-grid .ring{
+  gap:12px !important;
+}
+.queue-demo-grid .cell{
+  height:60px;
+}
+.queue-status{
+  margin-top:14px !important;
+}
+@media(max-width:1180px){
+  .state-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+@media(max-width:980px){
+  .flowbox{padding:24px !important}
+  .state-grid{grid-template-columns:1fr !important}
+}
+
+/* Source calculation cards and variable-driven demos */
+.calc-chain{display:grid;gap:14px;margin-top:16px}
+.calc-card{border-radius:22px;padding:18px;background:rgba(255,255,255,.78);border:1px solid rgba(20,30,50,.08)}
+.calc-card h4{margin-top:0}.calc-card .formula{margin-top:10px}
+.code-focus{border-radius:18px;padding:14px;background:rgba(247,249,252,.96);border:1px solid rgba(20,30,50,.08);overflow:auto}
+.addr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.addr-box{border-radius:16px;padding:12px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08)}
+.addr-box span{display:block;color:var(--muted);font-size:12px}.addr-box strong{font-family:var(--mono)}
+.demo-wide{display:grid;grid-template-columns:1fr;gap:22px;align-items:start;max-width:100%;min-width:0}
+.demo-var-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;max-width:100%;min-width:0}
+.flowbox>.demo-wide>.visual .demo-var-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.demo-var{border-radius:15px;padding:10px 12px;background:rgba(247,249,252,.94);border:1px solid rgba(20,30,50,.08)}
+.demo-var span{display:block;color:var(--muted);font-size:12px}.demo-var strong{font-family:var(--mono);font-size:15px}
+.source-line{border-radius:16px;padding:13px 14px;margin-top:12px;background:rgba(22,119,255,.075);border:1px solid rgba(22,119,255,.22);font-family:var(--mono);font-size:13px;overflow:auto}
+.systick-meter{height:18px;border-radius:999px;background:rgba(20,30,50,.08);overflow:hidden;margin:12px 0}.systick-meter div{height:100%;width:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .5s ease}
+.heap-address{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}.heap-address div{border-radius:14px;padding:9px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08);font-family:var(--mono);font-size:12px}
+.flow-mode-title{font-weight:950;margin:6px 0 10px}
+@media(max-width:980px){.demo-wide,.addr-grid{grid-template-columns:1fr}.demo-var-grid,.flowbox>.demo-wide>.visual .demo-var-grid{grid-template-columns:1fr}.heap-address{grid-template-columns:1fr 1fr}}
+
+@media (min-width:981px){
+  .layout{display:grid;grid-template-columns:var(--side) minmax(0,1fr)}
+  .main{grid-column:2;min-width:0;width:100%;max-width:calc(100vw - var(--side));overflow-x:hidden}
+  .content{width:min(1220px,100%);max-width:1220px;margin:0 auto;min-width:0}
+}
+.content,.page,.section,.card,.flowbox,.visual,.demo-state,.mem-panel,.ring-panel,.deep-card,.calc-card{
+  max-width:100%;
+  min-width:0;
+}
+.demo-wide,.queue-demo-grid,.demo-var-grid,.state-grid,.timer-slots,.ring{
+  max-width:100%;
+  min-width:0;
+}
+.code-focus,.formula,.ascii-viz,.source-line{
+  max-width:100%;
+  overflow-x:auto;
+}
+p,li,td,th,.note,.warn,.danger,.deep-card,.calc-card{
+  overflow-wrap:anywhere;
+}
+
+
+/* Flow animation clarity */
+.demo-var.changed{border-color:rgba(22,119,255,.38);background:rgba(22,119,255,.09);box-shadow:0 8px 20px rgba(22,119,255,.08)}
+.demo-var.changed strong{color:var(--blue)}
+.systick-meter.irq div{background:linear-gradient(90deg,var(--orange),var(--red))}
+.interrupt-badge{display:inline-flex;margin-top:10px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900;background:rgba(255,138,31,.12);border:1px solid rgba(255,138,31,.32);color:#9a4a00}
+.meter-label{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:8px}
+.timer-slot.critical{border-color:rgba(255,138,31,.42);background:rgba(255,138,31,.10)}
+.timer-slot.callback-ready{border-color:rgba(24,183,120,.44);background:rgba(24,183,120,.10)}
+.memline{height:auto;min-height:92px}
+.memseg{align-content:center;gap:2px;line-height:1.25}
+.memseg .seg-type{font-weight:950}
+.memseg .seg-size,.memseg .seg-addr{font-family:var(--mono);font-size:11px;color:#53647b}
+.memseg.ptr{outline:2px solid rgba(22,119,255,.28);outline-offset:-2px}
+.memseg.merge{background:rgba(24,183,120,.18)}
+.heap-address div.active{border-color:rgba(22,119,255,.34);background:rgba(22,119,255,.08)}
+.ring{grid-template-columns:repeat(4,minmax(86px,1fr));align-items:stretch}
+.cell{height:78px;grid-template-rows:auto 1fr;align-content:center;gap:3px}
+.cell .slot-index{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cell .slot-value{font-weight:950;color:#172033}
+.cell.fill .slot-value{color:#0c7c65}
+.cell.head::before{content:"HEAD ↓";left:8px;top:-18px;background:var(--green);font-size:10px}
+.cell.tail::after{content:"TAIL ↓";right:8px;top:-18px;background:var(--orange);font-size:10px}
+.cell.head.tail::before{content:"HEAD/TAIL";background:linear-gradient(135deg,var(--green),var(--orange))}
+.cell.head.tail::after{content:""}
+.io-lane{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.io-token{border-radius:14px;padding:9px 12px;background:rgba(247,249,252,.92);border:1px solid rgba(20,30,50,.08);font-family:var(--mono);font-weight:850}
+.io-token.on{background:rgba(22,119,255,.09);border-color:rgba(22,119,255,.28);color:var(--blue)}
+.wrap-hint{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,138,31,.09);border:1px solid rgba(255,138,31,.25);font-family:var(--mono);font-size:13px}
+@media(max-width:560px){.ring{grid-template-columns:repeat(2,minmax(86px,1fr))}}
+
 </style>
 </head>
 <body>
@@ -207,29 +382,21 @@ h4{font-size:16px !important}
     <a class="nav-item" href="#timer" data-page="timer"><span class="nav-num">1</span><span>rivers_timer</span></a>
     <a class="nav-item sub" href="#timer-features" data-page="timer" data-target="timer-features"><span class="nav-num">1.1</span><span>支持功能</span></a>
     <a class="nav-item sub" href="#timer-api" data-page="timer" data-target="timer-api"><span class="nav-num">1.2</span><span>接口说明</span></a>
-    <a class="nav-item sub" href="#timer-mindset" data-page="timer" data-target="timer-mindset"><span class="nav-num">1.3</span><span>软件思维</span></a>
+        <a class="nav-item sub" href="#timer-mindset" data-page="timer" data-target="timer-mindset"><span class="nav-num">1.3</span><span>软件思维</span></a>
     <a class="nav-item sub" href="#timer-porting" data-page="timer" data-target="timer-porting"><span class="nav-num">1.4</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#timer-guide" data-page="timer" data-target="timer-guide"><span class="nav-num">1.5</span><span>使用指南</span></a>
-        <a class="nav-item sub" href="#timer-core" data-page="timer" data-target="timer-core"><span class="nav-num">1.6</span><span>核心思路</span></a>
-    <a class="nav-item sub" href="#timer-rounding" data-page="timer" data-target="timer-rounding"><span class="nav-num">1.7</span><span>周期换算</span></a>
-    <a class="nav-item sub" href="#timer-accumulate" data-page="timer" data-target="timer-accumulate"><span class="nav-num">1.8</span><span>累计逻辑</span></a>
-    <a class="nav-item sub" href="#timer-subtick" data-page="timer" data-target="timer-subtick"><span class="nav-num">1.9</span><span>子 tick</span></a>
-    <a class="nav-item sub" href="#timer-subtick-boundary" data-page="timer" data-target="timer-subtick-boundary"><span class="nav-num">1.10</span><span>边界说明</span></a>
-    <a class="nav-item sub" href="#timer-flow" data-page="timer" data-target="timer-flow"><span class="nav-num">1.11</span><span>动态流程</span></a>
+    <a class="nav-item sub" href="#timer-core" data-page="timer" data-target="timer-core"><span class="nav-num">1.6</span><span>源码与计算</span></a>
+    <a class="nav-item sub" href="#timer-flow" data-page="timer" data-target="timer-flow"><span class="nav-num">1.7</span><span>动态流程</span></a>
     <div class="nav-title">queue</div>
     <a class="nav-item" href="#queue" data-page="queue"><span class="nav-num">2</span><span>rivers_queue</span></a>
     <a class="nav-item sub" href="#queue-features" data-page="queue" data-target="queue-features"><span class="nav-num">2.1</span><span>支持功能</span></a>
     <a class="nav-item sub" href="#queue-api" data-page="queue" data-target="queue-api"><span class="nav-num">2.2</span><span>接口说明</span></a>
-    <a class="nav-item sub" href="#queue-mindset" data-page="queue" data-target="queue-mindset"><span class="nav-num">2.3</span><span>软件思维</span></a>
-    <a class="nav-item sub" href="#queue-mem" data-page="queue" data-target="queue-mem"><span class="nav-num">2.4</span><span>内存管理</span></a>
+        <a class="nav-item sub" href="#queue-mindset" data-page="queue" data-target="queue-mindset"><span class="nav-num">2.3</span><span>软件思维</span></a>
+    <a class="nav-item sub" href="#queue-mem" data-page="queue" data-target="queue-mem"><span class="nav-num">2.4</span><span>rivers_mem</span></a>
     <a class="nav-item sub" href="#queue-porting" data-page="queue" data-target="queue-porting"><span class="nav-num">2.5</span><span>移植步骤</span></a>
     <a class="nav-item sub" href="#queue-guide" data-page="queue" data-target="queue-guide"><span class="nav-num">2.6</span><span>使用指南</span></a>
-        <a class="nav-item sub" href="#queue-core" data-page="queue" data-target="queue-core"><span class="nav-num">2.7</span><span>核心思路</span></a>
-    <a class="nav-item sub" href="#queue-create-flow" data-page="queue" data-target="queue-create-flow"><span class="nav-num">2.8</span><span>创建流程</span></a>
-    <a class="nav-item sub" href="#queue-mem-deep" data-page="queue" data-target="queue-mem-deep"><span class="nav-num">2.9</span><span>mem 深入</span></a>
-    <a class="nav-item sub" href="#queue-critical" data-page="queue" data-target="queue-critical"><span class="nav-num">2.10</span><span>临界区</span></a>
-    <a class="nav-item sub" href="#queue-cost" data-page="queue" data-target="queue-cost"><span class="nav-num">2.11</span><span>内存估算</span></a>
-    <a class="nav-item sub" href="#queue-flow" data-page="queue" data-target="queue-flow"><span class="nav-num">2.12</span><span>动态流程</span></a>
+    <a class="nav-item sub" href="#queue-core" data-page="queue" data-target="queue-core"><span class="nav-num">2.7</span><span>queue 源码解析</span></a>
+    <a class="nav-item sub" href="#queue-flow" data-page="queue" data-target="queue-flow"><span class="nav-num">2.8</span><span>动态流程</span></a>
   </nav>
   <div class="side-note">1 和 2 是完整大页面；1.1、2.1 等是页内锚点。动态效果用于解释源码逻辑，不等同于真实硬件仿真。</div>
   <div class="side-source">
@@ -339,6 +506,21 @@ void Some_IRQHandler(void)
       <div class="deep-card"><h4>中断侧</h4><p>中断只做快速入队或更新时间。<code>SysTick_Handler()</code> 只推进系统时间，外设 ISR 可以把消息放进队列。</p></div>
       <div class="deep-card"><h4>主循环侧</h4><p><code>rivers_timer_poll()</code> 在主循环里触发软件定时器回调，队列作为 ISR 与主循环之间的消息缓冲，真正业务处理放在主循环。</p></div>
     </div>
+    <div class="coop-panel" id="home-coop-flow">
+      <h3>裸机前后台协作流程</h3>
+      <p class="muted">中断只做最小工作，主循环承担真正业务处理。</p>
+      <div class="coop-flow" id="coopFlow">
+        <div class="coop-step"><strong>中断 / SysTick</strong><span>外设事件或时间节拍</span></div>
+        <div class="coop-step"><strong>快速入队 / uptime</strong><span>send_from_isr 或 tick_handler</span></div>
+        <div class="coop-step"><strong>while(1)</strong><span>回到主循环</span></div>
+        <div class="coop-step"><strong>timer_poll()</strong><span>处理到期软件定时器</span></div>
+        <div class="coop-step"><strong>queue_recv()</strong><span>取出消息副本</span></div>
+        <div class="coop-step"><strong>业务处理</strong><span>协议解析、状态机、发送</span></div>
+      </div>
+      <div class="demo-controls">
+        <button class="ghost-btn" onclick="playCoopFlow()">播放协作流程</button>
+      </div>
+    </div>
   </div>
 
   <div class="section card soft-purple boundary-table-card" id="home-boundaries">
@@ -417,24 +599,12 @@ void Some_IRQHandler(void)
 
   <div class="section card soft-purple" id="timer-mindset">
     <h2>1.3 · 软件思维</h2>
-    <div class="grid two">
-      <div>
-        <h3>中断只推进时间</h3>
-        <p>SysTick 中断中调用 <code>rivers_timer_tick_handler()</code>，只累加 uptime，不做复杂业务，不检测软件定时器，不执行用户 callback。</p>
-        <h3>poll 才处理软件定时器</h3>
-        <p><code>rivers_timer_poll()</code> 在主循环或任务态调用，负责遍历 <code>s_sw_timers[]</code>，判断 active timer 是否到期。</p>
-        <h3>32 位对外，64 位内部</h3>
-        <p>外部接口返回 32 位时间，允许自然回绕；软件定时器内部使用 64 位毫秒时间比较 <code>expiry_ms</code>。</p>
-      </div>
-      <div>
-        <h3>delay 使用差值判断</h3>
-        <p>delay 不重新配置 SysTick，而是记录 start，然后循环读取当前 uptime，用无符号差值判断是否达到目标。</p>
-        <h3>us 时间 = 整 tick + 子节拍</h3>
-        <p><code>get_uptime_us()</code> 先读已累计整 tick us，再通过 SysTick <code>VAL / COUNTFLAG</code> 估算 tick 内 extra_us。</p>
-        <h3>临界区保存/恢复 PRIMASK</h3>
-        <p>进入临界区时保存 PRIMASK 并关中断，退出时根据原状态恢复，避免破坏外部已经关闭中断的状态。</p>
-      </div>
+    <div class="grid three">
+      <div class="deep-card"><h4>中断只做账本更新</h4><p><code>SysTick_Handler()</code> 只转调 <code>rivers_timer_tick_handler()</code>，让 uptime 前进；业务和回调不放进中断。</p></div>
+      <div class="deep-card"><h4>回调由主循环 poll</h4><p><code>rivers_timer_poll()</code> 扫描 <code>s_sw_timers[]</code>，到期后先更新状态，再在主循环上下文执行 callback。</p></div>
+      <div class="deep-card"><h4>时间读取保护一致性</h4><p>读取 64 位时间或组合“整 tick + 子 tick”时进入临界区，避免和 SysTick 中断更新账本交错。</p></div>
     </div>
+    <div class="note">本节只讲设计原因。具体的 reload、period_us、余数累计、VAL 子节拍和 COUNTFLAG 计算集中放在 1.6。</div>
     <div class="note">软件定时器控制块包含 <code>allocated</code>、<code>active</code>、<code>periodic</code>、<code>expiry_ms</code>、<code>period_ms</code>、<code>cb</code>、<code>arg</code>。周期定时器到期后推进 <code>expiry_ms</code>，单次定时器到期后 <code>active=false</code>。</div>
   </div>
 
@@ -502,203 +672,107 @@ rivers_sw_timer_delete(once);</code></pre>
   </div>
 
   <div class="section card soft-blue" id="timer-core">
-    <h2>1.6 · timer 的核心思路</h2>
-    <p><code>rivers_timer</code> 把“硬件 tick”和“软件定时器回调”分开。SysTick 中断只做一件事：</p>
-<pre><code>rivers_timer_accumulate_us(s_tick_period_us);</code></pre>
-    <p>也就是更新 <code>s_uptime_us32</code>、<code>s_uptime_ms32</code>、<code>s_uptime_us64</code>、<code>s_uptime_ms64</code>。它不执行用户回调，不扫描定时器。这个设计的价值是：中断里越简单越稳定。</p>
-<pre><code>while (1) {
-    rivers_timer_poll();
-}</code></pre>
-    <p><code>rivers_timer_poll()</code> 扫描静态数组，发现某个 <code>allocated && active</code> 的 timer 到期，就先更新它的状态，然后退出临界区，再调用用户回调。这样可以避免用户回调在关中断状态下运行，也避免用户业务在 SysTick 中断里执行。</p>
-    <div class="flowline"><span>SysTick IRQ</span><span>tick_handler</span><span>accumulate_us</span><span>主循环 poll</span><span>执行 callback</span></div>
-  </div>
-
-  <div class="section card" id="timer-rounding">
-    <h2>1.7 · SysTick 周期换算中的四舍五入</h2>
-    <p>下面这个加法不是多余项：</p>
-<pre><code>+ ((uint64_t)counter_hz / 2ULL)</code></pre>
-    <p>它是为了做四舍五入，而不是单纯向下取整。原始计算目标是：</p>
-<pre><code>period_us = period_ticks * 1000000 / counter_hz;</code></pre>
-    <div class="formula">一个 SysTick 周期的计数个数 / SysTick 每秒计数次数 = 周期秒数
-再乘 1000000 = 周期微秒数</div>
-    <p>C 语言整数除法会直接丢掉小数部分。例如真实结果是 <code>999.6 us</code>，直接整数除法会得到 <code>999 us</code>，而不是更接近真实值的 <code>1000 us</code>。所以代码写成：</p>
+    <h2>1.6 · 源码与计算细节</h2>
+    <p>这一节按源码执行顺序串起来：先配置 SysTick，再把硬件计数周期换算成微秒，tick 中断只累计时间，读取 us 时再补当前 tick 内的子节拍。</p>
+    <div class="calc-chain">
+      <div class="calc-card">
+        <h4>0. 四个 uptime 变量为什么同时存在</h4>
+<pre><code>static volatile uint32_t s_uptime_us32 = 0U;
+static volatile uint32_t s_uptime_ms32 = 0U;
+static volatile uint64_t s_uptime_us64 = 0U;
+static volatile uint64_t s_uptime_ms64 = 0U;</code></pre>
+        <table>
+          <thead><tr><th>变量名</th><th>单位</th><th>位宽</th><th>主要用途</th><th>回绕特点</th></tr></thead>
+          <tbody>
+            <tr><td><code>s_uptime_us32</code></td><td>us</td><td>32 bit</td><td>短时间测量、<code>delay_us</code>、快速读取微秒时间。</td><td>约 71 分钟自然回绕；用差值判断时可以正常工作。</td></tr>
+            <tr><td><code>s_uptime_ms32</code></td><td>ms</td><td>32 bit</td><td>普通 tick、<code>uptime_ms</code>、<code>delay_ms</code>。</td><td>约 49.7 天自然回绕；不是 bug，是 32 位计数器的正常行为。</td></tr>
+            <tr><td><code>s_uptime_us64</code></td><td>us</td><td>64 bit</td><td>保存更完整的微秒运行时间，方便后续扩展长时间微秒统计。</td><td>实际使用中很难遇到回绕。</td></tr>
+            <tr><td><code>s_uptime_ms64</code></td><td>ms</td><td>64 bit</td><td>软件定时器内部用它做 <code>expiry_ms</code> 绝对时间比较，减少长期运行回绕问题。</td><td>适合长期运行的到期时间账本。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="calc-card">
+        <h4>1. SysTick 初始化：reload / LOAD / period_ticks</h4>
+<pre><code>reload = RIVERS_TIMER_SYSTICK_CLOCK_HZ / RIVERS_TIMER_TICK_RATE_HZ;
+LOAD = reload - 1;
+period_ticks = LOAD + 1;</code></pre>
+        <div class="formula">STM32F407, 168MHz, 1000Hz tick:
+reload = 168000000 / 1000 = 168000
+LOAD = 168000 - 1 = 167999
+period_ticks = 167999 + 1 = 168000</div>
+        <p>SysTick 是递减计数器，<code>LOAD</code> 写 <code>reload - 1</code>。从 167999 递减到 0，一共经历 168000 个硬件计数。</p>
+      </div>
+      <div class="calc-card">
+        <h4>2. 周期换算：整数四舍五入</h4>
 <pre><code>period_us =
     (period_ticks * 1000000 + counter_hz / 2) / counter_hz;</code></pre>
-    <div class="formula">数学上等价于：
-round(period_ticks * 1000000 / counter_hz)
+        <p><code>period_ticks * 1000000 / counter_hz</code> 是把硬件计数周期换算成微秒。<code>+ counter_hz / 2</code> 是整数四舍五入，避免永远向下截断。</p>
+        <div class="formula">默认:
+period_us = (168000 * 1000000 + 168000000 / 2) / 168000000
+          = 1000us</div>
+      </div>
+      <div class="calc-card">
+        <h4>3. tick 累计：us 直接加，ms 只加够 1000us 的部分</h4>
+<pre><code>s_uptime_us32 += delta_us;
+s_uptime_us64 += (uint64_t)delta_us;
 
-整数四舍五入通用写法：
-(A + B / 2) / B
-
-这里：
-A = period_ticks * 1000000
-B = counter_hz</div>
-    <div class="note">这个加法是为了提高时间换算精度，让结果四舍五入到最接近的微秒，而不是总是偏小。</div>
-    <div class="deep-card"><h4>默认配置</h4><p><code>RIVERS_TIMER_SYSTICK_CLOCK_HZ = 168000000</code>，<code>RIVERS_TIMER_TICK_RATE_HZ = 1000</code>，算出来 <code>s_tick_period_us = 1000</code>。如果 <code>rivers_timer_init()</code> 成功配置 SysTick，<code>s_tick_ready == true</code>，那么后面每次进入 <code>rivers_timer_tick_handler()</code> 都不会再执行 <code>rivers_timer_sync_systick_source()</code>，当前场景下 <code>s_tick_period_us</code> 会一直是 1000。除非重新配置了 SysTick，或者某种原因导致 <code>s_tick_ready == false</code>。</p></div>
-  </div>
-
-  <div class="section card soft-cyan" id="timer-accumulate">
-    <h2>1.8 · rivers_timer_accumulate_us 的作用</h2>
-<pre><code>static void rivers_timer_accumulate_us(uint32_t delta_us) {
-    uint32_t total_us;
-    uint32_t elapsed_ms;
-
-    s_uptime_us32 += delta_us;
-    s_uptime_us64 += (uint64_t)delta_us;
-
-    total_us = s_ms_remainder_us + delta_us;
-    elapsed_ms = total_us / 1000U;
-    s_uptime_ms32 += elapsed_ms;
-    s_uptime_ms64 += (uint64_t)elapsed_ms;
-    s_ms_remainder_us = (total_us % 1000U);
-}</code></pre>
-    <p>这个函数的作用是：每来一次 SysTick 中断，就把系统运行时间往前推进 <code>delta_us</code> 微秒。在当前默认 1ms tick 下，每次调用 <code>delta_us = 1000</code>。</p>
-    <div class="ascii-viz">第 1 次中断：us = 1000
-第 2 次中断：us = 2000
-第 3 次中断：us = 3000
-...</div>
-    <p>然后同步维护毫秒计数：</p>
-<pre><code>total_us = s_ms_remainder_us + delta_us;
+total_us = s_ms_remainder_us + delta_us;
 elapsed_ms = total_us / 1000U;
 s_uptime_ms32 += elapsed_ms;
 s_uptime_ms64 += (uint64_t)elapsed_ms;
-s_ms_remainder_us = (total_us % 1000U);</code></pre>
-    <div class="formula">delta_us = 1000 时：
-total_us = 0 + 1000 = 1000
-elapsed_ms = 1000 / 1000 = 1
-remainder = 1000 % 1000 = 0
-
-等价于：
-s_uptime_us32 += 1000;
-s_uptime_ms32 += 1;</div>
-    <p>代码写得更通用，是为了兼容 SysTick 周期不是刚好 1000us 的情况。例如 tick 频率不是 1000Hz，而是 1024Hz，每个 tick 大约是 <code>976.5625 us</code>，整数微秒可能算成 <code>delta_us = 977</code>。这样每次 tick 不满或不刚好等于 1ms，所以需要把不足 1ms 的余数保存下来，累计到后面。</p>
-    <div class="formula">假设 delta_us = 600：
-
-第 1 次：
-total_us = 0 + 600 = 600
-elapsed_ms = 600 / 1000 = 0
-remainder = 600
-
-第 2 次：
-total_us = 600 + 600 = 1200
-elapsed_ms = 1200 / 1000 = 1
-remainder = 200
-
-第 3 次：
-total_us = 200 + 600 = 800
-elapsed_ms = 0
-remainder = 800
-
-第 4 次：
-total_us = 800 + 600 = 1400
-elapsed_ms = 1
-remainder = 400</div>
-    <div class="note"><code>rivers_timer_accumulate_us(delta_us)</code> 负责把“微秒级时间增量”累计进系统时间，同时把够 1000us 的部分换算成 ms，不够 1000us 的部分暂存在 <code>s_ms_remainder_us</code>。默认 1ms SysTick 下，它等价于 us 加 1000、ms 加 1、余数保持 0；写成现在这样，是为了适配非 1ms tick 或非整毫秒 tick 的配置。</div>
-  </div>
-
-  <div class="section card" id="timer-subtick">
-    <h2>1.9 · 子 tick 微秒估算</h2>
-    <p><code>rivers_timer_get_subtick_us_locked()</code> 的目的只有一个：在两个 SysTick 中断之间，估算当前这个 tick 周期内部已经过去了多少微秒。</p>
-    <p>因为 <code>rivers_timer_tick_handler()</code> 只有在 SysTick 中断发生时才会给 <code>s_uptime_us32</code> 加一次，比如每 1ms 加 1000us。如果真实时间已经过了 <code>10ms + 300us</code>，但上一次 SysTick 只累计到了 <code>10ms</code>，这个函数就是用 SysTick 当前硬件计数值，把那 300us 估算出来。</p>
-    <div class="formula">SysTick 是递减计数器。
-
-默认 168MHz，1ms tick：
-LOAD = 167999
-period_ticks = LOAD + 1 = 168000
-
-计数序列：
-167999, 167998, 167997, ... 2, 1, 0</div>
-    <p>所以：</p>
-<pre><code>elapsed_ticks = s_tick_reload_value - current_before;</code></pre>
-    <div class="formula">VAL = 117999 时：
-elapsed_ticks = 167999 - 117999 = 50000
-
-50000 * 1000000 / 168000000 ≈ 297us</div>
-    <p>入口保护逻辑：</p>
-<pre><code>if ((!s_tick_ready) || (!rivers_timer_systick_enabled()) || (s_tick_counter_hz == 0U)) {
-    return 0U;
-}</code></pre>
-    <p>如果 SysTick 没准备好、没启用，或者频率为 0，就没法估算，直接返回 0。</p>
-<pre><code>current_before = RIVERS_TIMER_SYSTICK_VAL_REG;
-elapsed_flag = ((RIVERS_TIMER_SYSTICK_CTRL_REG & RIVERS_TIMER_SYSTICK_COUNTFLAG_BIT) != 0U);
-current_after = RIVERS_TIMER_SYSTICK_VAL_REG;</code></pre>
-    <p>这里连续读了 VAL、CTRL 里的 COUNTFLAG、再读 VAL。COUNTFLAG 表示：从上次读取 CTRL 以来，SysTick 是否已经数到过 0。读两次 VAL 是为了处理刚好卡在 SysTick 回卷附近的情况：刚读完 <code>current_before</code>，计数器可能马上从 0 回装到 LOAD，所以再读一次 <code>current_after</code> 用于处理跨周期场景。</p>
-    <p>正常情况下，没有跨过 tick 边界：</p>
-<pre><code>elapsed_ticks = (uint64_t)s_tick_reload_value - (uint64_t)current_before;</code></pre>
-    <p>如果检测到 COUNTFLAG：</p>
-<pre><code>elapsed_ticks = (uint64_t)s_tick_period_ticks +
-                (uint64_t)s_tick_reload_value -
-                (uint64_t)current_after;</code></pre>
-    <p>这表示读取过程中已经跨过一次 SysTick 周期边界。加上 <code>s_tick_period_ticks</code>，是为了把“上一轮已经完整过去的一个 tick 周期”也算进去；当前新周期内已经过去的计数是 <code>s_tick_reload_value - current_after</code>。</p>
-<pre><code>return (uint32_t)((elapsed_ticks * 1000000ULL) / (uint64_t)s_tick_counter_hz);</code></pre>
-    <div class="formula">elapsed_ticks = 84000
-counter_hz = 168000000
-
-84000 * 1000000 / 168000000 = 500us</div>
-    <p>这个函数通常不是单独用，而是在 <code>rivers_timer_get_uptime_us()</code> 里组合：</p>
-<pre><code>uint32_t rivers_timer_get_uptime_us(void) {
-    ...
-    now_us = s_uptime_us32;
-    extra_us = rivers_timer_get_subtick_us_locked();
-    ...
-    return now_us + extra_us;
-}</code></pre>
-    <div class="note">它让 <code>rivers_timer_get_uptime_us()</code> 不只是 1000、2000、3000 这样跳变，而是能在两个 SysTick 中断之间估算出更细的微秒级时间。</div>
-  </div>
-
-  <div class="section card soft-orange" id="timer-subtick-boundary">
-    <h2>1.10 · 边界说明：不是万能的 SysTick 延迟补偿</h2>
-    <p>需要修正一个常见误解：这个函数主要不是补偿所有“被延迟的 SysTick 中断”，而是补偿“当前 SysTick 周期内、还没等到下一次中断时已经过去的那部分时间”。</p>
-    <div class="deep-grid">
-      <div class="deep-card"><h4>正确理解</h4><ul><li>SysTick 硬件计数器本身会继续递减。</li><li>CPU 进入临界区、关中断、或者被更高优先级中断占用时，<code>SysTick_Handler()</code> 可能延迟执行。</li><li><code>s_uptime_us32/ms32</code> 只有在 <code>rivers_timer_tick_handler()</code> 执行时才会累计，所以 handler 延迟时，软件时间账本确实会暂时落后。</li><li>读取 SysTick 的 VAL 可以知道当前周期内已经过去了多少硬件计数。</li></ul></div>
-      <div class="deep-card"><h4>明确边界</h4><p>当前这段实现只能可靠估算一个 SysTick 周期附近的偏移，不适合补偿长时间关中断导致错过多个 SysTick 周期。</p></div>
-    </div>
-    <div class="formula">正常情况：
-上一次 SysTick 中断已执行，s_uptime_us32 = 10000us
-当前距离下一次 SysTick 还有一半，VAL 显示已经过去 500us
-get_uptime_us() 返回约 10500us
-
-短暂中断延迟：
-SysTick 已经数到 0
-但 handler 还没执行
-COUNTFLAG = 1
-VAL 已经重新装载并进入下一轮计数
-
-此时可以估算：
-完整一个 tick + 新周期内已经过去的部分</div>
-    <p>如果关中断很久，比如错过了 5 个 SysTick 周期，SysTick 的 COUNTFLAG 只告诉你“至少发生过一次回卷”，不会告诉你发生了 5 次，所以这套逻辑没法准确补偿多个丢失 tick。</p>
-    <div class="note">SysTick 硬件计数不依赖软件 handler，会继续运行。<code>rivers_timer_get_subtick_us_locked()</code> 通过读取 SysTick 当前计数值，补上当前 tick 内已经过去、但软件 uptime 还没累计到的子节拍时间；如果 SysTick handler 被短暂延迟，它也能估算约一个 tick 范围内的延迟。但它不能作为长时间关中断后的完整时间补偿机制。</div>
-    <p>这个函数是在 <code>rivers_timer_get_uptime_us()</code> 里关中断后调用的。关中断的目的不是让 SysTick 停止计数，而是避免这边刚读 <code>s_uptime_us32</code>，另一边 SysTick 中断又更新了 <code>s_uptime_us32</code>，导致“整 tick 时间”和“子 tick 时间”组合不一致。</p>
-  </div>
-<div class="section flowbox" id="timer-flow">
-    <h2>1.11 · 动态流程</h2>
-    <p>这一节放在 timer 章节最后，用动画把前面的关键点串起来：SysTick 只累计时间，<code>accumulate_us()</code> 维护 us/ms 账本，<code>get_uptime_us()</code> 补上子 tick，<code>poll()</code> 在主循环里执行回调。</p>
-    <div class="flow-tabs" id="timerTabs">
-      <button class="flow-tab active" data-flow="init">A 初始化</button>
-      <button class="flow-tab" data-flow="tick">B tick 计时</button>
-      <button class="flow-tab" data-flow="getms">C get_uptime_ms</button>
-      <button class="flow-tab" data-flow="getus">D get_uptime_us</button>
-      <button class="flow-tab" data-flow="delay">E delay</button>
-      <button class="flow-tab" data-flow="sw">F 软件定时器</button>
-    </div>
-    <div id="timerStage" class="flow-stage cols4"></div>
-    <div class="visual">
-      <strong id="timerTitle">A 初始化流程</strong>
-      <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
-      <div class="stats">
-        <div class="stat"><span>s_uptime_ms32</span><strong id="tMs">0</strong></div>
-        <div class="stat"><span>s_uptime_us32</span><strong id="tUs">0</strong></div>
-        <div class="stat"><span>extra_us / diff</span><strong id="tExtra">0</strong></div>
-        <div class="stat"><span>callback</span><strong id="tCb">NO</strong></div>
+s_ms_remainder_us = total_us % 1000U;</code></pre>
+        <div class="formula">delta_us = 600:
+第 1 次: total=600,  ms += 0, remainder=600
+第 2 次: total=1200, ms += 1, remainder=200
+第 3 次: total=800,  ms += 0, remainder=800
+第 4 次: total=1400, ms += 1, remainder=400</div>
       </div>
-      <div class="note" id="timerExplain">点击播放当前流程。</div>
+      <div class="calc-card">
+        <h4>4. get_uptime_us = 整 tick + 当前 tick 内子节拍</h4>
+<pre><code>now_us = s_uptime_us32;
+extra_us = rivers_timer_get_subtick_us_locked();
+return now_us + extra_us;</code></pre>
+        <div class="formula">LOAD = 167999
+VAL 从 167999 递减到 0
+elapsed_ticks = LOAD - VAL
+extra_us = elapsed_ticks * 1000000 / counter_hz</div>
+        <p><code>s_uptime_us32</code> 是已经由 SysTick 中断累计的整 tick 时间，<code>extra_us</code> 是当前 tick 周期内已经过去的时间。<code>COUNTFLAG</code> 用来判断读取期间是否刚好跨过一次 SysTick 回卷，源码通过 <code>current_before / COUNTFLAG / current_after</code> 缩小边界误差。</p>
+        <div class="warn">边界：这个子 tick 估算只能补当前 tick 内的偏移，或者约一个 tick 范围内的短暂中断延迟；不能补偿长时间关中断导致错过多个 SysTick 周期。</div>
+      </div>
+    </div>
+  </div>
+
+<div class="section flowbox" id="timer-flow">
+    <h2>1.7 · 动态流程</h2>
+    <p>动态区只保留两条主线：<strong>SysTick 计时过程</strong> 和 <strong>软件定时器响应过程</strong>。左侧看源码路径，右侧看关键变量怎样变化。</p>
+    <div class="flow-tabs" id="timerTabs">
+      <button class="flow-tab active" data-flow="systick">A SysTick 计时</button>
+      <button class="flow-tab" data-flow="swtimer">B 软件定时器响应</button>
+    </div>
+    <div class="demo-wide">
+      <div>
+        <div id="timerStage" class="flow-stage cols4"></div>
+        <div class="visual" style="margin-top:16px">
+          <strong id="timerModeTitle">A SysTick 计时过程</strong>
+          <div class="systick-meter"><div id="timerMeter"></div></div>
+          <div class="small-muted" id="timerMeterHint">VAL 从 LOAD 递减到 0；到 0 后触发 SysTick 中断。</div>
+          <div id="timerVisual"></div>
+          <div class="source-line" id="timerSourceLine">当前源码语句：等待播放。</div>
+        </div>
+      </div>
+      <div class="visual">
+        <strong>关键状态</strong>
+        <div class="demo-var-grid" id="timerVars"></div>
+        <div class="source-note" id="timerExplain">点击播放或单步，按源码路径观察变量变化。</div>
+      </div>
     </div>
     <div class="demo-controls">
-      <button class="primary-btn" onclick="playTimer()">播放当前流程</button>
+      <button class="primary-btn" onclick="playTimer()">播放</button>
+      <button class="ghost-btn" onclick="pauseTimer()">暂停</button>
+      <button class="ghost-btn" onclick="stepTimer()">单步</button>
       <button class="ghost-btn" onclick="resetTimer()">重置</button>
     </div>
   </div>
-
 
   </section>
 
@@ -765,74 +839,186 @@ VAL 已经重新装载并进入下一轮计数
 
   <div class="section card soft-green" id="queue-mindset">
     <h2>2.3 · 软件思维</h2>
-    <div class="grid two">
-      <div>
-        <h3>统一内存来源</h3><p>内部默认堆和用户外部堆都由 <code>rivers_mem_init()</code> 决定，<code>queue_create</code> 不关心具体来源。</p>
-        <h3>不透明句柄</h3><p>队列结构体在 <code>.c</code> 内部定义，用户只拿 <code>rivers_queue_t *</code>，避免外部直接修改内部状态。</p>
-        <h3>活动链表</h3><p>创建时加入 <code>s_queue_list</code>，send/recv/delete 时检查句柄是否仍有效。</p>
-      </div>
-      <div>
-        <h3>固定单元 ring buffer</h3><p><code>head</code> 是出队位置，<code>tail</code> 是入队位置，<code>count</code> 是当前元素数量。</p>
-        <h3>拷贝语义</h3><p>send 时 memcpy 到 tail，recv 时 memcpy 从 head 取出，队列保存 item 的内容副本。</p>
-        <h3>非阻塞语义</h3><p>from_isr 也只是立即尝试，不提供阻塞等待；满了 FULL，空了 EMPTY。</p>
-      </div>
+    <div class="grid three">
+      <div class="deep-card"><h4>统一内存来源</h4><p>队列控制块和 storage 都来自 <code>rivers_mem</code>，不使用系统堆。</p></div>
+      <div class="deep-card"><h4>不透明句柄 + 活动链表</h4><p>外部只拿 <code>rivers_queue_t *</code>；<code>s_queue_list</code> 只记录当前仍有效的 queue 句柄。</p></div>
+      <div class="deep-card"><h4>固定单元拷贝队列</h4><p>创建后 <code>length/item_size</code> 固定；send/recv 复制完整 item，不等待、不覆盖旧数据。</p></div>
     </div>
+    <div class="note">本节只讲设计取舍。块头、地址偏移、对齐、两次分配、head/tail/count 的计算放在后面的源码解析小节。</div>
   </div>
 
   <div class="section card soft-orange" id="queue-mem">
-    <h2>2.4 · 内存管理</h2>
-    <h3>默认内部静态堆</h3>
-    <p><code>s_default_heap</code> 是内部默认静态堆。<code>RIVERS_QUEUE_HEAP_SIZE</code> 默认 4096U。调用 <code>rivers_mem_init(NULL, 0)</code> 会使用它。</p>
-<pre><code>#ifndef RIVERS_QUEUE_HEAP_SIZE
-#define RIVERS_QUEUE_HEAP_SIZE 4096U
-#endif
+    <h2>2.4 · rivers_mem：静态内存池上的动态分配</h2>
+    <p><code>rivers_mem</code> 属于 <code>rivers_queue.c</code> 内部基础能力：总 RAM 固定，但运行时可以在这块 RAM 里按需 alloc/free 不同大小的块。</p>
+    <div class="calc-chain">
+      <div class="calc-card">
+        <h4>A. 内存来源</h4>
+<pre><code>static rivers_default_heap_t s_default_heap;
+uint8_t bytes[RIVERS_QUEUE_HEAP_SIZE];</code></pre>
+        <p>默认使用内部静态数组，也可以由 <code>rivers_mem_init(buffer, size)</code> 传入外部 buffer。它不是系统 <code>malloc/free</code>，而是在固定 RAM 中维护 block 链表。</p>
+      </div>
+      <div class="calc-card">
+        <h4>A1. rivers_mem 的模块级状态变量</h4>
+<pre><code>static rivers_default_heap_t s_default_heap;
+static uint8_t *s_heap_start = NULL;
+static uint32_t s_heap_size = 0U;
+static rivers_mem_block_t *s_heap_head = NULL;
+static bool s_mem_ready = false;
+static uint32_t s_min_free_size = 0U;
+static rivers_queue_t *s_queue_list = NULL;</code></pre>
+        <table>
+          <thead><tr><th>变量</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td><code>s_default_heap</code></td><td>内部默认静态堆，<code>rivers_mem_init(NULL, 0)</code> 时使用。</td></tr>
+            <tr><td><code>s_heap_start</code></td><td>当前内存池对齐后的真实起点。</td></tr>
+            <tr><td><code>s_heap_size</code></td><td>当前内存池对齐后的真实可用总大小。</td></tr>
+            <tr><td><code>s_heap_head</code></td><td>内存块链表头，初始化后指向第一个大的 free block。</td></tr>
+            <tr><td><code>s_mem_ready</code></td><td>内存池是否初始化成功；alloc/free/get_free_size 等接口会根据它判断是否可用。</td></tr>
+            <tr><td><code>s_min_free_size</code></td><td>自最近一次 <code>rivers_mem_init()</code> 以来的历史最低剩余空间，用来观察内存压力峰值。</td></tr>
+            <tr><td><code>s_queue_list</code></td><td>当前有效 queue 句柄链表，用于判断 queue 是否仍然 active，降低 delete 后继续使用野指针的问题。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="calc-card">
+        <h4>B. 块头 rivers_mem_block_t 与 header_size</h4>
+<pre><code>typedef struct rivers_mem_block {
+    uint32_t size;
+    bool free;
+    struct rivers_mem_block *next;
+} rivers_mem_block_t;
 
-rivers_mem_init(NULL, 0);</code></pre>
-    <h3>修改内部堆大小</h3>
-<pre><code>// 方式一：包含头文件前定义
-#define RIVERS_QUEUE_HEAP_SIZE 8192U
-#include "rivers_queue.h"
+header_size = rivers_align_up_u32(sizeof(rivers_mem_block_t));</code></pre>
+        <p><code>size</code> 是当前块总大小，包含 header 和 payload；<code>free</code> 表示是否空闲；<code>next</code> 指向下一个块。常见 32 位 MCU 上 <code>sizeof(rivers_mem_block_t)</code> 可能是 12 字节，但源码通过 <code>rivers_mem_header_size()</code> 得到对齐后的 <code>header_size</code>。默认 8 字节对齐时，header 常见会按 16 字节计算。</p>
+      </div>
+      <div class="calc-card">
+        <h4>C. 对齐计算：向上、向下和 2 的幂理解</h4>
+<pre><code>rem = value % align;
+align_up = (rem == 0U) ? value : (value + (align - rem));
 
-// 方式二：编译选项
-// -DRIVERS_QUEUE_HEAP_SIZE=8192U</code></pre>
-    <h3>用户自定义内存池</h3>
-<pre><code>static uint8_t user_queue_heap[4096];
+align_down = value - (value % align);</code></pre>
+        <div class="formula">当 align 是 2 的幂:
+x & (align - 1)                得到余数
+x & ~(align - 1)               向下对齐
+(x + align - 1) & ~(align - 1) 向上对齐
 
-rivers_mem_init(user_queue_heap, sizeof(user_queue_heap));</code></pre>
-    <h3>具体占用估算</h3>
-    <div class="example-card">
-      <strong>UART RX 队列</strong>
-<pre><code>typedef struct {
-    uint8_t byte;
-} uart_rx_msg_t;
-
-#define UART_RX_QUEUE_LEN 128
-
-s_uart_rx_queue = rivers_queue_create(
-    UART_RX_QUEUE_LEN,
-    sizeof(uart_rx_msg_t)
-);</code></pre>
-      <p><code>length = 128</code>，<code>item_size = 1</code>，storage 约 128 字节；实际还要加 storage 分配块 header、队列控制块 <code>sizeof(rivers_queue_t)</code> 的分配块 header，以及对齐开销。</p>
+8 字节对齐:
+13 & 7 = 5
+13 & ~7 = 8
+(13 + 7) & ~7 = 16</div>
+      </div>
+      <div class="calc-card">
+        <h4>D. mem_init：修正 buffer 起点和真实可用大小</h4>
+<pre><code>raw_start = (uintptr_t)buffer;
+aligned_start = rivers_align_up_ptr(raw_start);
+adjust = (uint32_t)(aligned_start - raw_start);
+aligned_size = rivers_align_down_u32(size - adjust);</code></pre>
+        <p><code>raw_start</code> 是用户 buffer 原始起点；<code>aligned_start</code> 是向上对齐后的堆起点；<code>adjust</code> 是为对齐浪费掉的前部字节；<code>aligned_size</code> 是减去 adjust 后再向下对齐得到的真实可用大小。</p>
+<pre><code>s_heap_start = aligned_start;
+s_heap_size = aligned_size;
+s_heap_head = s_heap_start;
+s_heap_head->size = s_heap_size;
+s_heap_head->free = true;
+s_heap_head->next = NULL;</code></pre>
+      </div>
+      <div class="calc-card">
+        <h4>D1. 为什么地址要先转成 uintptr_t</h4>
+<pre><code>raw_start = (uintptr_t)buffer;
+aligned_start = rivers_align_up_ptr(raw_start);
+adjust = (uint32_t)(aligned_start - raw_start);</code></pre>
+        <p><code>rivers_align_up_u32()</code> 对齐的是数值大小，例如 <code>size</code>、<code>payload_size</code>、<code>header_size</code>；<code>rivers_align_up_ptr()</code> 对齐的是地址，例如用户传入的 buffer 起始地址。</p>
+        <p><code>uintptr_t</code> 是一种能安全保存指针地址的无符号整数类型。把指针转成 <code>uintptr_t</code> 后，才能对地址做取余、加减、对齐计算。不要用 <code>uint32_t</code> 直接保存指针地址，否则在 64 位平台上可能截断地址。</p>
+        <div class="formula">raw_start = 0x20000003
+8 字节对齐后:
+aligned_start = 0x20000008
+adjust = 5</div>
+        <p><code>adjust</code> 就是为了让 heap 起点满足对齐要求而浪费掉的前部字节。</p>
+      </div>
+      <div class="calc-card">
+        <h4>E. mem_alloc：用户 size 不是实际申请总量</h4>
+<pre><code>header_size = rivers_mem_header_size();
+payload_size = rivers_align_up_u32(size);
+request_size = rivers_align_up_u32(header_size + payload_size);</code></pre>
+        <div class="formula">假设:
+RIVERS_QUEUE_MEM_ALIGN_SIZE = 8
+sizeof(rivers_mem_block_t) = 12
+header_size = align_up(12) = 16
+用户申请 size = 100
+payload_size = align_up(100) = 104
+request_size = align_up(16 + 104) = 120</div>
+        <div class="addr-grid">
+          <div class="addr-box"><span>block 起点</span><strong>0x20000000</strong></div>
+          <div class="addr-box"><span>payload 起点</span><strong>0x20000010</strong></div>
+          <div class="addr-box"><span>next block</span><strong>0x20000078</strong></div>
+        </div>
+        <p><code>return (uint8_t *)block + header_size;</code> 的意思是：<code>block</code> 指向 header，用户不能写 header，所以返回 header 后面的 payload 起点。</p>
+      </div>
+      <div class="calc-card">
+        <h4>F. split / free / coalesce</h4>
+<pre><code>remain = block->size - request_size;
+next = (rivers_mem_block_t *)((uint8_t *)block + request_size);</code></pre>
+        <p><code>request_size</code> 是本次分配块的总大小，所以 <code>block + request_size</code> 正好是剩余空闲区域的新 block 起点。</p>
+<pre><code>block = (rivers_mem_block_t *)(p - header_size);</code></pre>
+        <p>释放时用户传入的是 payload 指针，<code>payload = block + header_size</code>，所以 <code>ptr - header_size</code> 就能反推出 block header。</p>
+<pre><code>block_end = (uint8_t *)block + block->size;
+if (block_end != (uint8_t *)block->next) break;</code></pre>
+        <p>只有物理地址连续的两个空闲块才能合并。链表上 <code>next</code> 相邻不代表内存地址一定连续。</p>
+      </div>
+      <div class="calc-card">
+        <h4>F1. free 不是直接相信用户指针</h4>
+        <ol>
+          <li><code>ptr == NULL</code> 时直接返回，<code>free(NULL)</code> 是安全空操作。</li>
+          <li>确保内存池已经初始化，<code>s_mem_ready == true</code>。</li>
+          <li>检查 <code>ptr</code> 是否落在当前 heap 范围内。</li>
+          <li>检查 <code>ptr</code> 是否至少位于第一个 payload 之后，避免指到 header 区域之前。</li>
+          <li>用 <code>ptr - header_size</code> 反推出 block header。</li>
+          <li>遍历 block 链表，确认这个 block 真的存在于当前内存池链表中。</li>
+          <li>如果 block 不存在，说明 <code>ptr</code> 不是 <code>rivers_mem_alloc()</code> 返回的有效指针，安全返回并通过 debug hook 上报。</li>
+          <li>如果当前 block 已经是 free，避免重复释放。</li>
+          <li>标记 <code>current-&gt;free = true</code>。</li>
+          <li>尝试和后面的连续空闲块合并。</li>
+        </ol>
+        <div class="note">不能随便 free 一个地址。用户传入的是 payload 指针，内存管理器必须先反推出 header，再确认这个 header 确实属于当前块链表。</div>
+      </div>
+      <div class="calc-card">
+        <h4>G. 一个队列到底会占多少内存</h4>
+        <div class="formula">queue_cost ≈ align_up(length * item_size)
+           + align_up(sizeof(rivers_queue_t))
+           + 2 * header_size</div>
+        <p>因为 <code>queue_create</code> 有两次 <code>rivers_mem_alloc()</code>：一次申请 <code>storage</code> 数据区，一次申请 <code>rivers_queue_t</code> 控制块，所以会有两个 block header。</p>
+        <table>
+          <thead><tr><th>示例</th><th>storage payload</th><th>storage block</th><th>queue control block</th><th>总计估算</th></tr></thead>
+          <tbody>
+            <tr><td>RX byte queue<br><code>length=128, item_size=1</code></td><td><code>align_up(128 * 1) = 128</code></td><td><code>16 + 128 = 144</code></td><td><code>16 + align_up(sizeof(rivers_queue_t)) ≈ 48</code></td><td>约 192 字节</td></tr>
+            <tr><td>TX message queue<br><code>length=8, item_size=66</code></td><td><code>align_up(8 * 66) = align_up(528) = 528</code></td><td><code>16 + 528 = 544</code></td><td>约 48 字节</td><td>约 592 字节</td></tr>
+          </tbody>
+        </table>
+        <div class="warn"><code>sizeof(rivers_queue_t)</code> 受平台和编译器对齐影响，示例按默认 8 字节对齐、<code>header_size = 16</code> 的常见 32 位场景估算。</div>
+      </div>
+      <div class="calc-card">
+        <h4>H. 和 FreeRTOS heap_4 的相似点</h4>
+        <div class="grid two">
+          <div class="deep-card">
+            <h4>相似点</h4>
+            <ul>
+              <li>都在一块静态 RAM 上做动态分配。</li>
+              <li>每个分配块前面都有 block header。</li>
+              <li>alloc 时会从空闲空间中切出一块。</li>
+              <li>free 后会尝试合并相邻空闲块，减少碎片。</li>
+            </ul>
+          </div>
+          <div class="deep-card">
+            <h4>区别</h4>
+            <ul>
+              <li>当前 <code>rivers_mem</code> 更偏学习型和轻量 standalone 实现，维护的是完整 block 链表。</li>
+              <li><code>heap_4</code> 更成熟，空闲块链表管理和边界处理更完整。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="example-card">
-      <strong>UART TX 队列</strong>
-<pre><code>typedef struct {
-    uint16_t len;
-    char text[64];
-} uart_tx_msg_t;
-
-#define UART_TX_QUEUE_LEN 8
-
-s_uart_tx_queue = rivers_queue_create(
-    UART_TX_QUEUE_LEN,
-    sizeof(uart_tx_msg_t)
-);</code></pre>
-      <p><code>length = 8</code>，<code>item_size = sizeof(uart_tx_msg_t)</code>，storage 约 <code>8 * sizeof(uart_tx_msg_t)</code>。由于结构体对齐，<code>sizeof(uart_tx_msg_t)</code> 可能约 66~68 字节，最终还要加 block header 和对齐开销。</p>
-    </div>
-    <div class="note"><code>rivers_mem_get_free_size()</code> 是所有空闲块总和；<code>rivers_mem_get_largest_free_block()</code> 是最大连续可申请 payload。碎片存在时，前者大不代表一次能申请同样大的连续块。</div>
   </div>
 
-  <div class="section card" id="queue-porting">
+<div class="section card" id="queue-porting">
     <h2>2.5 · 移植步骤</h2>
     <div class="path-grid">
       <div class="path-card queue"><div class="n">01</div><h4>添加文件</h4><p>加入 <code>rivers_queue.c</code> 和 <code>rivers_queue.h</code>，配置 include path。</p></div>
@@ -899,8 +1085,8 @@ rivers_queue_delete(msg_q);</code></pre>
   </div>
 
   <div class="section card soft-green" id="queue-core">
-    <h2>2.7 · queue 的核心思路</h2>
-    <p><code>rivers_queue</code> 是固定单元 ring buffer，不是字节流 ring buffer。每个槽位保存一个完整 item，item 的大小由创建时的 <code>item_size</code> 决定。</p>
+    <h2>2.7 · rivers_queue：固定单元环形消息队列</h2>
+    <p>这一节只讲 queue 本身：控制块字段、创建时两次分配、send/recv 的字节偏移，以及 <code>head/tail/count</code> 如何描述队列状态。</p>
 <pre><code>struct rivers_queue {
     uint8_t *storage;
     uint32_t head;
@@ -912,216 +1098,106 @@ rivers_queue_delete(msg_q);</code></pre>
 };</code></pre>
     <table>
       <tr><th>字段</th><th>含义</th></tr>
-      <tr><td><code>storage</code></td><td>真正存消息的连续内存。</td></tr>
-      <tr><td><code>head</code></td><td>下一个要读的位置。</td></tr>
-      <tr><td><code>tail</code></td><td>下一个要写的位置。</td></tr>
-      <tr><td><code>length</code></td><td>队列最多能放多少个 item。</td></tr>
-      <tr><td><code>item_size</code></td><td>每个 item 的字节大小。</td></tr>
-      <tr><td><code>count</code></td><td>当前已经存了多少个 item。</td></tr>
-      <tr><td><code>next</code></td><td>用于挂到活动队列链表里，检查句柄是否有效。</td></tr>
+      <tr><td><code>storage</code></td><td>连续数据区，真正保存 item 内容副本。</td></tr>
+      <tr><td><code>head</code></td><td>下一个要读的槽位编号。</td></tr>
+      <tr><td><code>tail</code></td><td>下一个要写的槽位编号。</td></tr>
+      <tr><td><code>length</code></td><td>槽位数量。</td></tr>
+      <tr><td><code>item_size</code></td><td>每个槽位的字节数。</td></tr>
+      <tr><td><code>count</code></td><td>当前已有元素数量，用来区分空和满。</td></tr>
+      <tr><td><code>next</code></td><td>活动队列链表指针，用于检查句柄是否仍有效。</td></tr>
     </table>
-    <div class="deep-grid">
-      <div>
-        <h4>发送逻辑</h4>
+    <div class="calc-chain">
+      <div class="calc-card">
+        <h4>1. queue_create：storage 和控制块是两次分配</h4>
+<pre><code>total_size = length * item_size;
+storage = rivers_mem_alloc(total_size);
+q = rivers_mem_alloc(sizeof(rivers_queue_t));</code></pre>
+        <p>一个 queue 由两块内存组成：<code>storage</code> 存队列元素，<code>rivers_queue_t</code> 控制块保存 head/tail/count 等状态。创建成功后挂入 <code>s_queue_list</code>。</p>
+      </div>
+      <div class="calc-card">
+        <h4>2. send：tail 是槽位编号，乘 item_size 才是字节偏移</h4>
 <pre><code>memcpy(q->storage + (q->tail * q->item_size), item, q->item_size);
 q->tail = (q->tail + 1U) % q->length;
 q->count++;</code></pre>
+        <div class="formula">length = 4, item_size = 8, tail = 2
+写入地址 = storage + 2 * 8 = storage + 16</div>
+        <p><code>% length</code> 用来在到达末尾后绕回 0；<code>count++</code> 表示队列里多了一个元素。</p>
       </div>
-      <div>
-        <h4>接收逻辑</h4>
+      <div class="calc-card">
+        <h4>3. recv：head 转字节偏移后读取</h4>
 <pre><code>memcpy(item, q->storage + (q->head * q->item_size), q->item_size);
 q->head = (q->head + 1U) % q->length;
 q->count--;</code></pre>
+        <p><code>head</code> 是下一个要读的槽位编号。读取后 head 后移一个槽位，<code>count--</code> 表示队列里少了一个元素。</p>
+        <div class="note">如果只看 <code>head == tail</code>，无法判断到底是空队列还是满队列；本实现用 <code>count == 0</code> 判断空，用 <code>count >= length</code> 判断满。</div>
       </div>
-    </div>
-    <p>send 从 <code>tail</code> 写入，recv 从 <code>head</code> 读取，head/tail 到末尾后通过取模回到 0。<code>count</code> 用来判断空/满：<code>q->count >= q->length</code> 表示满，<code>q->count == 0</code> 表示空。使用 count 可以避免 <code>head == tail</code> 无法区分空和满的问题。</p>
-    <div class="ascii-viz">index:     0      1      2      3
-storage: [item] [item] [item] [    ]
-           ^             ^
-          head          tail</div>
-    <div class="deep-grid">
-      <div class="deep-card"><h4>UART RX</h4><p>可以把每个 byte 包成一个 <code>uart_rx_msg_t</code> 入队，让 ISR 只负责快速收字节，主循环再解析协议。</p></div>
-      <div class="deep-card"><h4>UART TX</h4><p>可以把一条短字符串包成一个结构体入队，主循环或发送状态机再按顺序取出。</p></div>
-    </div>
-  </div>
-
-  <div class="section card" id="queue-create-flow">
-    <h2>2.8 · 队列创建流程</h2>
-    <p>调用：</p>
-<pre><code>rivers_queue_create(length, item_size);</code></pre>
-    <p>内部先计算：</p>
-<pre><code>total_size = length * item_size;</code></pre>
-    <p>然后分两次内存：</p>
-<pre><code>storage = rivers_mem_alloc(total_size);
-q = rivers_mem_alloc(sizeof(rivers_queue_t));</code></pre>
-    <p>也就是说，一个队列由两块内存组成：队列控制块 <code>rivers_queue_t</code> 和队列数据区 <code>storage</code>。创建成功后，会把 <code>q</code> 挂到全局活动链表 <code>s_queue_list</code>。</p>
-    <div class="flowline"><span>rivers_queue_create()</span><span>计算 storage 大小</span><span>alloc storage</span><span>alloc control block</span><span>初始化 head/tail/count</span><span>挂入 s_queue_list</span><span>返回 handle</span></div>
-    <div class="note">后续 <code>send/recv/delete/reset/get_count</code> 等接口会先检查这个队列句柄是否还在链表里，这样可以尽量避免 delete 后继续使用野指针。</div>
-  </div>
-
-  <div class="section card soft-orange" id="queue-mem-deep">
-    <h2>2.9 · rivers_mem：动态分配静态内存</h2>
-    <p><strong>它不是从系统堆申请内存，而是先准备一块静态数组，再在这块静态数组里自己管理哪些地方空闲、哪些地方已分配。</strong></p>
-<pre><code>static rivers_default_heap_t s_default_heap;</code></pre>
-<pre><code>uint8_t bytes[RIVERS_QUEUE_HEAP_SIZE];</code></pre>
-<pre><code>#define RIVERS_QUEUE_HEAP_SIZE 4096U</code></pre>
-    <p>“静态”是因为总内存固定，编译期 / 启动后就在那里；“动态”是因为运行时可以 alloc/free 不同大小的块。所以这是“在静态内存池上实现动态分配”。</p>
-<pre><code>typedef struct rivers_mem_block {
-    uint32_t size;
-    bool free;
-    struct rivers_mem_block *next;
-} rivers_mem_block_t;</code></pre>
-    <p>每个内存块前面都有一个 header。初始化时，整个 heap 是一个大的 free block：</p>
-    <div class="ascii-viz">[ block header | free payload........................ ]
-
-s_heap_head -> 一个 free block，size = 整个 heap 大小</div>
-    <p>分配时，例如申请 100 字节：</p>
-<pre><code>rivers_mem_alloc(100);</code></pre>
-    <div class="flowline"><span>100 向上对齐</span><span>加 block header</span><span>找足够大的 free block</span><span>大块切开</span><span>前半 used</span><span>后半 free</span><span>返回 payload 地址</span></div>
-    <div class="ascii-viz">分配前：
-[ free 4096 ]
-
-分配后：
-[ used: header + payload ][ free: remaining ]
-
-多次分配后：
-[ used ][ used ][ free ]</div>
-    <p>释放时：</p>
-<pre><code>rivers_mem_free(ptr);</code></pre>
-    <p>它会用用户传入的 payload 指针往前退一个 header：</p>
-<pre><code>block = ptr - header_size;
-block->free = true;</code></pre>
-    <div class="ascii-viz">释放前：
-[ used ][ free ][ free ]
-
-coalesce 后：
-[ used ][ free bigger ]</div>
-    <p>这个合并动作叫 <strong>coalesce</strong>，目的是减少内存碎片。</p>
-    <div class="note"><strong>为什么要对齐：</strong><code>RIVERS_QUEUE_MEM_ALIGN_SIZE</code> 默认是 8。MCU 上不同类型有对齐要求，例如 <code>uint32_t</code> 通常希望地址是 4 字节对齐。该模块默认按 8 字节对齐，让返回的 payload 地址更安全。例如分配 13 字节，实际可能按 16 字节算。</div>
-  </div>
-
-  <div class="section card" id="queue-critical">
-    <h2>2.10 · 临界区保护</h2>
-    <p>queue 和 mem 都可能被主循环和中断同时访问，所以关键操作会进入临界区：</p>
-<pre><code>state = RIVERS_QUEUE_CRITICAL_ENTER();
-/* 修改链表、head、tail、count */
-RIVERS_QUEUE_CRITICAL_EXIT(state);</code></pre>
-    <div class="deep-grid three">
-      <div class="deep-card"><h4>内存块链表</h4><p>alloc/free 需要保护 block 链表，避免并发拆分、释放、合并时状态交错。</p></div>
-      <div class="deep-card"><h4>活动队列链表</h4><p>create/delete 维护 <code>s_queue_list</code>，其他 API 会用它检查句柄是否有效。</p></div>
-      <div class="deep-card"><h4>队列状态</h4><p><code>head/tail/count</code> 是 send/recv 的共享状态，需要原子地更新。</p></div>
-    </div>
-    <p>当 ISR 中 <code>send_from_isr()</code> 和主循环 <code>recv()</code> 同时操作同一个队列时，临界区可以避免状态被改乱。</p>
-    <div class="warn"><code>send_from_isr()</code> 当前语义是“可以在 ISR 中立即尝试发送”，不是带任务唤醒语义的 ISR 调度接口。</div>
-  </div>
-
-  <div class="section card soft-green" id="queue-cost">
-    <h2>2.11 · 队列内存占用估算</h2>
-    <p>每创建一个队列，实际会分配两块内存：队列数据区 <code>storage = length * item_size</code>，以及队列控制块 <code>struct rivers_queue</code>。因为不是裸分配，还要加 <code>rivers_mem</code> 的块头和 8 字节对齐，所以在 STM32 这类 32 位 MCU 上，可以近似按：</p>
-    <div class="formula">单个队列总占用 ≈ align8(length * sizeof(item_type)) + 64 字节
-
-64 来自：
-storage 分配块头：16 字节
-queue 控制块分配：约 48 字节</div>
-    <div class="formula">queue_cost =
-    align8(length * item_size)
-  + align8(sizeof(rivers_queue_t))
-  + 2 * align8(sizeof(rivers_mem_block_t))
-
-32 位 MCU、默认 8 字节对齐下，通常就是：
-queue_cost = align8(length * item_size) + 64</div>
-    <div class="formula">align8(1)   = 8
-align8(66)  = 72
-align8(128) = 128
-align8(529) = 536</div>
-    <div class="deep-grid">
-      <div class="deep-card">
-        <h4>例子 1：UART RX 逐字节接收</h4>
-<pre><code>typedef struct {
-    uint8_t byte;
-} uart_rx_msg_t;
-
-rx_q = rivers_queue_create(128, sizeof(uart_rx_msg_t));</code></pre>
-        <div class="formula">length * item_size = 128 * 1 = 128
-queue_cost = align8(128) + 64 = 192 字节</div>
+      <div class="calc-card">
+        <h4>4. 活动队列链表不是调度链表</h4>
+<pre><code>s_queue_list
+rivers_queue_link_locked()
+rivers_queue_unlink_locked()
+rivers_queue_is_active_locked()</code></pre>
+        <p>这个链表只记录当前仍有效的 queue 句柄。send/recv/delete 时检查 <code>q</code> 是否 active，可以降低 delete 后继续使用野指针的风险。</p>
       </div>
-      <div class="deep-card">
-        <h4>例子 2：TX 短字符串队列</h4>
-<pre><code>typedef struct {
-    uint16_t len;
-    char text[64];
-} uart_tx_msg_t;
-
-tx_q = rivers_queue_create(8, sizeof(uart_tx_msg_t));</code></pre>
-        <div class="formula">sizeof(uart_tx_msg_t) 通常是 66 字节
-8 * 66 = 528
-queue_cost = align8(528) + 64 = 592 字节</div>
+      <div class="calc-card">
+        <h4>5. delete 如何安全摘除队列</h4>
+<pre><code>active = rivers_queue_unlink_locked(q);
+storage = active ? q->storage : NULL;</code></pre>
+        <p><code>s_queue_list</code> 不是调度链表，而是当前有效 queue 句柄链表。<code>delete</code> 时先进入临界区，然后通过 <code>rivers_queue_unlink_locked(q)</code> 尝试把 <code>q</code> 从活动链表中摘除。</p>
+        <p>如果 <code>q</code> 在链表里，说明它还是 active；如果不在链表里，说明它可能已经被 delete，或者不是合法 queue 句柄。</p>
+<pre><code>if (prev == NULL) {
+    s_queue_list = cur->next;
+} else {
+    prev->next = cur->next;
+}</code></pre>
+        <p><code>prev == NULL</code> 表示要删除的节点刚好是链表头，需要更新 <code>s_queue_list = cur-&gt;next</code>。<code>prev != NULL</code> 表示节点在中间或尾部，只需要让前一个节点跳过当前节点。</p>
+        <div class="note"><code>storage = active ? q-&gt;storage : NULL;</code> 是三目表达式赋值。只有 <code>active</code> 为 true 时才读取并释放 <code>q-&gt;storage</code>；如果 <code>active</code> 为 false，就不继续相信这个句柄，避免对无效 <code>q</code> 继续解引用。</div>
       </div>
-    </div>
-    <div class="formula">RX queue: 192
-TX queue: 592
-合计: 784 字节</div>
-    <p>两个队列合计约 784 字节，距离默认 4096 字节还有余量。</p>
-    <table>
-      <tr><th>队列名</th><th>item类型</th><th>sizeof(item)</th><th>length</th><th>数据区字节</th><th>总占用估算</th></tr>
-      <tr><td>RX队列</td><td><code>uart_rx_msg_t</code></td><td>1</td><td>128</td><td>128</td><td>192</td></tr>
-      <tr><td>TX队列</td><td><code>uart_tx_msg_t</code></td><td>66</td><td>8</td><td>528</td><td>592</td></tr>
-      <tr><td>事件队列</td><td><code>app_event_t</code></td><td>16</td><td>16</td><td>256</td><td>320</td></tr>
-    </table>
-    <div class="formula">检查原则：
-所有队列总占用 < RIVERS_QUEUE_HEAP_SIZE
 
-默认：
-#define RIVERS_QUEUE_HEAP_SIZE 4096U</div>
-    <p>建议不要算到刚好 4096，最好留 20% 到 30% 余量，因为还有对齐、碎片、以后扩展等问题。</p>
-<pre><code>uint32_t free_size = rivers_mem_get_free_size();
-uint32_t largest = rivers_mem_get_largest_free_block();
-uint32_t min_free = rivers_mem_get_min_free_size();</code></pre>
-    <table>
-      <tr><th>接口</th><th>意义</th></tr>
-      <tr><td><code>free_size</code></td><td>当前剩余总空间。</td></tr>
-      <tr><td><code>largest</code></td><td>当前最大连续可申请空间。</td></tr>
-      <tr><td><code>min_free</code></td><td>历史最低剩余空间。</td></tr>
-    </table>
-    <div class="note">队列容量由 <code>length * sizeof(消息结构体)</code> 决定，但真实内存占用还要加队列控制块和内存分配块头；在这个实现里，32 位 MCU 上每个队列大约是 <code>align8(length * item_size) + 64</code> 字节。</div>
+    </div>
   </div>
+
 <div class="section flowbox" id="queue-flow">
-    <h2>2.12 · 动态流程</h2>
-    <p>本节把 <strong>mem 静态堆块链表</strong> 和 <strong>queue 环形缓冲区</strong> 分开展示，避免把两种结构混为一谈。</p>
+    <h2>2.8 · 动态流程</h2>
+    <p>本节仍然在 queue 页面内部展示两套结构：<strong>rivers_mem block 链表</strong> 只解释 alloc/free/coalesce，<strong>rivers_queue ring buffer</strong> 只解释 send/recv/full/empty。</p>
     <div class="flow-tabs" id="queueTabs">
-      <button class="flow-tab mem active" data-flow="memInit">A mem_init</button>
-      <button class="flow-tab mem" data-flow="alloc">B mem_alloc</button>
-      <button class="flow-tab mem" data-flow="free">C mem_free</button>
-      <button class="flow-tab queue" data-flow="create">D queue_create</button>
-      <button class="flow-tab queue" data-flow="ring">E send/recv</button>
-      <button class="flow-tab queue" data-flow="resetDelete">F reset/delete</button>
+      <button class="flow-tab mem active" data-flow="mem">A rivers_mem alloc/free</button>
+      <button class="flow-tab queue" data-flow="ring">B queue send/recv</button>
     </div>
-    <div id="queueStage" class="flow-stage cols5"></div>
-
-    <div class="mem-panel">
-      <h4>mem 动态效果：静态堆 block 分裂/合并</h4>
-      <div class="memline" id="memLine"><div class="memseg free" style="width:100%">free block: 4096</div></div>
-      <p class="muted" id="memExplain">这里展示 rivers_mem_init / alloc / free 的内存条变化。</p>
+    <div class="demo-wide">
+      <div>
+        <div id="queueStage" class="flow-stage cols4"></div>
+        <div class="queue-demo-grid" style="margin-top:16px">
+          <div class="mem-panel">
+            <h4>rivers_mem：block 链表</h4>
+            <div class="memline" id="memLine"><div class="memseg free" style="width:100%">free block total: 4096（含 header）</div></div>
+            <div class="heap-address" id="memAddresses"></div>
+            <div class="source-line" id="memSourceLine">当前源码语句：等待播放。</div>
+          </div>
+          <div class="ring-panel">
+            <h4>rivers_queue：固定单元 ring buffer</h4>
+            <div class="ring" id="ring"></div>
+            <div class="demo-var-grid" id="queueVars"></div>
+            <div class="source-line" id="queueSourceLine">当前源码语句：等待播放。</div>
+          </div>
+        </div>
+      </div>
+      <div class="visual">
+        <strong id="queueModeTitle">A rivers_mem alloc/free</strong>
+        <div class="demo-var-grid" id="memVars"></div>
+        <div class="source-note" id="queueExplain">点击播放或单步，观察内存块地址和队列索引怎样变化。</div>
+        <div class="queue-status" id="queueStatus">mem 和 queue 是两套结构：内存条看块分配，ring buffer 看消息槽位。</div>
+      </div>
     </div>
-
-    <div class="ring-panel">
-      <h4>queue 动态效果：环形队列 head / tail / count</h4>
-      <div class="ring" id="ring"></div>
-      <div class="stats">
-        <div class="stat"><span>head</span><strong id="qHead">0</strong></div>
-        <div class="stat"><span>tail</span><strong id="qTail">0</strong></div>
-        <div class="stat"><span>count</span><strong id="qCount">0</strong></div>
-        <div class="stat"><span>free_count</span><strong id="qFree">8</strong></div>
-      </div>
-      <div class="demo-controls">
-        <button class="primary-btn queue" onclick="queueSend()">send</button>
-        <button class="ghost-btn" onclick="queueRecv()">recv</button>
-        <button class="ghost-btn" onclick="queueReset()">reset</button>
-        <button class="ghost-btn" onclick="playQueueFlow()">播放当前流程</button>
-      </div>
+    <div class="demo-controls">
+      <button class="primary-btn queue" onclick="playQueueFlow()">播放</button>
+      <button class="ghost-btn" onclick="pauseQueueFlow()">暂停</button>
+      <button class="ghost-btn" onclick="stepQueueFlow()">单步</button>
+      <button class="ghost-btn" onclick="queueSend()">Send</button>
+      <button class="ghost-btn" onclick="queueRecv()">Recv</button>
+      <button class="ghost-btn" onclick="queueReset()">重置</button>
     </div>
   </div>
-
 
   </section>
 
@@ -1168,93 +1244,178 @@ document.getElementById("footerNext").onclick=e=>{e.preventDefault();route(e.cur
 window.addEventListener("hashchange",()=>route(location.hash,false));
 
 const timerFlows={
- init:["清空 uptime 与定时器表","配置 SysTick LOAD/VAL/CTRL","计算 tick_period_us","s_tick_ready=true"],
- tick:["SysTick 进入中断","tick_handler 不做业务","accumulate_us(1000)","us+=1000, ms+=1"],
- getms:["进入临界区","读取 s_uptime_ms32","退出临界区","返回整 ms"],
- getus:["读取已累计整 tick us","读取 SysTick VAL/COUNTFLAG","估算当前 tick 内 extra_us","返回 now_us + extra_us"],
- delay:["记录 start 时间","循环读取当前时间","diff 未到继续忙等","diff 到达后返回"],
- sw:["主循环调用 poll","扫描 allocated && active","到期后先更新状态","退出临界区","执行用户 callback","周期 timer 写入下一次 expiry"]
+  systick:{
+    title:"A SysTick 计时过程",
+    steps:[
+      {t:"rivers_timer_init()",src:"rivers_timer_init();",note:"初始化入口开始配置 SysTick，并清零 uptime 账本。",changed:["s_uptime_us32","s_uptime_ms32"],vars:{LOAD:"-",VAL:"-",COUNTFLAG:"0",s_tick_period_us:"-",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"计算 LOAD",src:"LOAD = reload - 1U;",note:"默认 168MHz / 1000Hz，reload=168000，所以 LOAD=167999。",changed:["LOAD","VAL","s_tick_period_us"],vars:{LOAD:"167999",VAL:"167999",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"VAL 递减",src:"VAL: 167999 -> 120000",note:"硬件递减计数正在进行，软件 uptime 还没有变化。",changed:["VAL"],vars:{LOAD:"167999",VAL:"120000",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"VAL 继续递减",src:"VAL: 120000 -> 60000",note:"VAL 越小，表示当前 tick 越接近结束。",changed:["VAL"],vars:{LOAD:"167999",VAL:"60000",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"VAL 到 0",src:"COUNTFLAG = 1;",note:"VAL 到 0 后触发 SysTick 中断；此时 uptime 还没提前变化。",changed:["VAL","COUNTFLAG"],irq:true,vars:{LOAD:"167999",VAL:"0",COUNTFLAG:"1",s_tick_period_us:"1000",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"进入 Handler",src:"SysTick_Handler() -> rivers_timer_tick_handler();",note:"中断入口只推进时间，不扫描软件定时器。",changed:["COUNTFLAG"],vars:{LOAD:"167999",VAL:"167999",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"0",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"accumulate_us",src:"rivers_timer_accumulate_us(s_tick_period_us);",note:"默认传入 1000us，微秒账本在这里更新。",changed:["s_uptime_us32"],vars:{LOAD:"167999",VAL:"167999",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"1000",s_uptime_ms32:"0",s_ms_remainder_us:"0"}},
+      {t:"同步 ms",src:"elapsed_ms = total_us / 1000U;",note:"1000us 刚好换成 1ms，余数保持 0。",changed:["s_uptime_ms32","s_ms_remainder_us"],vars:{LOAD:"167999",VAL:"167999",COUNTFLAG:"0",s_tick_period_us:"1000",s_uptime_us32:"1000",s_uptime_ms32:"1",s_ms_remainder_us:"0"}}
+    ]
+  },
+  swtimer:{
+    title:"B 软件定时器响应过程",
+    steps:[
+      {t:"start",src:"rivers_sw_timer_start(timer_id);",note:"启动软件定时器，此时还不会执行回调。",scan:-1,changed:["active"],vars:{now_ms:"0",period_ms:"1000",expiry_ms:"0",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"计算到期时间",src:"expiry_ms = now_ms + period_ms;",note:"启动时可以从当前 now_ms 加 period_ms 得到第一次到期时间。",scan:-1,changed:["expiry_ms"],vars:{now_ms:"0",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"主循环 poll",src:"while (1) { rivers_timer_poll(); }",note:"软件定时器响应发生在主循环 poll 中，不在 SysTick 中断中。",scan:-1,vars:{now_ms:"800",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"扫描槽位",src:"for (i = 0; i < RIVERS_TIMER_MAX_SW_TIMERS; ++i)",note:"poll 逐个扫描 s_sw_timers[] 槽位。",scan:0,changed:["now_ms"],vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"检查 active",src:"timer->allocated && timer->active",note:"只有 allocated && active 的槽位才会继续判断到期。",scan:0,vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"判断到期",src:"now_ms >= expiry_ms",note:"now_ms 已经达到 expiry_ms，进入到期路径。",scan:0,due:true,vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"取出 cb/arg",src:"cb = timer->cb; arg = timer->arg;",note:"临界区内先保存回调函数和参数，但还不执行回调。",scan:0,due:true,critical:true,changed:["cb","arg"],vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"推进周期 expiry",src:"do { expiry_ms += period_ms; } while (now_ms >= expiry_ms);",note:"周期定时器从原 expiry_ms 向后推进，直到下一次到期时间晚于 now_ms。",scan:0,due:true,critical:true,changed:["expiry_ms"],vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"2000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"退出临界区",src:"RIVERS_TIMER_CRITICAL_EXIT(state);",note:"退出临界区后才允许执行用户回调。",scan:0,due:true,callbackReady:true,vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"2000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"NO"}},
+      {t:"执行 cb(arg)",src:"if (cb != NULL) { cb(arg); }",note:"callback 在 rivers_timer_poll() 的调用上下文中执行。",scan:0,due:true,callbackReady:true,callback:true,changed:["callback"],vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"2000",allocated:"true",active:"true",periodic:"true",cb:"led_cb",arg:"&led",callback:"running"}},
+      {t:"单次定时器边界",src:"if (!periodic) { active = false; }",note:"单次定时器到期后会把 active 置 false；这里只作为边界展示。",scan:1,due:true,changed:["active","periodic"],vars:{now_ms:"1000",period_ms:"1000",expiry_ms:"1000",allocated:"true",active:"false",periodic:"false",cb:"once_cb",arg:"arg",callback:"NO"}}
+    ]
+  }
 };
-const timerTitles={init:"A 初始化流程",tick:"B tick 计时流程",getms:"C get_uptime_ms 流程",getus:"D get_uptime_us 流程",delay:"E delay_ms / delay_us 流程",sw:"F 软件定时器流程"};
-let currentTimer="init",timerInt=null;
-function renderTimer(active=-1){
-  const arr=timerFlows[currentTimer],st=document.getElementById("timerStage");
-  st.className="flow-stage cols"+Math.min(6,Math.max(3,arr.length));
-  st.innerHTML=arr.map((x,i)=>`<div class="step ${i===active?'active':''}"><div class="step-num">${i+1}</div><strong>${x}</strong><span>${timerTitles[currentTimer]}</span></div>`).join("");
-  document.getElementById("timerTitle").textContent=timerTitles[currentTimer];
-  document.getElementById("timerExplain").textContent=getTimerExplain(currentTimer,active);
+let currentTimer="systick",timerIndex=-1,timerInt=null;
+function timerSteps(){return timerFlows[currentTimer].steps}
+function varGrid(vars,changed){
+  changed=changed||[];
+  return Object.entries(vars).map(function(entry){var cls=changed.includes(entry[0])?" changed":"";return '<div class="demo-var'+cls+'"><span>'+entry[0]+'</span><strong>'+entry[1]+'</strong></div>';}).join("");
 }
-function getTimerExplain(flow,i){
-  if(flow==="tick") return "默认 1000Hz tick：每 1000us 进入一次 SysTick 中断，tick_handler 执行时 us + 1000，ms + 1。";
-  if(flow==="getms") return "get_uptime_ms 只读取已经累计好的 s_uptime_ms32，不读取 SysTick VAL。";
-  if(flow==="getus") return "SysTick 在两个中断之间一直递减；get_uptime_us 用 VAL 估算当前 tick 内 extra_us。";
-  if(flow==="delay") return "delay 是忙等；不让出 CPU，不调用 HAL_Delay，也不执行软件定时器回调。";
-  if(flow==="sw") return "软件定时器到期判断在 rivers_timer_poll 中完成，不在 SysTick 中断中完成。";
-  return "初始化会清零 uptime、清空软件定时器数组、配置 SysTick 并同步 tick 参数。";
+function safeText(id,text){var n=document.getElementById(id);if(n)n.textContent=text}
+function safeHtml(id,html){var n=document.getElementById(id);if(n)n.innerHTML=html}
+function renderTimer(active){
+  if(active===undefined) active=timerIndex;
+  var flow=timerFlows[currentTimer],arr=flow.steps,step=arr[Math.max(0,active)]||arr[0],st=document.getElementById("timerStage");
+  if(!st)return;
+  st.className="flow-stage cols4";
+  st.innerHTML=arr.map(function(x,i){return '<div class="step '+(i===active?'active':'')+'"><div class="step-num">'+(i+1)+'</div><strong>'+x.t+'</strong><span>'+flow.title+'</span></div>';}).join("");
+  safeText("timerModeTitle",flow.title);
+  safeHtml("timerVars",varGrid(step.vars,step.changed));
+  safeText("timerExplain",active>=0?step.note:"点击播放或单步，按源码路径观察变量变化。");
+  safeText("timerSourceLine","当前源码语句：" + (active>=0?step.src:"等待播放。"));
+  renderTimerVisual(step,active);
 }
-function setTimer(ms,us,extra,cb,prog){document.getElementById("tMs").textContent=ms;document.getElementById("tUs").textContent=us;document.getElementById("tExtra").textContent=extra;document.getElementById("tCb").textContent=cb;document.getElementById("timerFill").style.width=prog+"%"}
-function resetTimer(){ if(timerInt)clearInterval(timerInt); timerInt=null; renderTimer(-1); setTimer(0,0,0,"NO",0);}
-function playTimer(){
-  resetTimer(); const arr=timerFlows[currentTimer]; let i=0;
-  timerInt=setInterval(()=>{
-    renderTimer(i);
-    if(currentTimer==="tick") setTimer(i, i*1000, "remainder=0","NO",(i+1)/arr.length*100);
-    else if(currentTimer==="getms") setTimer(1234,1234000,0,"NO",(i+1)/arr.length*100);
-    else if(currentTimer==="getus") setTimer(3, i>=1?3420:3000, i>=1?420:0,"NO",(i+1)/arr.length*100);
-    else if(currentTimer==="delay"){
-      const vals=[["100","100000","0","NO"],["101","101000","1ms","NO"],["105","105000","5ms","NO"],["3","3000","0us","NO"],["3","3450","450us","NO"],["3","3500","500us","NO"]];
-      const v=vals[i]||vals[vals.length-1]; setTimer(v[0],v[1],v[2],v[3],(i+1)/arr.length*100);
-    } else if(currentTimer==="sw"){
-      const vals=[["0","0","timer_id=0","NO"],["500","500000","expiry=1500","NO"],["1000","1000000","ISR only tick","NO"],["1499","1499000","not due","NO"],["1500","1500000","due","YES"],["1500","1500000","next=2500","NO"],["2500","2500000","one-shot off","YES"]];
-      const v=vals[i]||vals[vals.length-1]; setTimer(v[0],v[1],v[2],v[3],(i+1)/arr.length*100);
-    } else setTimer(0,0,["uptime=0","table cleared","SysTick CTRL","ready=true"][i]||0,"NO",(i+1)/arr.length*100);
-    i++; if(i>=arr.length) clearInterval(timerInt);
-  },780);
-}
-document.querySelectorAll("#timerTabs .flow-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll("#timerTabs .flow-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentTimer=b.dataset.flow;resetTimer();});
-
-const queueFlows={
- memInit:["选择默认 heap 或外部 buffer","对齐起始地址和总大小","建立一个大 free block","s_mem_ready=true"],
- alloc:["请求 payload 大小","按 8 字节对齐","找到足够大的 free block","切成 used + free","返回 payload 指针"],
- free:["payload 指针回退到 header","标记 block->free=true","检查后续相邻 free block","coalesce 合并碎片"],
- create:["计算 length * item_size","分配 storage 数据区","分配 queue 控制块","初始化 head/tail/count","挂入 s_queue_list","返回 queue handle"],
- ring:["tail 写入 item","tail 按 length 取模前进","count 增加","head 读取 item","head 按 length 取模前进","count 减少"],
- resetDelete:["reset 清 head/tail/count","storage 旧内容不清零","delete 先摘出活动链表","释放 storage","释放 queue 控制块"]
-};
-const queueTitles={memInit:"A rivers_mem_init",alloc:"B rivers_mem_alloc：128 字节示例",free:"C rivers_mem_free",create:"D queue_create：具体队列示例",ring:"E send/recv 环形队列",resetDelete:"F reset / delete"};
-let currentQueue="memInit",qInt=null;
-function renderQueue(active=-1){
-  const arr=queueFlows[currentQueue],st=document.getElementById("queueStage");
-  st.className="flow-stage cols"+Math.min(6,Math.max(4,arr.length));
-  const cls=(currentQueue==="memInit"||currentQueue==="alloc"||currentQueue==="free")?"mem":"queue";
-  st.innerHTML=arr.map((x,i)=>`<div class="step ${cls} ${i===active?'active':''}"><div class="step-num">${i+1}</div><strong>${x}</strong><span>${queueTitles[currentQueue]}</span></div>`).join("");
-  document.getElementById("memExplain").textContent=queueTitles[currentQueue];
-  updateMemLine(-1);
-}
-function updateMemLine(i){
-  const m=document.getElementById("memLine");
-  if(currentQueue==="memInit"){
-    m.innerHTML=i>=4?'<div class="memseg free" style="width:100%">one free block: 4096</div>':'<div class="memseg free" style="width:100%">raw heap buffer</div>';
-  }else if(currentQueue==="alloc"){
-    m.innerHTML=i>=3?'<div class="memseg head" style="width:13%">header</div><div class="memseg used" style="width:28%">payload 128</div><div class="memseg free" style="width:59%">remaining free</div>':'<div class="memseg free" style="width:100%">free block: 4096</div>';
-  }else if(currentQueue==="free"){
-    if(i<3)m.innerHTML='<div class="memseg head" style="width:13%">header</div><div class="memseg used" style="width:28%">used A</div><div class="memseg free" style="width:59%">free B</div>';
-    else if(i<4)m.innerHTML='<div class="memseg free" style="width:41%">free A</div><div class="memseg free" style="width:59%">free B</div>';
-    else m.innerHTML='<div class="memseg free" style="width:100%">merged free A+B</div>';
-  }else if(currentQueue==="create"){
-    m.innerHTML=i>=2?'<div class="memseg head" style="width:10%">H</div><div class="memseg used" style="width:28%">RX storage 128</div><div class="memseg head" style="width:10%">H</div><div class="memseg used" style="width:22%">queue ctrl</div><div class="memseg free" style="width:30%">free</div>':'<div class="memseg free" style="width:100%">heap before queue_create</div>';
+function renderTimerVisual(step,active){
+  var meter=document.getElementById("timerMeter"),hint=document.getElementById("timerMeterHint"),box=document.getElementById("timerVisual");
+  if(!meter||!hint||!box)return;
+  if(currentTimer==="systick"){
+    var load=parseInt(step.vars.LOAD,10)||167999;
+    var valRaw=step.vars.VAL==="-"?load:parseInt(step.vars.VAL,10);
+    var pct=Math.max(0,Math.min(100,(valRaw/load)*100));
+    meter.parentElement.classList.toggle("irq",!!step.irq);
+    meter.style.width=pct+"%";
+    hint.textContent="VAL: 167999 → 120000 → 60000 → 0；当前 VAL = "+step.vars.VAL;
+    box.innerHTML='<div class="meter-label">递减计数条剩余 '+Math.round(pct)+'%</div>'+(step.irq?'<div class="interrupt-badge">VAL = 0，COUNTFLAG = 1，中断触发</div>':'')+
+      '<div class="formula">更新时间顺序：VAL 到 0 -> SysTick_Handler() -> rivers_timer_tick_handler() -> rivers_timer_accumulate_us(1000)</div>';
+  }else{
+    meter.parentElement.classList.remove("irq");
+    meter.style.width=Math.min(100,Math.max(10,(active+1)*9))+"%";
+    hint.textContent="poll 扫描 s_sw_timers[]；callback 不在 SysTick 中断里执行。";
+    var scan=step.scan;
+    box.innerHTML='<div class="timer-slots">'+
+      timerSlot(0,"Timer0","allocated=true<br>active="+step.vars.active+"<br>expiry="+step.vars.expiry_ms,scan,step)+
+      timerSlot(1,"Timer1","allocated=true<br>active=false<br>expiry=1500",scan,step)+
+      timerSlot(2,"Timer2","empty",scan,step)+
+      timerSlot(3,"Timer3","allocated=true<br>active=true<br>expiry=3000",scan,step)+
+    '</div><div class="callback-box '+(step.callback?'on':'')+'">callback running: '+(step.callback?'YES，执行 cb(arg)':'NO')+'</div>';
   }
 }
-document.querySelectorAll("#queueTabs .flow-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll("#queueTabs .flow-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentQueue=b.dataset.flow;renderQueue();});
-function playQueueFlow(){ if(qInt)clearInterval(qInt); let i=0,arr=queueFlows[currentQueue]; qInt=setInterval(()=>{renderQueue(i);updateMemLine(i);i++;if(i>=arr.length)clearInterval(qInt)},720);}
+function timerSlot(idx,title,body,scan,step){
+  var cls=[];
+  if(scan===idx)cls.push("scan");
+  if(idx===0&&step.due)cls.push("due");
+  if(idx===0&&step.critical)cls.push("critical");
+  if(idx===0&&step.callbackReady)cls.push("callback-ready");
+  return '<div class="timer-slot '+cls.join(" ")+'"><strong>'+title+'</strong>'+body+'</div>';
+}
+function resetTimer(){ if(timerInt)clearInterval(timerInt); timerInt=null; timerIndex=-1; renderTimer(-1);}
+function pauseTimer(){ if(timerInt)clearInterval(timerInt); timerInt=null;}
+function stepTimer(){ timerIndex=(timerIndex+1)%timerSteps().length; renderTimer(timerIndex);}
+function playTimer(){ pauseTimer(); timerIndex=-1; timerInt=setInterval(function(){stepTimer(); if(timerIndex>=timerSteps().length-1) pauseTimer();},1050);}
+document.querySelectorAll("#timerTabs .flow-tab").forEach(function(b){b.onclick=function(){pauseTimer();document.querySelectorAll("#timerTabs .flow-tab").forEach(function(x){x.classList.remove("active")});b.classList.add("active");currentTimer=b.dataset.flow;resetTimer();};});
 
-let q={head:0,tail:0,count:0,cap:8,data:Array(8).fill(null),seq:1};
-function renderRing(){const r=document.getElementById("ring"); if(!r)return; r.innerHTML=""; for(let i=0;i<q.cap;i++){const c=document.createElement("div"); c.className="cell"; if(q.data[i]){c.classList.add("fill");c.textContent=q.data[i]}else{c.textContent=i} if(i===q.head)c.classList.add("head"); if(i===q.tail)c.classList.add("tail"); r.appendChild(c)} document.getElementById("qHead").textContent=q.head;document.getElementById("qTail").textContent=q.tail;document.getElementById("qCount").textContent=q.count;document.getElementById("qFree").textContent=q.cap-q.count;}
-function queueSend(){currentQueue="ring";document.querySelectorAll("#queueTabs .flow-tab").forEach(x=>x.classList.toggle("active",x.dataset.flow==="ring"));renderQueue(1);if(q.count>=q.cap)return; q.data[q.tail]="M"+q.seq++; q.tail=(q.tail+1)%q.cap; q.count++; renderRing();}
-function queueRecv(){currentQueue="ring";document.querySelectorAll("#queueTabs .flow-tab").forEach(x=>x.classList.toggle("active",x.dataset.flow==="ring"));renderQueue(3);if(q.count<=0)return; q.data[q.head]=null; q.head=(q.head+1)%q.cap; q.count--; renderRing();}
-function queueReset(){currentQueue="resetDelete";document.querySelectorAll("#queueTabs .flow-tab").forEach(x=>x.classList.toggle("active",x.dataset.flow==="resetDelete"));renderQueue(0);q={head:0,tail:0,count:0,cap:8,data:Array(8).fill(null),seq:1};renderRing();}
+function seg(type,size,addr,cls,width){
+  return '<div class="memseg '+cls+'" style="width:'+width+'"><span class="seg-type">'+type+'</span><span class="seg-size">'+size+'</span><span class="seg-addr">'+addr+'</span></div>';
+}
+const memFrames=[
+  {t:"初始 heap",src:"s_heap_head->size = s_heap_size; s_heap_head->free = true;",note:"初始 heap 是一个大的 free block；block->size 是总大小，包含 header。",mem:seg("free block","total 4096","0x20000000","free merge","100%"),changed:["free_size"],vars:{user_size:"-",header_size:"-",payload_size:"-",request_size:"-",remain:"4096",block:"0x20000000",payload_ptr:"-",next_block:"NULL",free_size:"4096"},addr:["block=0x20000000","block->size=4096","free=true","包含 header"]},
+  {t:"alloc(100)",src:"rivers_mem_alloc(100);",note:"用户想要的是 100 字节 payload。",mem:seg("free block","total 4096","0x20000000","free merge","100%"),changed:["user_size"],vars:{user_size:"100",header_size:"-",payload_size:"-",request_size:"-",remain:"4096",block:"0x20000000",payload_ptr:"-",next_block:"-",free_size:"4096"},addr:["user_size=100","payload request","heap unchanged",""]},
+  {t:"计算 header_size",src:"header_size = rivers_mem_header_size();",note:"块头按对齐粒度向上对齐，常见为 16 字节。",mem:seg("header","16","0x20000000","head ptr","18%")+seg("free block","remaining","0x20000010","free","82%"),changed:["header_size"],vars:{user_size:"100",header_size:"16",payload_size:"-",request_size:"-",remain:"4096",block:"0x20000000",payload_ptr:"0x20000010",next_block:"-",free_size:"4096"},addr:["sizeof(block)=12","align_up=16","payload starts +16",""]},
+  {t:"计算 payload_size",src:"payload_size = rivers_align_up_u32(size);",note:"100 字节 payload 按 8 字节对齐后占 104 字节。",mem:seg("header","16","0x20000000","head","16%")+seg("payload","104","0x20000010","used ptr","28%")+seg("free block","pending","0x20000078","free","56%"),changed:["payload_size"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"-",remain:"4096",block:"0x20000000",payload_ptr:"0x20000010",next_block:"-",free_size:"4096"},addr:["align_up(100)=104","payload_ptr=block+16","request pending",""]},
+  {t:"计算 request_size",src:"request_size = align_up(header_size + payload_size);",note:"实际切出的块总大小是 16 + 104 = 120。",mem:seg("header","16","0x20000000","head","16%")+seg("payload","104","0x20000010","used ptr","30%")+seg("free block","3976","0x20000078","free","54%"),changed:["request_size","remain","next_block"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"3976"},addr:["request=120","remain=4096-120","next=block+120",""]},
+  {t:"拆分 block",src:"next = (rivers_mem_block_t *)((uint8_t *)block + request_size);",note:"从 free block 前部切出 allocated block，后半部分继续作为 free block。",mem:seg("header","16","0x20000000","head","14%")+seg("payload","104","0x20000010","used ptr","30%")+seg("free block","total 3976","0x20000078","free","56%"),changed:["free_size"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"3976"},addr:["allocated=120","new free=3976","physically adjacent",""]},
+  {t:"返回 payload",src:"return (uint8_t *)block + header_size;",note:"用户拿到的是 payload 起点，不是 block header。",mem:seg("header","16","0x20000000","head","14%")+seg("return payload","104","0x20000010","used ptr","30%")+seg("free block","total 3976","0x20000078","free","56%"),changed:["payload_ptr"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"3976"},addr:["0x20000000 + 16","= 0x20000010","header protected",""]},
+  {t:"free(ptr)",src:"rivers_mem_free(ptr);",note:"用户传入 payload 指针 ptr = 0x20000010。",mem:seg("header","16","0x20000000","head","14%")+seg("ptr payload","104","0x20000010","used ptr","30%")+seg("free block","total 3976","0x20000078","free","56%"),changed:["payload_ptr"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"3976"},addr:["ptr=0x20000010","free input","not header",""]},
+  {t:"反推 header",src:"block = (rivers_mem_block_t *)(p - header_size);",note:"ptr - 16 回到 block header 起点。",mem:seg("block header","16","0x20000000","head ptr","14%")+seg("payload","104","0x20000010","used","30%")+seg("free block","total 3976","0x20000078","free","56%"),changed:["block"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"3976"},addr:["block=ptr-16","0x20000010-0x10","=0x20000000",""]},
+  {t:"标记 free",src:"current->free = true;",note:"当前 allocated block 重新变成 free block。",mem:seg("free block","total 120","0x20000000","free","38%")+seg("free block","total 3976","0x20000078","free","62%"),changed:["free_size"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"4096"},addr:["free 120","free 3976","before coalesce",""]},
+  {t:"检查相邻",src:"block_end == (uint8_t *)block->next",note:"两个 free block 物理地址连续，可以合并。",mem:seg("free block A","120","0x20000000","free","38%")+seg("free block B","3976","0x20000078","free","62%"),changed:["next_block"],vars:{user_size:"100",header_size:"16",payload_size:"104",request_size:"120",remain:"3976",block:"0x20000000",payload_ptr:"0x20000010",next_block:"0x20000078",free_size:"4096"},addr:["block_end=0x20000078","next=0x20000078","can coalesce",""]},
+  {t:"coalesce",src:"block->size += block->next->size;",note:"[free 120][free 3976] 合并成一个更大的 free block。",mem:seg("merged free block","total 4096","0x20000000","free merge","100%"),changed:["free_size","remain"],vars:{user_size:"-",header_size:"16",payload_size:"-",request_size:"-",remain:"4096",block:"0x20000000",payload_ptr:"-",next_block:"NULL",free_size:"4096"},addr:["free 120 + free 3976","merged=4096","fragment reduced",""]}
+];
+const ringFrames=[
+  {t:"初始",src:"head = 0; tail = 0; count = 0;",note:"队列为空，head/tail 都指向 0。",state:{slots:["空","空","空","空"],head:0,tail:0,count:0,free:4,offset:"-",status:"INIT",output:"-"}},
+  {t:"Send A",src:"memcpy(q->storage + (q->tail * q->item_size), item, q->item_size);",note:"tail=0，写入 slot0。",state:{slots:["A","空","空","空"],head:0,tail:1,count:1,free:3,offset:"0 * 8 = 0",status:"RIVERS_QUEUE_OK",input:"A",output:"-"}},
+  {t:"Send B",src:"q->tail = (q->tail + 1U) % q->length; q->count++;",note:"tail 前进到 2，count 增加到 2。",state:{slots:["A","B","空","空"],head:0,tail:2,count:2,free:2,offset:"1 * 8 = 8",status:"RIVERS_QUEUE_OK",input:"B",output:"-"}},
+  {t:"Recv A",src:"memcpy(item, q->storage + (q->head * q->item_size), q->item_size);",note:"head=0，从 slot0 读出 A。",state:{slots:["空","B","空","空"],head:1,tail:2,count:1,free:3,offset:"0 * 8 = 0",status:"RIVERS_QUEUE_OK",input:"-",output:"A"}},
+  {t:"Send C",src:"memcpy(q->storage + (q->tail * q->item_size), item, q->item_size);",note:"tail=2，写入 slot2。",state:{slots:["空","B","C","空"],head:1,tail:3,count:2,free:2,offset:"2 * 8 = 16",status:"RIVERS_QUEUE_OK",input:"C",output:"A"}},
+  {t:"Send D 回绕",src:"q->tail = (q->tail + 1U) % q->length;",note:"tail 从 3 前进后回绕到 0。",wrap:"(3 + 1) % 4 = 0",state:{slots:["空","B","C","D"],head:1,tail:0,count:3,free:1,offset:"3 * 8 = 24",status:"RIVERS_QUEUE_OK",input:"D",output:"A"}},
+  {t:"Send E",src:"q->count++;",note:"slot0 空闲，写入 E 后队列满。",state:{slots:["E","B","C","D"],head:1,tail:1,count:4,free:0,offset:"0 * 8 = 0",status:"RIVERS_QUEUE_OK",input:"E",output:"A"}},
+  {t:"队列满",src:"if (q->count >= q->length) { return RIVERS_QUEUE_ERR_FULL; }",note:"count == length，send 直接返回 FULL，不覆盖旧数据。",state:{slots:["E","B","C","D"],head:1,tail:1,count:4,free:0,offset:"tail=1",status:"RIVERS_QUEUE_ERR_FULL",input:"F",output:"-"}},
+  {t:"队列空",src:"if (q->count == 0U) { return RIVERS_QUEUE_ERR_EMPTY; }",note:"count == 0，recv 直接返回 EMPTY。",state:{slots:["空","空","空","空"],head:0,tail:0,count:0,free:4,offset:"head=0",status:"RIVERS_QUEUE_ERR_EMPTY",input:"-",output:"-"}}
+];
+let currentQueue="mem",queueIndex=-1,qInt=null;
+let manualQ={slots:["空","空","空","空"],head:0,tail:0,count:0,cap:4,last:"INIT",offset:"-",output:"-",nextCode:65};
+function renderQueue(active){
+  if(active===undefined) active=queueIndex;
+  var isMem=currentQueue==="mem",arr=isMem?memFrames:ringFrames,step=arr[Math.max(0,active)]||arr[0];
+  var st=document.getElementById("queueStage"); if(!st)return;
+  st.className="flow-stage cols4";
+  st.innerHTML=arr.map(function(x,i){return '<div class="step '+(isMem?'mem':'queue')+' '+(i===active?'active':'')+'"><div class="step-num">'+(i+1)+'</div><strong>'+x.t+'</strong><span>'+(isMem?'rivers_mem':'rivers_queue')+'</span></div>';}).join("");
+  safeText("queueModeTitle",isMem?"A rivers_mem alloc/free":"B queue send/recv");
+  safeText("queueExplain",active>=0?step.note:"点击播放或单步，观察内存块地址和队列索引怎样变化。");
+  if(isMem) renderMemFrame(step,active); else renderRingFrame(step,active);
+}
+function renderMemFrame(step,active){
+  safeHtml("memLine",step.mem);
+  safeHtml("memVars",varGrid(step.vars,step.changed));
+  safeHtml("memAddresses",step.addr.map(function(x,i){return '<div class="'+(i===0?'active':'')+'">'+(x||"&nbsp;")+"</div>";}).join(""));
+  safeText("memSourceLine","当前源码语句：" + (active>=0?step.src:"等待播放。"));
+  safeText("queueSourceLine","ring buffer 当前未变化。");
+  safeHtml("queueVars",varGrid({head:manualQ.head,tail:manualQ.tail,count:manualQ.count,free_count:manualQ.cap-manualQ.count,length:4,item_size:8,byte_offset:"-",last_status:"-"}));
+  renderRingState({slots:manualQ.slots,head:manualQ.head,tail:manualQ.tail,count:manualQ.count,free:manualQ.cap-manualQ.count,offset:"-",status:"-",input:"-",output:"-"});
+  setQueueStatus("当前模式只解释 rivers_mem 的块分配、地址移动和合并。");
+}
+function renderRingFrame(step,active){renderRingState(step.state,step.wrap);safeText("queueSourceLine","当前源码语句：" + (active>=0?step.src:"等待播放。"));safeText("memSourceLine","mem block 当前未变化。");safeHtml("memVars",varGrid({user_size:"-",header_size:"16",payload_size:"-",request_size:"-",remain:"-",block:"-",payload_ptr:"-",next_block:"-",free_size:"-"}));safeHtml("memLine",'<div class="memseg free merge" style="width:100%"><span class="seg-type">mem unchanged</span><span class="seg-size">send / recv 不改内存块链表</span><span class="seg-addr">-</span></div>');safeHtml("memAddresses","");setQueueStatus(step.note);}
+function renderRingState(state,wrap){
+  var ring=document.getElementById("ring"); if(!ring)return;
+  ring.innerHTML=state.slots.map(function(v,i){var cls="cell";if(v!=="空")cls+=" fill";if(i===state.head)cls+=" head";if(i===state.tail)cls+=" tail";return '<div class="'+cls+'"><span class="slot-index">slot'+i+'</span><span class="slot-value">'+v+'</span></div>';}).join("");
+  safeHtml("queueVars",varGrid({head:state.head,tail:state.tail,count:state.count,free_count:state.free,length:4,item_size:8,byte_offset:state.offset,last_status:state.status},["head","tail","count","byte_offset","last_status"]));
+  var lane='<div class="io-lane"><div class="io-token '+(state.input&&state.input!=="-"?'on':'')+'">item in: '+(state.input||"-")+'</div><div class="io-token '+(state.output&&state.output!=="-"?'on':'')+'">output: '+(state.output||"-")+'</div></div>';
+  if(wrap) lane+='<div class="wrap-hint">'+wrap+'</div>';
+  var status=document.getElementById("queueStatus");
+  if(status){status.innerHTML=(state.status==="RIVERS_QUEUE_ERR_FULL"?"队列满：不覆盖旧数据。":state.status==="RIVERS_QUEUE_ERR_EMPTY"?"队列空：没有数据可读。":"tail 写入，head 读取，count 区分空和满。")+lane;status.className="queue-status "+(state.status.includes("ERR")?"warn":"");}
+}
+function setQueueStatus(text){var s=document.getElementById("queueStatus");if(s){s.textContent=text;s.className="queue-status "+(text.includes("FULL")||text.includes("EMPTY")?"warn":"");}}
+function resetQueueState(){pauseQueueFlow();queueIndex=-1;manualQ={slots:["空","空","空","空"],head:0,tail:0,count:0,cap:4,last:"INIT",offset:"-",output:"-",nextCode:65};renderQueue(-1);}
+function pauseQueueFlow(){if(qInt)clearInterval(qInt);qInt=null;}
+function stepQueueFlow(){var arr=currentQueue==="mem"?memFrames:ringFrames;queueIndex=(queueIndex+1)%arr.length;renderQueue(queueIndex);}
+function playQueueFlow(){pauseQueueFlow();queueIndex=-1;if(currentQueue==="ring")manualQ={slots:["空","空","空","空"],head:0,tail:0,count:0,cap:4,last:"INIT",offset:"-",output:"-",nextCode:65};qInt=setInterval(function(){stepQueueFlow();var arr=currentQueue==="mem"?memFrames:ringFrames;if(queueIndex>=arr.length-1)pauseQueueFlow();},1050);}
+document.querySelectorAll("#queueTabs .flow-tab").forEach(function(b){b.onclick=function(){pauseQueueFlow();document.querySelectorAll("#queueTabs .flow-tab").forEach(function(x){x.classList.remove("active")});b.classList.add("active");currentQueue=b.dataset.flow;resetQueueState();};});
+function activateRingMode(){currentQueue="ring";queueIndex=-1;document.querySelectorAll("#queueTabs .flow-tab").forEach(function(x){x.classList.toggle("active",x.dataset.flow==="ring")});renderQueue(-1);}
+function queueSend(){pauseQueueFlow();activateRingMode();if(manualQ.count>=manualQ.cap){var full={slots:manualQ.slots.slice(),head:manualQ.head,tail:manualQ.tail,count:manualQ.count,free:0,offset:"tail="+manualQ.tail,status:"RIVERS_QUEUE_ERR_FULL",input:"?",output:"-"};safeText("queueSourceLine","当前源码语句：if (q->count >= q->length) { return RIVERS_QUEUE_ERR_FULL; }");renderRingState(full);return;}var item=String.fromCharCode(manualQ.nextCode++),pos=manualQ.tail;manualQ.slots[pos]=item;manualQ.offset=pos+" * 8 = "+(pos*8);manualQ.tail=(manualQ.tail+1)%manualQ.cap;manualQ.count++;manualQ.last="RIVERS_QUEUE_OK";safeText("queueSourceLine","当前源码语句：memcpy(q->storage + (q->tail * q->item_size), item, q->item_size); q->tail = (q->tail + 1U) % q->length; q->count++;");renderRingState({slots:manualQ.slots,head:manualQ.head,tail:manualQ.tail,count:manualQ.count,free:manualQ.cap-manualQ.count,offset:manualQ.offset,status:manualQ.last,input:item,output:"-"},pos===3?"(3 + 1) % 4 = 0":"");}
+function queueRecv(){pauseQueueFlow();activateRingMode();if(manualQ.count===0){safeText("queueSourceLine","当前源码语句：if (q->count == 0U) { return RIVERS_QUEUE_ERR_EMPTY; }");renderRingState({slots:manualQ.slots,head:manualQ.head,tail:manualQ.tail,count:0,free:manualQ.cap,offset:"head="+manualQ.head,status:"RIVERS_QUEUE_ERR_EMPTY",input:"-",output:"-"});return;}var pos=manualQ.head,out=manualQ.slots[pos];manualQ.slots[pos]="空";manualQ.offset=pos+" * 8 = "+(pos*8);manualQ.head=(manualQ.head+1)%manualQ.cap;manualQ.count--;manualQ.last="RIVERS_QUEUE_OK";safeText("queueSourceLine","当前源码语句：memcpy(item, q->storage + (q->head * q->item_size), q->item_size); q->head = (q->head + 1U) % q->length; q->count--;");renderRingState({slots:manualQ.slots,head:manualQ.head,tail:manualQ.tail,count:manualQ.count,free:manualQ.cap-manualQ.count,offset:manualQ.offset,status:manualQ.last,input:"-",output:out},pos===3?"(3 + 1) % 4 = 0":"");}
+function queueReset(){currentQueue="ring";document.querySelectorAll("#queueTabs .flow-tab").forEach(function(x){x.classList.toggle("active",x.dataset.flow==="ring")});resetQueueState();}
 
-route(location.hash,false);renderTimer();renderQueue();renderRing();
+let coopInt=null;
+function playCoopFlow(){
+  const nodes=[...document.querySelectorAll("#coopFlow .coop-step")];
+  if(!nodes.length)return;
+  if(coopInt)clearInterval(coopInt);
+  nodes.forEach(function(n){n.classList.remove("active")});
+  let i=0;
+  coopInt=setInterval(function(){nodes.forEach(function(n,idx){n.classList.toggle("active",idx<=i)});i++;if(i>=nodes.length)clearInterval(coopInt);},850);
+}
+
+route(location.hash,false);renderTimer();renderQueue();
 </script>
 </body>
 </html>
+
